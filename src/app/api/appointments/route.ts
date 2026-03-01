@@ -12,6 +12,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createCalendarEvent } from "@/lib/google-calendar";
 import { sendEmail, buildConfirmationEmail } from "@/lib/notifications";
+import { generateCancelToken } from "@/lib/tokens";
 import { AppError, withErrorHandler, requireAuth, requireAdmin, logger } from "@/lib/errors";
 import { getAdelaideDateString } from "@/lib/timezone";
 import { z } from "zod";
@@ -311,6 +312,12 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       .single()) as unknown as { data: { full_name: string; email: string } | null };
 
     if (clientProfile?.email) {
+      // Gerar token de cancelamento
+      const cancelToken = await generateCancelToken({
+        appointmentId: appointment.id,
+        clientId: user.id,
+      });
+
       // Formata data em portugues brasileiro para email amigavel
       const formattedDate = new Date(
         `${appointment_date}T12:00:00`
@@ -331,6 +338,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
         date: formattedDate,
         time: start_time.substring(0, 5),
         appointmentId: appointment.id,
+        cancelToken,
       });
 
       emailData.to = clientProfile.email;

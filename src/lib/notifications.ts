@@ -145,6 +145,7 @@ export function buildConfirmationEmail(params: {
   date: string;          // Data formatada (ex: "1 de marco de 2025")
   time: string;          // Hora formatada (ex: "14:30")
   appointmentId: string; // UUID do agendamento (para registros)
+  cancelToken?: string;  // Token para cancelamento (opcional)
 }): EmailData {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   const serviceNames = params.services.map((s) => s.name).join(", ");
@@ -178,6 +179,16 @@ export function buildConfirmationEmail(params: {
               Meus Agendamentos
             </a>
           </div>
+
+          ${params.cancelToken ? `
+          <p style="color: #666; text-align: center; margin: 20px 0;">ou</p>
+          <div style="text-align: center; margin: 20px 0;">
+            <a href="${appUrl}/cancelar?id=${params.appointmentId}&token=${params.cancelToken}"
+               style="background: #dc2626; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; display: inline-block;">
+              Cancelar Agendamento
+            </a>
+          </div>
+          ` : ''}
 
           <p style="color: #999; font-size: 12px;">
             Cancelamentos devem ser feitos com pelo menos 24h de antecedencia.
@@ -286,6 +297,121 @@ export function buildReminderEmail(params: {
 
         <div style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; color: #999; font-size: 12px;">
           <p>Bela Orsine Beauty</p>
+        </div>
+      </div>
+    `,
+  };
+}
+
+/**
+ * Constroe email de reagendamento de agendamento.
+ * Mostra dados antigos e novos do agendamento.
+ */
+export function buildRescheduleEmail(params: {
+  clientName: string;    // Nome do cliente
+  services: ServiceItem[]; // Servicos agendados
+  oldDate: string;       // Data anterior
+  oldTime: string;       // Hora anterior
+  newDate: string;       // Nova data
+  newTime: string;       // Nova hora
+}): EmailData {
+  const serviceNames = params.services.map((s) => s.name).join(", ");
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+  return {
+    to: "",
+    subject: `Agendamento Reagendado - ${serviceNames}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; padding: 20px 0; border-bottom: 2px solid #e11d48;">
+          <h1 style="color: #e11d48; margin: 0;">Bela Orsine Beauty</h1>
+        </div>
+
+        <div style="padding: 30px 0;">
+          <h2 style="color: #333;">Agendamento Reagendado</h2>
+          <p style="color: #666;">Ola, <strong>${escapeHtml(params.clientName)}</strong>!</p>
+          <p style="color: #666;">Seu agendamento foi reagendado com sucesso.</p>
+
+          <div style="background: #fef2f2; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <p style="margin: 5px 0; color: #dc2626;"><strong>Antigo Horario:</strong></p>
+            <p style="margin: 5px 0;">${escapeHtml(params.oldDate)} as ${escapeHtml(params.oldTime)}</p>
+          </div>
+
+          <div style="background: #f0fdf4; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <p style="margin: 5px 0; color: #16a34a;"><strong>Novo Horario:</strong></p>
+            <p style="margin: 5px 0;">${escapeHtml(params.newDate)} as ${escapeHtml(params.newTime)}</p>
+            ${buildServicesList(params.services)}
+          </div>
+
+          <p style="color: #666;">
+            Caso precise fazer alteracoes, acesse sua area do cliente:
+          </p>
+          <div style="text-align: center; margin: 20px 0;">
+            <a href="${appUrl}/cliente/meus-agendamentos"
+               style="background: #e11d48; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; display: inline-block;">
+              Meus Agendamentos
+            </a>
+          </div>
+        </div>
+
+        <div style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; color: #999; font-size: 12px;">
+          <p>Bela Orsine Beauty</p>
+        </div>
+      </div>
+    `,
+  };
+}
+
+/**
+ * Constroe email de cancelamento para o admin.
+ * Notifica sobre cancelamento de agendamento com dados do cliente.
+ */
+export function buildAdminCancellationEmail(params: {
+  clientName: string;    // Nome do cliente
+  clientEmail: string;  // Email do cliente
+  clientPhone?: string; // Telefone do cliente (opcional)
+  services: ServiceItem[]; // Servicos cancelados
+  date: string;          // Data do agendamento
+  time: string;          // Hora do agendamento
+}): EmailData {
+  const serviceNames = params.services.map((s) => s.name).join(", ");
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+  return {
+    to: "",
+    subject: `CANCELAMENTO - ${serviceNames}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; padding: 20px 0; border-bottom: 2px solid #dc2626;">
+          <h1 style="color: #dc2626; margin: 0;">CANCELAMENTO DE AGENDAMENTO</h1>
+        </div>
+
+        <div style="padding: 30px 0;">
+          <h2 style="color: #333;">Cliente cancelou agendamento</h2>
+          
+          <div style="background: #fef2f2; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <p style="margin: 5px 0;"><strong>Cliente:</strong> ${escapeHtml(params.clientName)}</p>
+            <p style="margin: 5px 0;"><strong>Email:</strong> ${escapeHtml(params.clientEmail)}</p>
+            ${params.clientPhone ? `<p style="margin: 5px 0;"><strong>Telefone:</strong> ${escapeHtml(params.clientPhone)}</p>` : ''}
+            <hr style="margin: 15px 0; border: none; border-top: 1px solid #fecaca;">
+            <p style="margin: 5px 0;"><strong>Serviço(s):</strong> ${escapeHtml(serviceNames)}</p>
+            <p style="margin: 5px 0;"><strong>Data:</strong> ${escapeHtml(params.date)}</p>
+            <p style="margin: 5px 0;"><strong>Horário:</strong> ${escapeHtml(params.time)}</p>
+          </div>
+
+          <p style="color: #666;">
+            Horário liberado para novos agendamentos.
+          </p>
+          <div style="text-align: center; margin: 20px 0;">
+            <a href="${appUrl}/admin/agendamentos"
+               style="background: #dc2626; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; display: inline-block;">
+              Ver Agendamentos
+            </a>
+          </div>
+        </div>
+
+        <div style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; color: #999; font-size: 12px;">
+          <p>Bela Orsine Beauty - Sistema de Agendamentos</p>
         </div>
       </div>
     `,

@@ -34,7 +34,7 @@ import {
 import type { Category, Service } from "@/types/database";
 import LandingCategoriesCarousel from "./landing-categories";
 import LandingServicesCarousel from "./landing-services";
-import ReviewsCarousel from "@/components/reviews/ReviewsCarousel";
+import TestimonialCarousel from "@/components/shared/TestimonialCarousel";
 
 export default async function HomePage() {
   let categories: Category[] | null = null;
@@ -247,19 +247,7 @@ export default async function HomePage() {
 
       {/* Reviews Carousel */}
       {reviews && reviews.length > 0 && (
-        <section className="bg-white py-12 sm:py-16">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                O que nossas clientes dizem
-              </h2>
-              <p className="mt-1 text-sm text-gray-500">
-                Avaliacoes reais de quem ja experimentou
-              </p>
-            </div>
-            <ReviewsCarousel reviews={reviews} />
-          </div>
-        </section>
+        <TestimonialCarousel testimonials={reviews} loading={false} />
       )}
 
       {/* About Preview */}

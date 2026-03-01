@@ -1,3 +1,20 @@
+/**
+ * Tipos da Base de Dados (Supabase)
+ *
+ * Define a estrutura de todas as tabelas, campos e tipos usados
+ * em toda a aplicacao. Gerado/mantido a partir do schema Supabase.
+ *
+ * Principais tabelas:
+ * - profiles: Dados de usuario (cliente/admin)
+ * - categories: Categorias de servicos
+ * - services: Servicos oferecidos
+ * - appointments: Agendamentos
+ * - reviews: Avaliacoes
+ * - achievements: Conquistas do sistema de gamificacao
+ * - game_plays: Historico de jogadas
+ * - loyalty: Programa de fidelidade
+ */
+
 export type Json =
   | string
   | number
@@ -9,6 +26,7 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      // Perfis de usuarios (clientes e admins)
       profiles: {
         Row: {
           id: string;

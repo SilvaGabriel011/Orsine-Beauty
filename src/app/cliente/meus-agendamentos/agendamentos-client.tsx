@@ -16,12 +16,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { CalendarDays, Clock, Star, RefreshCw } from "lucide-react";
+import { CalendarDays, Clock, Star, RefreshCw, Calendar } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 import { safeFetch } from "@/lib/errors/client";
 import StarRating from "@/components/reviews/StarRating";
+import RescheduleModal from "@/components/agendamentos/RescheduleModal";
 
 interface Appointment {
   id: string;
@@ -108,6 +109,8 @@ export default function AgendamentosClient({
 }) {
   const router = useRouter();
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [rescheduleOpen, setRescheduleOpen] = useState(false);
 
   const upcoming = appointments.filter(
     (a) =>
@@ -123,22 +126,13 @@ export default function AgendamentosClient({
       a.status === "no_show"
   );
 
-  async function handleReschedule(apt: Appointment) {
-    // Cancel existing appointment then redirect to booking
-    setCancellingId(apt.id);
+  function canReschedule(apt: Appointment): boolean {
+    return canCancel(apt);
+  }
 
-    const result = await safeFetch(`/api/appointments/${apt.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "cancelled" }),
-    });
-
-    setCancellingId(null);
-
-    if (!result.ok) return;
-
-    toast.success("Agendamento cancelado. Redirecionando para reagendar...");
-    router.push("/agendar");
+  function openRescheduleModal(apt: Appointment) {
+    setSelectedAppointment(apt);
+    setRescheduleOpen(true);
   }
 
   async function handleCancel(id: string) {
@@ -205,42 +199,17 @@ export default function AgendamentosClient({
                   <Badge className={statusColors[apt.status]}>
                     {statusLabels[apt.status]}
                   </Badge>
-                  {canCancel(apt) && (
+                  {canReschedule(apt) && (
                     <div className="flex gap-2">
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="gap-1"
-                            disabled={cancellingId === apt.id}
-                          >
-                            <RefreshCw className="h-3 w-3" />
-                            Reagendar
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>
-                              Reagendar atendimento?
-                            </AlertDialogTitle>
-                            <AlertDialogDescription>
-                              O agendamento atual sera cancelado e voce sera
-                              redirecionada para escolher uma nova data e
-                              horario.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Manter</AlertDialogCancel>
-                            <AlertDialogAction
-                              className="bg-rose-600 hover:bg-rose-700"
-                              onClick={() => handleReschedule(apt)}
-                            >
-                              Sim, reagendar
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1"
+                        onClick={() => openRescheduleModal(apt)}
+                      >
+                        <Calendar className="h-3 w-3" />
+                        Reagendar
+                      </Button>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button
@@ -349,6 +318,15 @@ export default function AgendamentosClient({
             </Card>
           ))}
         </div>
+      )}
+
+      {/* Modal de Reagendamento */}
+      {selectedAppointment && (
+        <RescheduleModal
+          open={rescheduleOpen}
+          onOpenChange={setRescheduleOpen}
+          appointment={selectedAppointment}
+        />
       )}
     </div>
   );

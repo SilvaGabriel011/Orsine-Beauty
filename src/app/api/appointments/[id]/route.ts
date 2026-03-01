@@ -11,7 +11,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { deleteCalendarEvent } from "@/lib/google-calendar";
-import { sendEmail, buildCancellationEmail } from "@/lib/notifications";
+import { sendEmail, buildCancellationEmail, buildAdminCancellationEmail } from "@/lib/notifications";
 import { awardLoyaltyPoints } from "@/lib/loyalty";
 import { AppError, withErrorHandler, requireAuth, logger } from "@/lib/errors";
 import { getAdelaideNow, adelaideDateTime } from "@/lib/timezone";
@@ -121,6 +121,29 @@ export const PATCH = withErrorHandler(async (
         }
       } catch (emailErr) {
         logger.warn("Cancellation email error (non-blocking)", { code: "INT_EMAIL_FAILED", details: emailErr });
+      }
+
+      // Enviar notificacao para o admin (non-blocking)
+      try {
+        const adminEmail = process.env.ADMIN_EMAIL || process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+        if (adminEmail) {
+          const adminEmailData = buildAdminCancellationEmail({
+            clientName,
+            clientEmail: clientEmail,
+            clientPhone: appointment.profiles?.phone || undefined,
+            services,
+            date: formattedDate,
+            time: appointment.start_time.substring(0, 5),
+          });
+          
+          adminEmailData.to = adminEmail;
+          await sendEmail(adminEmailData);
+        }
+      } catch (adminEmailErr) {
+        logger.warn("Admin cancellation email error (non-blocking)", { 
+          code: "INT_EMAIL_FAILED", 
+          details: adminEmailErr 
+        });
       }
     }
 

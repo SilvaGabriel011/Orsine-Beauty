@@ -21,11 +21,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Users, Search, Award } from "lucide-react";
+import { Users, Search, Award, Trophy } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 import { safeFetch } from "@/lib/errors/client";
+import ClientRanking from "@/components/admin/ClientRanking";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Client {
   id: string;
@@ -95,6 +97,14 @@ export default function ClientesClient({
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold">Clientes</h1>
+
+      <Tabs defaultValue="list" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="list">Lista de Clientes</TabsTrigger>
+          <TabsTrigger value="ranking">Ranking</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="list" className="space-y-6">
 
       {/* Stats */}
       <div className="mb-6 grid gap-4 md:grid-cols-3">
@@ -270,6 +280,12 @@ export default function ClientesClient({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+        </TabsContent>
+
+        <TabsContent value="ranking">
+          <ClientRanking />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import TopClientsCard from "@/components/admin/TopClientsCard";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -281,7 +282,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Reviews Quick Stats */}
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
@@ -317,6 +318,7 @@ export default async function DashboardPage() {
             </Link>
           </CardContent>
         </Card>
+        <TopClientsCard />
       </div>
 
       {/* Today's Schedule */}
