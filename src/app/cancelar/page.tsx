@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,7 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { CalendarDays, Clock, AlertTriangle, CheckCircle2, XCircle, Mail, Loader2 } from "lucide-react";
+import { CalendarDays, Clock, CheckCircle2, XCircle, Mail, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
@@ -64,24 +64,7 @@ export default function CancelarTokenPage() {
   const [emailConfirm, setEmailConfirm] = useState("");
   const [needEmailConfirm, setNeedEmailConfirm] = useState(false);
 
-  useEffect(() => {
-    if (!token) {
-      setError("Token não fornecido");
-      setLoading(false);
-      return;
-    }
-
-    // Extrair ID do appointment do token ou buscar da URL
-    const appointmentId = searchParams.get("id") || "";
-    if (appointmentId) {
-      fetchAppointment(appointmentId);
-    } else {
-      setError("ID do agendamento não fornecido");
-      setLoading(false);
-    }
-  }, [token, searchParams]);
-
-  async function fetchAppointment(appointmentId: string) {
+  const fetchAppointment = useCallback(async (appointmentId: string) => {
     setLoading(true);
     setError(null);
 
@@ -93,7 +76,7 @@ export default function CancelarTokenPage() {
       return;
     }
 
-    const apt = result.data;
+    const apt = result.data as Appointment;
     
     // Verificar se pode ser cancelado
     const appointmentDate = new Date(
@@ -119,7 +102,28 @@ export default function CancelarTokenPage() {
     }
 
     setLoading(false);
-  }
+  }, []);
+
+  useEffect(() => {
+    const initialize = async () => {
+      if (!token) {
+        setError("Token não fornecido");
+        setLoading(false);
+        return;
+      }
+
+      // Extrair ID do appointment do token ou buscar da URL
+      const appointmentId = searchParams.get("id") || "";
+      if (appointmentId) {
+        await fetchAppointment(appointmentId);
+      } else {
+        setError("ID do agendamento não fornecido");
+        setLoading(false);
+      }
+    };
+
+    initialize();
+  }, [token, searchParams, fetchAppointment]);
 
   async function handleCancel() {
     if (!appointment || !token) return;

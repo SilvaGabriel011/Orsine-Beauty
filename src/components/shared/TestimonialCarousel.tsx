@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import StarRating from "@/components/reviews/StarRating";
@@ -127,7 +127,7 @@ export default function TestimonialCarousel({
                       </div>
                       
                       <blockquote className="mb-6 text-lg leading-relaxed text-gray-700">
-                        "{testimonial.comment}"
+                        &ldquo;{testimonial.comment}&rdquo;
                       </blockquote>
 
                       <div className="flex items-center justify-between">

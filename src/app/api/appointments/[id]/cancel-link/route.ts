@@ -8,8 +8,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { deleteCalendarEvent } from "@/lib/google-calendar";
-import { sendEmail, buildCancellationEmail } from "@/lib/notifications";
-import { validateCancelToken } from "@/lib/tokens";
+import { sendEmail, buildCancellationEmail, buildAdminCancellationEmail } from "@/lib/notifications";
+import { validateCancelToken, type CancelTokenPayload } from "@/lib/tokens";
 import { AppError, withErrorHandler, logger } from "@/lib/errors";
 import { getAdelaideNow, adelaideDateTime } from "@/lib/timezone";
 
@@ -25,25 +25,27 @@ export const POST = withErrorHandler(async (
   const { token } = body;
 
   if (!token) {
-    throw new AppError("VAL_MISSING_TOKEN");
+    throw new AppError("VAL_MISSING_FIELDS", "Token não fornecido");
   }
 
   // Validar token JWT
-  let tokenPayload;
+  let payload: CancelTokenPayload;
   try {
-    tokenPayload = await validateCancelToken(token);
-  } catch (err) {
-    throw new AppError("AUTH_INVALID_TOKEN");
+    payload = await validateCancelToken(token);
+  } catch {
+    throw new AppError("AUTH_INVALID_CREDENTIALS", "Token inválido ou expirado");
   }
 
-  // Verificar se token corresponde ao appointment
-  if (tokenPayload.appointmentId !== id) {
-    throw new AppError("AUTH_TOKEN_MISMATCH");
+  const { appointmentId, clientId } = payload;
+
+  // Verificar se o token corresponde ao appointment informado
+  if (appointmentId !== id) {
+    throw new AppError("AUTH_NOT_AUTHORIZED", "Token não corresponde ao agendamento");
   }
 
   // Buscar appointment atual
-  const { data: appointment, error: fetchError } = (await (supabase
-    .from("appointments") as any)
+  const { data: appointment, error: fetchError } = await supabase
+    .from("appointments")
     .select(`
       *,
       services(id, name, price, duration_minutes),
@@ -51,15 +53,15 @@ export const POST = withErrorHandler(async (
       appointment_services(services(id, name, price, duration_minutes))
     `)
     .eq("id", id)
-    .single()) as { data: any | null; error: any };
+    .single() as { data: any | null; error: any };
 
   if (fetchError || !appointment) {
-    throw new AppError("APPT_NOT_FOUND", fetchError?.message);
+    throw new AppError("RES_NOT_FOUND", fetchError?.message || "Agendamento não encontrado");
   }
 
-  // Verificar se o cliente do token é o dono do appointment
-  if (appointment.client_id !== tokenPayload.clientId) {
-    throw new AppError("AUTH_UNAUTHORIZED");
+  // Verificar se o agendamento pertence ao cliente do token
+  if (appointment.client_id !== clientId) {
+    throw new AppError("AUTH_NOT_AUTHORIZED", "Não autorizado a cancelar este agendamento");
   }
 
   // Verificar se appointment pode ser cancelado
@@ -141,6 +143,48 @@ export const POST = withErrorHandler(async (
     logger.warn("Cancellation email error (non-blocking)", { 
       code: "INT_EMAIL_FAILED", 
       details: emailErr 
+    });
+  }
+
+  // Enviar notificacao para o admin (non-blocking)
+  try {
+    const adminEmail = process.env.ADMIN_EMAIL || process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+    if (adminEmail) {
+      const clientName = appointment.client?.full_name || "Cliente";
+      const clientEmail = appointment.client?.email || "";
+      // Buscar serviços do agendamento
+      const { data: servicesData } = await supabase
+        .from("appointment_services")
+        .select("services(name)")
+        .eq("appointment_id", id);
+      
+      const services = servicesData?.map((as: { services: { name: string } | null }) => as.services?.name).filter(Boolean) as string[] || [];
+      
+      if (services.length === 0 && appointment.services?.name) {
+        services.push(appointment.services.name);
+      }
+      const formattedDate = new Date(appointment.appointment_date).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+
+      const adminEmailData = buildAdminCancellationEmail({
+        clientName,
+        clientEmail,
+        clientPhone: appointment.client?.phone || undefined,
+        services: services as any[],
+        date: formattedDate,
+        time: appointment.start_time.substring(0, 5),
+      });
+      
+      adminEmailData.to = adminEmail;
+      await sendEmail(adminEmailData);
+    }
+  } catch (adminEmailErr) {
+    logger.warn("Admin cancellation email error (non-blocking)", { 
+      code: "INT_EMAIL_FAILED", 
+      details: adminEmailErr 
     });
   }
 

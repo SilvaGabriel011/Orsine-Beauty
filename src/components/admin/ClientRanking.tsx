@@ -5,17 +5,14 @@ import {
   Crown, 
   Medal, 
   Trophy, 
-  Loader2, 
   Coins, 
   Calendar,
   TrendingUp,
   User,
   BarChart3
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
@@ -59,6 +56,12 @@ export default function ClientRanking({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (initialData && initialData.length > 0) {
+      setData(initialData);
+      setStats(initialStats);
+      return;
+    }
+
     async function fetchRanking() {
       setLoading(true);
       try {
@@ -73,10 +76,8 @@ export default function ClientRanking({
       }
     }
 
-    if (!initialData || initialData.length === 0) {
-      fetchRanking();
-    }
-  }, [period, sortBy]);
+    fetchRanking();
+  }, [period, sortBy, initialData, initialStats]);
 
   const getMedalIcon = (position: number) => {
     switch (position) {
@@ -279,16 +280,20 @@ export default function ClientRanking({
                             {sortBy === "points" && (client.total_loyalty_points || 0)} pts
                           </span>
                         </div>
-                        <Progress 
-                          value={
-                            (sortBy === "appointments" 
-                              ? client.total_completed 
-                              : sortBy === "spent" 
-                              ? client.total_spent 
-                              : client.total_loyalty_points || 0) / maxValue * 100
-                          } 
-                          className="h-2"
-                        />
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-rose-600 h-2 rounded-full transition-all"
+                            style={{
+                              width: `${
+                                (sortBy === "appointments" 
+                                  ? client.total_completed 
+                                  : sortBy === "spent" 
+                                  ? client.total_spent 
+                                  : client.total_loyalty_points || 0) / maxValue * 100
+                              }%`
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
 

@@ -25,109 +25,60 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const cutoffDateStr = cutoffDate.toISOString().split('T')[0];
 
   // Buscar clientes com estatísticas
-  let query = `
-    SELECT 
-      p.id as client_id,
-      p.full_name,
-      p.email,
-      COUNT(a.id) FILTER (WHERE a.status = 'completed' AND a.appointment_date >= '${cutoffDateStr}') as total_completed,
-      COALESCE(SUM(a.amount_paid) FILTER (WHERE a.status = 'completed' AND a.appointment_date >= '${cutoffDateStr}'), 0) as total_spent,
-      MAX(a.appointment_date) FILTER (WHERE a.status = 'completed') as last_appointment,
-      COALESCE(AVG(r.rating), 0) as avg_rating,
-      COALESCE(p.total_completed, 0) as total_all_time
-    FROM profiles p
-    LEFT JOIN appointments a ON a.client_id = p.id
-    LEFT JOIN reviews r ON r.appointment_id = a.id
-    WHERE p.role = 'client'
-    GROUP BY p.id, p.full_name, p.email, p.total_completed
-    HAVING COUNT(a.id) FILTER (WHERE a.status = 'completed' AND a.appointment_date >= '${cutoffDateStr}') > 0
-  `;
+  const { data: appointments, error: aptError } = await supabase
+    .from("appointments")
+    .select(`
+      client_id,
+      status,
+      amount_paid,
+      appointment_date,
+      profiles(id, full_name, email, total_completed)
+    `)
+    .eq("status", "completed")
+    .gte("appointment_date", cutoffDateStr) as { data: any[] | null; error: any };
 
-  // Adicionar ordenação
-  switch (sortBy) {
-    case "spent":
-      query += ` ORDER BY total_spent DESC, total_completed DESC`;
-      break;
-    case "points":
-      query += ` ORDER BY total_all_time DESC, total_completed DESC`;
-      break;
-    default: // appointments
-      query += ` ORDER BY total_completed DESC, total_spent DESC`;
+  if (aptError) {
+    throw new AppError("RES_NOT_FOUND", aptError.message);
   }
 
-  const { data: rankings, error: rankingsError } = await supabase
-    .rpc('execute_sql', { sql_query: query })
-    .limit(20);
-
-  if (rankingsError) {
-    // Fallback: query direta se RPC não estiver disponível
-    const { data: appointments, error: aptError } = await supabase
-      .from("appointments")
-      .select(`
-        client_id,
-        status,
-        amount_paid,
-        appointment_date,
-        profiles(id, full_name, email, total_completed)
-      `)
-      .eq("status", "completed")
-      .gte("appointment_date", cutoffDateStr);
-
-    if (aptError) {
-      throw new AppError("RES_QUERY_FAILED", aptError.message);
+  // Processar dados manualmente
+  const clientMap = new Map();
+  
+  appointments?.forEach((apt: any) => {
+    const clientId = apt.client_id;
+    if (!clientMap.has(clientId)) {
+      clientMap.set(clientId, {
+        client_id: clientId,
+        full_name: apt.profiles?.full_name || "",
+        email: apt.profiles?.email || "",
+        total_completed: 0,
+        total_spent: 0,
+        last_appointment: apt.appointment_date,
+        avg_rating: 0,
+        total_all_time: apt.profiles?.total_completed || 0,
+      });
     }
 
-    // Processar dados manualmente
-    const clientMap = new Map();
+    const client = clientMap.get(clientId);
+    client.total_completed += 1;
+    client.total_spent += apt.amount_paid || 0;
     
-    appointments?.forEach((apt: any) => {
-      const clientId = apt.client_id;
-      if (!clientMap.has(clientId)) {
-        clientMap.set(clientId, {
-          client_id: clientId,
-          full_name: apt.profiles?.full_name || "",
-          email: apt.profiles?.email || "",
-          total_completed: 0,
-          total_spent: 0,
-          last_appointment: apt.appointment_date,
-          avg_rating: 0,
-          total_all_time: apt.profiles?.total_completed || 0,
-        });
-      }
-
-      const client = clientMap.get(clientId);
-      client.total_completed += 1;
-      client.total_spent += apt.amount_paid || 0;
-      
-      if (apt.appointment_date > client.last_appointment) {
-        client.last_appointment = apt.appointment_date;
-      }
-    });
-
-    let rankings = Array.from(clientMap.values());
-    
-    // Ordenar
-    switch (sortBy) {
-      case "spent":
-        rankings.sort((a, b) => b.total_spent - a.total_spent);
-        break;
-      case "points":
-        rankings.sort((a, b) => b.total_all_time - a.total_all_time);
-        break;
-      default:
-        rankings.sort((a, b) => b.total_completed - a.total_completed);
+    if (apt.appointment_date > client.last_appointment) {
+      client.last_appointment = apt.appointment_date;
     }
-  }
+  });
+
+  const rankings = Array.from(clientMap.values());
 
   // Buscar estatísticas gerais
   const { data: statsData, error: statsError } = await supabase
     .from("appointments")
     .select("amount_paid, client_id")
     .eq("status", "completed")
-    .gte("appointment_date", cutoffDateStr);
+    .gte("appointment_date", cutoffDateStr) as { data: any[] | null; error: any };
 
   if (statsError) {
-    throw new AppError("RES_QUERY_FAILED", statsError.message);
+    throw new AppError("RES_NOT_FOUND", statsError.message);
   }
 
   // Calcular estatísticas
@@ -143,11 +94,23 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     total_revenue: totalRevenue,
   };
 
+  // Ordenar
+  switch (sortBy) {
+    case "spent":
+      rankings.sort((a, b) => b.total_spent - a.total_spent);
+      break;
+    case "points":
+      rankings.sort((a, b) => b.total_all_time - a.total_all_time);
+      break;
+    default:
+      rankings.sort((a, b) => b.total_completed - a.total_completed);
+  }
+
   // Adicionar pontos de fidelidade se disponível
-  const rankingWithPoints = rankings?.map((client: any) => ({
+  const rankingWithPoints = rankings.map((client: any) => ({
     ...client,
     total_loyalty_points: client.total_all_time * 10, // Exemplo: 10 pontos por atendimento
-  })) || [];
+  }));
 
   return NextResponse.json({
     rankings: rankingWithPoints,

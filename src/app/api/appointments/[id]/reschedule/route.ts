@@ -56,9 +56,13 @@ export const PATCH = withErrorHandler(async (
     throw new AppError("APPT_NOT_FOUND", fetchError?.message);
   }
 
-  // Verificar se o usuário é o dono do appointment
-  if (appointment.client_id !== user.id) {
-    throw new AppError("AUTH_UNAUTHORIZED");
+  // Verificar se usuário está autenticado
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new AppError("AUTH_NOT_AUTHENTICATED", "Usuário não autenticado");
   }
 
   // Verificar se appointment pode ser alterado (não cancelado/completado)
@@ -66,16 +70,21 @@ export const PATCH = withErrorHandler(async (
     throw new AppError("APPT_INVALID_STATUS");
   }
 
-  // Validar política de 24h para o horário ATUAL
-  const currentDateTime = adelaideDateTime(appointment.appointment_date, appointment.start_time);
+  // Verificar política de 24h para reagendamento
+  const appointmentDateTime = adelaideDateTime(
+    appointment.appointment_date,
+    appointment.start_time
+  );
   const now = getAdelaideNow();
-  const hoursUntilCurrent = (currentDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
-  
-  if (hoursUntilCurrent < 24) {
-    throw new AppError("APPT_RESCHEDULE_TOO_LATE");
+  const hoursUntil = appointmentDateTime.diff(now, "hours").hours;
+
+  if (hoursUntil < 24) {
+    throw new AppError(
+      "VAL_INVALID_DATE",
+      "Não é possível reagendar com menos de 24h de antecedência"
+    );
   }
 
-  // Validar política de 24h para o NOVO horário
   const newDateTime = adelaideDateTime(new_date, new_start_time);
   const hoursUntilNew = (newDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
   

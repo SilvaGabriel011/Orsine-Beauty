@@ -9,7 +9,7 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.CANCEL_TOKEN_SECRET || "default-secret-change-in-production"
 );
 
-interface CancelTokenPayload {
+export interface CancelTokenPayload {
   appointmentId: string;
   clientId: string;
   type: "cancel";
@@ -54,7 +54,7 @@ export async function validateCancelToken(token: string): Promise<CancelTokenPay
       clientId: payload.clientId as string,
       type: "cancel",
     };
-  } catch (error) {
+  } catch {
     throw new Error("Token inválido ou expirado");
   }
 }
