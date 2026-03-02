@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { CalendarDays, Clock, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { enAU } from "date-fns/locale";
 import { toast } from "sonner";
 import { safeFetch } from "@/lib/errors/client";
 
@@ -54,13 +54,13 @@ function getServiceNames(apt: CancelarClientProps["appointment"]): string {
       .filter(Boolean)
       .join(", ");
   }
-  return apt.services?.name || "Servico";
+  return apt.services?.name || "Service";
 }
 
 function formatPrice(value: number) {
-  return new Intl.NumberFormat("pt-BR", {
+  return new Intl.NumberFormat("en-AU", {
     style: "currency",
-    currency: "BRL",
+    currency: "AUD",
   }).format(value);
 }
 
@@ -95,12 +95,12 @@ export default function CancelarClient({ appointment }: CancelarClientProps) {
     setCancelling(false);
 
     if (!result.ok) {
-      toast.error("Erro ao cancelar agendamento. Tente novamente.");
+      toast.error("Error cancelling booking. Please try again.");
       return;
     }
 
     setCancelled(true);
-    toast.success("Agendamento cancelado com sucesso!");
+    toast.success("Booking cancelled successfully!");
   }
 
   if (cancelled) {
@@ -109,16 +109,16 @@ export default function CancelarClient({ appointment }: CancelarClientProps) {
         <Card>
           <CardContent className="flex flex-col items-center gap-4 py-8">
             <CheckCircle2 className="h-16 w-16 text-green-500" />
-            <h1 className="text-2xl font-bold">Cancelado com sucesso</h1>
+            <h1 className="text-2xl font-bold">Successfully Cancelled</h1>
             <p className="text-center text-muted-foreground">
-              Seu agendamento foi cancelado. Voce recebera uma confirmacao por email.
+              Your booking has been cancelled. You will receive a confirmation by email.
             </p>
             <div className="flex gap-3">
               <Button variant="outline" onClick={() => router.push("/cliente/meus-agendamentos")}>
-                Meus Agendamentos
+                My Bookings
               </Button>
               <Button className="bg-rose-600 hover:bg-rose-700" onClick={() => router.push("/agendar")}>
-                Reagendar
+                Rebook
               </Button>
             </div>
           </CardContent>
@@ -139,7 +139,7 @@ export default function CancelarClient({ appointment }: CancelarClientProps) {
             ) : (
               <CalendarDays className="h-6 w-6 text-rose-600" />
             )}
-            Cancelar Agendamento
+            Cancel Booking
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -147,8 +147,8 @@ export default function CancelarClient({ appointment }: CancelarClientProps) {
             <p className="font-semibold text-lg">{getServiceNames(appointment)}</p>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CalendarDays className="h-4 w-4" />
-              {format(new Date(appointment.appointment_date + "T12:00:00"), "EEEE, dd 'de' MMMM 'de' yyyy", {
-                locale: ptBR,
+              {format(new Date(appointment.appointment_date + "T12:00:00"), "EEEE, d MMMM yyyy", {
+                locale: enAU,
               })}
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -165,15 +165,15 @@ export default function CancelarClient({ appointment }: CancelarClientProps) {
                   : "bg-blue-100 text-blue-800"
               }
             >
-              {isCancelled ? "Cancelado" : isCompleted ? "Concluido" : appointment.status === "no_show" ? "Nao compareceu" : "Confirmado"}
+              {isCancelled ? "Cancelled" : isCompleted ? "Completed" : appointment.status === "no_show" ? "No show" : "Confirmed"}
             </Badge>
           </div>
 
           {isPast && (
             <div className="rounded-lg bg-gray-100 p-4 text-center text-sm text-muted-foreground">
               {isCancelled
-                ? "Este agendamento ja foi cancelado."
-                : "Este agendamento ja foi concluido e nao pode ser cancelado."}
+                ? "This booking has already been cancelled."
+                : "This booking has already been completed and cannot be cancelled."}
             </div>
           )}
 
@@ -181,10 +181,10 @@ export default function CancelarClient({ appointment }: CancelarClientProps) {
             <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 text-center text-sm">
               <AlertTriangle className="mx-auto mb-2 h-8 w-8 text-amber-500" />
               <p className="font-medium text-amber-800">
-                Nao e possivel cancelar com menos de 24h de antecedencia.
+                Cannot cancel less than 24 hours before the appointment.
               </p>
               <p className="mt-1 text-amber-700">
-                Entre em contato pelo WhatsApp para solicitar o cancelamento.
+                Please contact us via WhatsApp to request a cancellation.
               </p>
             </div>
           )}
@@ -197,26 +197,26 @@ export default function CancelarClient({ appointment }: CancelarClientProps) {
                   className="w-full"
                   disabled={cancelling}
                 >
-                  {cancelling ? "Cancelando..." : "Cancelar Agendamento"}
+                  {cancelling ? "Cancelling..." : "Cancel Booking"}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Confirmar cancelamento?</AlertDialogTitle>
+                  <AlertDialogTitle>Confirm cancellation?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Tem certeza que deseja cancelar o agendamento de{" "}
-                    <strong>{getServiceNames(appointment)}</strong> em{" "}
+                    Are you sure you want to cancel the booking for{" "}
+                    <strong>{getServiceNames(appointment)}</strong> on{" "}
                     {format(new Date(appointment.appointment_date + "T12:00:00"), "dd/MM/yyyy")}?
-                    Esta acao nao pode ser desfeita.
+                    This action cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Manter agendamento</AlertDialogCancel>
+                  <AlertDialogCancel>Keep booking</AlertDialogCancel>
                   <AlertDialogAction
                     className="bg-red-600 hover:bg-red-700"
                     onClick={handleCancel}
                   >
-                    Sim, cancelar
+                    Yes, cancel
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -228,7 +228,7 @@ export default function CancelarClient({ appointment }: CancelarClientProps) {
             className="w-full"
             onClick={() => router.push("/cliente/meus-agendamentos")}
           >
-            Voltar para Meus Agendamentos
+            Back to My Bookings
           </Button>
         </CardContent>
       </Card>

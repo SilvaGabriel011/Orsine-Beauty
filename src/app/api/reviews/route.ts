@@ -36,7 +36,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   }
 
   // Busca apenas avaliacoes visiveis, ordenadas por recentes
-  let query = (supabase.from("reviews") as any)
+  let query = supabase
+    .from("reviews")
     .select("*, profiles(full_name)")
     .eq("is_visible", true)
     .order("created_at", { ascending: false })
@@ -47,7 +48,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     query = query.eq("service_id", serviceId);
   }
 
-  const { data, error } = (await query) as { data: any[] | null; error: any };
+  const { data, error } = await query as { data: any[] | null; error: any };
 
   if (error) {
     throw new AppError("SYS_DATABASE", error.message, error);
@@ -73,7 +74,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const { appointment_id, rating, comment } = parsed.data;
 
   // Busca agendamento para validacoes
-  const { data: appointment } = (await (supabase.from("appointments") as any)
+  const { data: appointment } = await (supabase
+    .from("appointments")
     .select(
       "id, client_id, status, service_id, appointment_services(service_id)"
     )
@@ -95,7 +97,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   }
 
   // Validacao: apenas uma avaliacao por agendamento
-  const { data: existingReview } = (await (supabase.from("reviews") as any)
+  const { data: existingReview } = await (supabase
+    .from("reviews")
     .select("id")
     .eq("appointment_id", appointment_id)
     .single()) as { data: any | null };
@@ -120,7 +123,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   // Auto-aprovacao: rating >= 4 e visivel imediatamente, 1-3 aguarda admin
   const isVisible = rating >= 4;
 
-  const { data: review, error } = (await (supabase.from("reviews") as any)
+  const { data: review, error } = await (supabase
+    .from("reviews")
     .insert({
       appointment_id,
       client_id: user.id,

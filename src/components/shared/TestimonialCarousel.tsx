@@ -70,7 +70,7 @@ export default function TestimonialCarousel({
         <div className="mx-auto max-w-4xl px-4">
           <div className="mb-8 text-center">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              O que nossas clientes dizem
+              What our clients say
             </h2>
           </div>
           <div className="animate-pulse">
@@ -100,15 +100,21 @@ export default function TestimonialCarousel({
     : "?";
 
   return (
-    <section className="py-12 bg-gradient-to-br from-pink-50 to-rose-50">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-8 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            O que nossas clientes dizem
-          </h2>
-          <p className="mt-2 text-gray-600">
-            Avaliações reais de quem já experimentou nossos serviços
+    <section className="relative py-20 sm:py-28 bg-gradient-to-br from-warm-800 via-burgundy-800/90 to-warm-900">
+      {/* Decorative elements */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-[10%] top-[20%] h-48 w-48 rounded-full bg-burgundy-600/15 blur-[80px]" />
+        <div className="absolute right-[15%] bottom-[20%] h-36 w-36 rounded-full bg-gold-400/10 blur-[60px]" />
+      </div>
+
+      <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-12 text-center">
+          <p className="font-display text-sm italic tracking-widest text-gold-400 uppercase">
+            Testimonials
           </p>
+          <h2 className="mt-2 font-serif text-3xl tracking-tight text-white sm:text-4xl">
+            What our clients say
+          </h2>
         </div>
 
         <div className="relative">
@@ -120,26 +126,26 @@ export default function TestimonialCarousel({
             >
               {topTestimonials.map((testimonial) => (
                 <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
-                  <Card className="mx-auto max-w-2xl border-0 shadow-lg">
-                    <CardContent className="p-6 md:p-8">
-                      <div className="mb-4">
-                        <Quote className="h-8 w-8 text-rose-200" />
+                  <Card className="mx-auto max-w-2xl border-0 bg-white/[0.07] backdrop-blur-md shadow-2xl">
+                    <CardContent className="p-6 md:p-10">
+                      <div className="mb-6">
+                        <Quote className="h-10 w-10 text-gold-400/40" />
                       </div>
                       
-                      <blockquote className="mb-6 text-lg leading-relaxed text-gray-700">
+                      <blockquote className="mb-8 font-serif text-xl leading-relaxed text-warm-100 sm:text-2xl">
                         &ldquo;{testimonial.comment}&rdquo;
                       </blockquote>
 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 text-sm font-bold text-rose-600">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-gold-400/20 bg-burgundy-600/30 text-sm font-bold text-gold-300">
                             {initials}
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">
-                              {testimonial.profiles?.full_name || "Cliente"}
+                            <p className="font-medium text-warm-100">
+                              {testimonial.profiles?.full_name || "Client"}
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-warm-400">
                               {testimonial.services?.name}
                               {testimonial.services?.categories?.name &&
                                 ` · ${testimonial.services.categories.name}`}
@@ -166,9 +172,9 @@ export default function TestimonialCarousel({
               <Button
                 variant="outline"
                 size="icon"
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 rounded-full bg-white shadow-md"
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 rounded-full border-warm-600/30 bg-white/10 backdrop-blur-sm text-warm-200 hover:bg-white/20 hover:border-gold-400/30 shadow-lg"
                 onClick={goToPrevious}
-                aria-label="Anterior"
+                aria-label="Previous"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -176,9 +182,9 @@ export default function TestimonialCarousel({
               <Button
                 variant="outline"
                 size="icon"
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 rounded-full bg-white shadow-md"
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 rounded-full border-warm-600/30 bg-white/10 backdrop-blur-sm text-warm-200 hover:bg-white/20 hover:border-gold-400/30 shadow-lg"
                 onClick={goToNext}
-                aria-label="Próximo"
+                aria-label="Next"
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>
@@ -188,30 +194,30 @@ export default function TestimonialCarousel({
 
         {/* Dots Indicator */}
         {topTestimonials.length > 1 && (
-          <div className="mt-6 flex justify-center gap-2">
+          <div className="mt-8 flex justify-center gap-2">
             {topTestimonials.map((_, index) => (
               <button
                 key={index}
-                className={`h-2 w-2 rounded-full transition-all ${
+                className={`h-1.5 rounded-full transition-all duration-300 ${
                   index === currentIndex
-                    ? "w-8 bg-rose-600"
-                    : "bg-gray-300 hover:bg-gray-400"
+                    ? "w-8 bg-gold-400"
+                    : "w-1.5 bg-warm-500/40 hover:bg-warm-400/60"
                 }`}
                 onClick={() => goToSlide(index)}
-                aria-label={`Ir para depoimento ${index + 1}`}
+                aria-label={`Go to testimonial ${index + 1}`}
               />
             ))}
           </div>
         )}
 
         {/* Link to all testimonials */}
-        <div className="mt-8 text-center">
+        <div className="mt-10 text-center">
           <Button
             variant="outline"
-            className="border-rose-600 text-rose-600 hover:bg-rose-50"
+            className="rounded-full border-warm-500/30 text-warm-200 hover:bg-white/5 hover:border-gold-400/30 hover:text-white transition-all"
             onClick={() => window.location.href = "/depoimentos"}
           >
-            Ver todos os depoimentos
+            View all testimonials
           </Button>
         </div>
       </div>

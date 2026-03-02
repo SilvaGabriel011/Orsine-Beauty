@@ -22,22 +22,22 @@ export default function AdminError({
           <AlertCircle className="h-8 w-8 text-red-600" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900">
-          Erro no painel admin
+          Admin panel error
         </h2>
         <p className="text-muted-foreground">
-          Ocorreu um erro inesperado. Tente recarregar a pagina.
+          An unexpected error occurred. Please try reloading the page.
         </p>
         <div className="flex gap-3 justify-center">
           <Button
             onClick={reset}
             variant="outline"
           >
-            Tentar novamente
+            Try again
           </Button>
           <Button
             onClick={() => (window.location.href = "/admin/dashboard")}
           >
-            Voltar ao dashboard
+            Back to dashboard
           </Button>
         </div>
       </div>

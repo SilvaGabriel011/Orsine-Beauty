@@ -23,7 +23,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Users, Search, Award, Trophy } from "lucide-react";
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { enAU } from "date-fns/locale";
 import { toast } from "sonner";
 import { safeFetch } from "@/lib/errors/client";
 import ClientRanking from "@/components/admin/ClientRanking";
@@ -63,7 +63,7 @@ export default function ClientesClient({
 
     const pts = parseInt(adjustPoints);
     if (isNaN(pts) || pts === 0) {
-      toast.error("Insira um valor valido (diferente de zero)");
+      toast.error("Enter a valid value (different from zero)");
       return;
     }
 
@@ -85,8 +85,8 @@ export default function ClientesClient({
 
     toast.success(
       pts > 0
-        ? `+${pts} pontos adicionados`
-        : `${pts} pontos removidos`
+        ? `+${pts} points added`
+        : `${pts} points removed`
     );
     setAdjustDialog(null);
     setAdjustPoints("");
@@ -96,11 +96,11 @@ export default function ClientesClient({
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">Clientes</h1>
+      <h1 className="mb-6 text-2xl font-bold">Clients</h1>
 
       <Tabs defaultValue="list" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="list">Lista de Clientes</TabsTrigger>
+          <TabsTrigger value="list">Client List</TabsTrigger>
           <TabsTrigger value="ranking">Ranking</TabsTrigger>
         </TabsList>
 
@@ -115,7 +115,7 @@ export default function ClientesClient({
             </div>
             <div>
               <p className="text-2xl font-bold">{clients.length}</p>
-              <p className="text-sm text-muted-foreground">Total de clientes</p>
+              <p className="text-sm text-muted-foreground">Total clients</p>
             </div>
           </CardContent>
         </Card>
@@ -132,7 +132,7 @@ export default function ClientesClient({
                 )}
               </p>
               <p className="text-sm text-muted-foreground">
-                Total atendimentos
+                Total appointments
               </p>
             </div>
           </CardContent>
@@ -150,7 +150,7 @@ export default function ClientesClient({
                 )}
               </p>
               <p className="text-sm text-muted-foreground">
-                Pontos em circulacao
+                Points in circulation
               </p>
             </div>
           </CardContent>
@@ -161,7 +161,7 @@ export default function ClientesClient({
       <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
         <Input
-          placeholder="Buscar por nome, email ou telefone..."
+          placeholder="Search by name, email or phone..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="pl-10"
@@ -174,12 +174,12 @@ export default function ClientesClient({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nome</TableHead>
+                <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Telefone</TableHead>
-                <TableHead>Pontos</TableHead>
-                <TableHead>Atendimentos</TableHead>
-                <TableHead>Desde</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Points</TableHead>
+                <TableHead>Appointments</TableHead>
+                <TableHead>Since</TableHead>
                 <TableHead />
               </TableRow>
             </TableHeader>
@@ -187,7 +187,7 @@ export default function ClientesClient({
               {filtered.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} className="py-8 text-center">
-                    Nenhum cliente encontrado.
+                    No clients found.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -208,7 +208,7 @@ export default function ClientesClient({
                     <TableCell>{client.total_completed}</TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {format(new Date(client.created_at), "dd/MM/yyyy", {
-                        locale: ptBR,
+                        locale: enAU,
                       })}
                     </TableCell>
                     <TableCell>
@@ -217,7 +217,7 @@ export default function ClientesClient({
                         size="sm"
                         onClick={() => setAdjustDialog(client)}
                       >
-                        Ajustar pontos
+                        Adjust points
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -238,44 +238,44 @@ export default function ClientesClient({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              Ajustar pontos — {adjustDialog?.full_name}
+              Adjust points — {adjustDialog?.full_name}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Saldo atual:{" "}
-              <strong>{adjustDialog?.loyalty_points || 0} pontos</strong>
+              Current balance:{" "}
+              <strong>{adjustDialog?.loyalty_points || 0} points</strong>
             </p>
             <div>
-              <Label>Pontos (positivo para adicionar, negativo para remover)</Label>
+              <Label>Points (positive to add, negative to remove)</Label>
               <Input
                 className="mt-1"
                 type="number"
                 value={adjustPoints}
                 onChange={(e) => setAdjustPoints(e.target.value)}
-                placeholder="Ex: 50 ou -20"
+                placeholder="e.g. 50 or -20"
               />
             </div>
             <div>
-              <Label>Motivo (opcional)</Label>
+              <Label>Reason (optional)</Label>
               <Input
                 className="mt-1"
                 value={adjustDescription}
                 onChange={(e) => setAdjustDescription(e.target.value)}
-                placeholder="Ex: Bonus de fidelidade"
+                placeholder="e.g. Loyalty bonus"
               />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setAdjustDialog(null)}>
-              Cancelar
+              Cancel
             </Button>
             <Button
               onClick={handleAdjust}
               disabled={adjusting}
               className="bg-rose-600 hover:bg-rose-700"
             >
-              {adjusting ? "Salvando..." : "Confirmar"}
+              {adjusting ? "Saving..." : "Confirm"}
             </Button>
           </DialogFooter>
         </DialogContent>

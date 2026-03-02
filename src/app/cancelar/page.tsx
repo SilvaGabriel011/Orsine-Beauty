@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { CalendarDays, Clock, CheckCircle2, XCircle, Mail, Loader2 } from "lucide-react";
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { enAU } from "date-fns/locale";
 import { toast } from "sonner";
 import { safeFetch } from "@/lib/errors/client";
 
@@ -71,7 +71,7 @@ export default function CancelarTokenPage() {
     const result = await safeFetch(`/api/appointments/${appointmentId}`);
 
     if (!result.ok) {
-      setError("Agendamento não encontrado");
+      setError("Booking not found");
       setLoading(false);
       return;
     }
@@ -87,11 +87,11 @@ export default function CancelarTokenPage() {
       (appointmentDate.getTime() - now.getTime()) / (1000 * 60 * 60);
 
     if (apt.status === "cancelled") {
-      setError("Este agendamento já foi cancelado");
+      setError("This booking has already been cancelled");
     } else if (apt.status === "completed" || apt.status === "no_show") {
-      setError("Este agendamento já foi concluído");
+      setError("This booking has already been completed");
     } else if (hoursUntil < 24) {
-      setError("Não é possível cancelar com menos de 24h de antecedência");
+      setError("Cannot cancel less than 24 hours before the appointment");
     } else {
       setAppointment(apt);
       
@@ -107,7 +107,7 @@ export default function CancelarTokenPage() {
   useEffect(() => {
     const initialize = async () => {
       if (!token) {
-        setError("Token não fornecido");
+        setError("Token not provided");
         setLoading(false);
         return;
       }
@@ -117,7 +117,7 @@ export default function CancelarTokenPage() {
       if (appointmentId) {
         await fetchAppointment(appointmentId);
       } else {
-        setError("ID do agendamento não fornecido");
+        setError("Booking ID not provided");
         setLoading(false);
       }
     };
@@ -130,7 +130,7 @@ export default function CancelarTokenPage() {
 
     // Se precisar confirmar email
     if (needEmailConfirm && emailConfirm !== appointment.profiles?.email) {
-      toast.error("Email não corresponde ao do agendamento");
+      toast.error("Email does not match the booking");
       return;
     }
 
@@ -146,17 +146,17 @@ export default function CancelarTokenPage() {
 
     if (!result.ok) {
       if (result.error?.code === "AUTH_INVALID_TOKEN") {
-        setError("Token inválido ou expirado");
+        setError("Invalid or expired token");
       } else if (result.error?.code === "APPT_CANCEL_TOO_LATE") {
-        setError("Não é possível cancelar com menos de 24h de antecedência");
+        setError("Cannot cancel less than 24 hours before the appointment");
       } else {
-        setError(result.error?.message || "Erro ao cancelar agendamento");
+        setError(result.error?.message || "Error cancelling booking");
       }
       return;
     }
 
     setCancelled(true);
-    toast.success("Agendamento cancelado com sucesso!");
+    toast.success("Booking cancelled successfully!");
   }
 
   function getServiceNames(apt: Appointment): string {
@@ -166,13 +166,13 @@ export default function CancelarTokenPage() {
         .filter(Boolean)
         .join(", ");
     }
-    return apt.services?.name || "Serviço";
+    return apt.services?.name || "Service";
   }
 
   function formatPrice(value: number) {
-    return new Intl.NumberFormat("pt-BR", {
+    return new Intl.NumberFormat("en-AU", {
       style: "currency",
-      currency: "BRL",
+      currency: "AUD",
     }).format(value);
   }
 
@@ -190,10 +190,10 @@ export default function CancelarTokenPage() {
         <Card className="w-full max-w-md">
           <CardContent className="flex flex-col items-center gap-4 py-8">
             <XCircle className="h-16 w-16 text-red-500" />
-            <h1 className="text-xl font-bold text-center">Erro</h1>
+            <h1 className="text-xl font-bold text-center">Error</h1>
             <p className="text-center text-muted-foreground">{error}</p>
             <Button onClick={() => router.push("/")}>
-              Voltar ao site
+              Back to site
             </Button>
           </CardContent>
         </Card>
@@ -207,12 +207,12 @@ export default function CancelarTokenPage() {
         <Card className="w-full max-w-md">
           <CardContent className="flex flex-col items-center gap-4 py-8">
             <CheckCircle2 className="h-16 w-16 text-green-500" />
-            <h1 className="text-2xl font-bold">Cancelado com sucesso</h1>
+            <h1 className="text-2xl font-bold">Successfully Cancelled</h1>
             <p className="text-center text-muted-foreground">
-              Seu agendamento foi cancelado. Você receberá uma confirmação por email.
+              Your booking has been cancelled. You will receive a confirmation by email.
             </p>
             <Button onClick={() => router.push("/agendar")}>
-              Agendar novo atendimento
+              Book a new appointment
             </Button>
           </CardContent>
         </Card>
@@ -228,7 +228,7 @@ export default function CancelarTokenPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CalendarDays className="h-6 w-6 text-rose-600" />
-            Cancelar Agendamento
+            Cancel Booking
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -236,8 +236,8 @@ export default function CancelarTokenPage() {
             <p className="font-semibold text-lg">{getServiceNames(appointment)}</p>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CalendarDays className="h-4 w-4" />
-              {format(new Date(appointment.appointment_date + "T12:00:00"), "EEEE, dd 'de' MMMM 'de' yyyy", {
-                locale: ptBR,
+              {format(new Date(appointment.appointment_date + "T12:00:00"), "EEEE, d MMMM yyyy", {
+                locale: enAU,
               })}
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -246,13 +246,13 @@ export default function CancelarTokenPage() {
             </div>
             <p className="font-semibold text-rose-600">{formatPrice(appointment.amount_paid)}</p>
             <Badge className="bg-blue-100 text-blue-800">
-              Confirmado
+              Confirmed
             </Badge>
           </div>
 
           {needEmailConfirm && (
             <div className="space-y-2">
-              <Label htmlFor="email">Confirme seu email para cancelar</Label>
+              <Label htmlFor="email">Confirm your email to cancel</Label>
               <div className="flex gap-2">
                 <Input
                   id="email"
@@ -273,26 +273,26 @@ export default function CancelarTokenPage() {
                 className="w-full"
                 disabled={cancelling || (needEmailConfirm && !emailConfirm)}
               >
-                {cancelling ? "Cancelando..." : "Cancelar Agendamento"}
+                {cancelling ? "Cancelling..." : "Cancel Booking"}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Confirmar cancelamento?</AlertDialogTitle>
+                <AlertDialogTitle>Confirm cancellation?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Tem certeza que deseja cancelar o agendamento de{" "}
-                  <strong>{getServiceNames(appointment)}</strong> em{" "}
+                  Are you sure you want to cancel the booking for{" "}
+                  <strong>{getServiceNames(appointment)}</strong> on{" "}
                   {format(new Date(appointment.appointment_date + "T12:00:00"), "dd/MM/yyyy")}?
-                  Esta ação não pode ser desfeita.
+                  This action cannot be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Manter agendamento</AlertDialogCancel>
+                <AlertDialogCancel>Keep booking</AlertDialogCancel>
                 <AlertDialogAction
                   className="bg-red-600 hover:bg-red-700"
                   onClick={handleCancel}
                 >
-                  Sim, cancelar
+                  Yes, cancel
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -303,7 +303,7 @@ export default function CancelarTokenPage() {
             className="w-full"
             onClick={() => router.push("/")}
           >
-            Voltar ao site
+            Back to site
           </Button>
         </CardContent>
       </Card>

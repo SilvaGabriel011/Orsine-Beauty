@@ -53,9 +53,9 @@ export default function PopularServicesCarousel({
       >
         {services.map((service) => {
           const inCart = isInCart(service.id);
-          const formattedPrice = new Intl.NumberFormat("pt-BR", {
+          const formattedPrice = new Intl.NumberFormat("en-AU", {
             style: "currency",
-            currency: "BRL",
+            currency: "AUD",
           }).format(service.price);
 
           return (
@@ -83,7 +83,7 @@ export default function PopularServicesCarousel({
                 {inCart && (
                   <div className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-medium text-white">
                     <Check className="h-2.5 w-2.5" />
-                    No carrinho
+                    In cart
                   </div>
                 )}
               </div>
@@ -115,7 +115,7 @@ export default function PopularServicesCarousel({
                       className="h-8 border-red-200 px-2 text-xs text-red-600 hover:bg-red-50"
                       onClick={() => removeItem(service.id)}
                     >
-                      Remover
+                      Remove
                     </Button>
                   ) : (
                     <Button
@@ -124,7 +124,7 @@ export default function PopularServicesCarousel({
                       onClick={() => addItem(service)}
                     >
                       <Plus className="mr-0.5 h-3 w-3" />
-                      Adicionar
+                      Add
                     </Button>
                   )}
                 </div>

@@ -64,32 +64,35 @@ export default function MarketplaceClient({
     : null;
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div className="min-h-screen bg-cream">
       {/* Header Section */}
-      <div className="bg-gradient-to-b from-rose-50 to-gray-50/50 pb-2 pt-8">
+      <div className="bg-gradient-to-b from-warm-100 to-cream pb-2 pt-24 sm:pt-28">
         <div className="mx-auto max-w-7xl px-4">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-            Agendar servicos
+          <p className="font-display text-sm italic tracking-widest text-gold-500 uppercase">
+            Our services
+          </p>
+          <h1 className="mt-2 font-serif text-3xl tracking-tight text-warm-900 sm:text-4xl">
+            Book Services
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Escolha os servicos e adicione ao carrinho
+          <p className="mt-2 text-sm text-warm-500">
+            Choose your services and add them to your cart
           </p>
 
           {/* Search bar */}
-          <div className="relative mt-4">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <div className="relative mt-5">
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-warm-400" />
             <Input
-              placeholder="Buscar servicos..."
+              placeholder="Search services..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-white border-gray-200 focus:border-rose-300 focus:ring-rose-200"
+              className="pl-10 rounded-xl bg-white border-warm-200 focus:border-burgundy-300 focus:ring-burgundy-200/30"
             />
           </div>
         </div>
       </div>
 
       {/* Category Carousel (sticky) */}
-      <div className="sticky top-16 z-30 border-b border-gray-100 bg-gray-50/95 px-4 py-2 backdrop-blur-md">
+      <div className="sticky top-18 z-30 border-b border-warm-200/50 bg-cream/95 px-4 py-2.5 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl">
           <CategoryCarousel
             categories={categories}
@@ -100,25 +103,25 @@ export default function MarketplaceClient({
       </div>
 
       {/* Services Grid */}
-      <div className="mx-auto max-w-7xl px-4 py-6">
+      <div className="mx-auto max-w-7xl px-4 py-8">
         {selectedCategoryName && (
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          <h2 className="mb-5 font-serif text-xl text-warm-900">
             {selectedCategoryName}
           </h2>
         )}
 
         {filteredServices.length === 0 ? (
           <div className="py-16 text-center">
-            <Search className="mx-auto mb-3 h-12 w-12 text-gray-300" />
-            <h3 className="text-lg font-medium text-gray-600">
-              Nenhum servico encontrado
+            <Search className="mx-auto mb-3 h-12 w-12 text-warm-300" />
+            <h3 className="font-serif text-lg text-warm-600">
+              No services found
             </h3>
-            <p className="mt-1 text-sm text-gray-400">
-              Tente outra categoria ou busca
+            <p className="mt-1 text-sm text-warm-400">
+              Try another category or search term
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredServices.map((service) => (
               <MarketplaceServiceCard
                 key={service.id}

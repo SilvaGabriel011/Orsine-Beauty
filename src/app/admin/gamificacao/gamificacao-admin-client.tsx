@@ -45,10 +45,10 @@ interface GamificacaoAdminClientProps {
 }
 
 const GAME_LABELS: Record<string, string> = {
-  checkin: "Check-in Diario",
-  wheel: "Roleta da Sorte",
-  scratch: "Raspadinha",
-  quiz: "Quiz Beleza",
+  checkin: "Daily Check-in",
+  wheel: "Lucky Wheel",
+  scratch: "Scratch Card",
+  quiz: "Beauty Quiz",
   shake: "Shake",
 };
 
@@ -82,7 +82,7 @@ export function GamificacaoAdminClient({
       });
 
       if (!res.ok) {
-        toast.error("Erro ao atualizar");
+        toast.error("Error updating");
         return;
       }
 
@@ -91,9 +91,9 @@ export function GamificacaoAdminClient({
           c.id === configId ? { ...c, is_active: !currentActive } : c
         )
       );
-      toast.success(`${GAME_LABELS[gameType]} ${!currentActive ? "ativado" : "desativado"}`);
+      toast.success(`${GAME_LABELS[gameType]} ${!currentActive ? "enabled" : "disabled"}`);
     } catch {
-      toast.error("Erro de conexao");
+      toast.error("Connection error");
     }
   };
 
@@ -107,56 +107,56 @@ export function GamificacaoAdminClient({
         body: JSON.stringify({
           client_id: adjustDialog.playerId,
           amount: adjustAmount,
-          reason: adjustReason || "Ajuste manual pelo admin",
+          reason: adjustReason || "Manual adjustment by admin",
         }),
       });
 
       if (!res.ok) {
-        toast.error("Erro ao ajustar moedas");
+        toast.error("Error adjusting coins");
         return;
       }
 
-      toast.success(`${adjustAmount > 0 ? "+" : ""}${adjustAmount} moedas para ${adjustDialog.playerName}`);
+      toast.success(`${adjustAmount > 0 ? "+" : ""}${adjustAmount} coins for ${adjustDialog.playerName}`);
       setAdjustDialog(null);
       setAdjustAmount(0);
       setAdjustReason("");
     } catch {
-      toast.error("Erro de conexao");
+      toast.error("Connection error");
     }
   };
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Gamificacao</h1>
+      <h1 className="text-2xl font-bold">Gamification</h1>
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <Card>
           <CardContent className="pt-6 text-center">
             <Coins className="mx-auto mb-2 h-6 w-6 text-amber-500" />
-            <p className="text-2xl font-bold">{stats.totalCoinsInCirculation.toLocaleString("pt-BR")}</p>
-            <p className="text-xs text-muted-foreground">Moedas em circulacao</p>
+            <p className="text-2xl font-bold">{stats.totalCoinsInCirculation.toLocaleString("en-AU")}</p>
+            <p className="text-xs text-muted-foreground">Coins in circulation</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
             <Gamepad2 className="mx-auto mb-2 h-6 w-6 text-rose-500" />
             <p className="text-2xl font-bold">{stats.todayPlays}</p>
-            <p className="text-xs text-muted-foreground">Jogadas hoje</p>
+            <p className="text-xs text-muted-foreground">Plays today</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
             <HelpCircle className="mx-auto mb-2 h-6 w-6 text-blue-500" />
             <p className="text-2xl font-bold">{stats.totalQuestions}</p>
-            <p className="text-xs text-muted-foreground">Perguntas no quiz</p>
+            <p className="text-xs text-muted-foreground">Quiz questions</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
             <Trophy className="mx-auto mb-2 h-6 w-6 text-purple-500" />
             <p className="text-2xl font-bold">{stats.totalAchievements}</p>
-            <p className="text-xs text-muted-foreground">Conquistas</p>
+            <p className="text-xs text-muted-foreground">Achievements</p>
           </CardContent>
         </Card>
       </div>
@@ -164,7 +164,7 @@ export function GamificacaoAdminClient({
       {/* Game configs */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Configuracao dos Jogos</CardTitle>
+          <CardTitle className="text-lg">Game Settings</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {configs.map((config) => (
@@ -179,7 +179,7 @@ export function GamificacaoAdminClient({
                 <div>
                   <p className="font-medium text-sm">{GAME_LABELS[config.game_type]}</p>
                   <p className="text-xs text-muted-foreground">
-                    {config.is_active ? "Ativo" : "Desativado"}
+                    {config.is_active ? "Active" : "Disabled"}
                   </p>
                 </div>
               </div>
@@ -204,12 +204,12 @@ export function GamificacaoAdminClient({
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <TrendingUp className="h-5 w-5" />
-            Top Jogadores
+            Top Players
           </CardTitle>
         </CardHeader>
         <CardContent>
           {topPlayers.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Nenhum jogador ainda.</p>
+            <p className="text-sm text-muted-foreground">No players yet.</p>
           ) : (
             <div className="space-y-2">
               {topPlayers.map((player, index) => (
@@ -252,19 +252,19 @@ export function GamificacaoAdminClient({
                           setAdjustDialog({ playerId: player.id, playerName: player.full_name })
                         }
                       >
-                        Ajustar
+                        Adjust
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>Ajustar Moedas - {player.full_name}</DialogTitle>
+                        <DialogTitle>Adjust Coins - {player.full_name}</DialogTitle>
                       </DialogHeader>
                       <div className="space-y-4 pt-4">
                         <div>
-                          <Label>Saldo atual: {player.game_coins} moedas</Label>
+                          <Label>Current balance: {player.game_coins} coins</Label>
                         </div>
                         <div>
-                          <Label>Quantidade (positivo = creditar, negativo = debitar)</Label>
+                          <Label>Amount (positive = credit, negative = debit)</Label>
                           <Input
                             type="number"
                             value={adjustAmount}
@@ -272,15 +272,15 @@ export function GamificacaoAdminClient({
                           />
                         </div>
                         <div>
-                          <Label>Motivo</Label>
+                          <Label>Reason</Label>
                           <Input
                             value={adjustReason}
                             onChange={(e) => setAdjustReason(e.target.value)}
-                            placeholder="Ajuste manual"
+                            placeholder="Manual adjustment"
                           />
                         </div>
                         <Button onClick={handleAdjustCoins} className="w-full">
-                          Confirmar Ajuste
+                          Confirm Adjustment
                         </Button>
                       </div>
                     </DialogContent>

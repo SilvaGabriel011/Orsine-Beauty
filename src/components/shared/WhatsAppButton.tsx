@@ -25,7 +25,7 @@ export default function WhatsAppButton() {
       href="https://wa.me/5500000000000"
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Fale conosco pelo WhatsApp"
+      aria-label="Chat with us on WhatsApp"
       className={`fixed right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg transition-all hover:scale-110 hover:bg-green-600 hover:shadow-xl ${bottomClass}`}
     >
       <MessageCircle className="h-7 w-7" />

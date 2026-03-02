@@ -30,6 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Plus, Pencil, Trash2 } from "lucide-react";
+import { IconButton } from "@/components/ui/icon-button";
 import { toast } from "sonner";
 import { safeFetch } from "@/lib/errors/client";
 import Image from "next/image";
@@ -124,7 +125,7 @@ export function ServicesClient({
 
     if (!result.ok) return;
 
-    toast.success(editing ? "Servico atualizado!" : "Servico criado!");
+    toast.success(editing ? "Service updated!" : "Service created!");
     setOpen(false);
     resetForm();
     router.refresh();
@@ -140,15 +141,15 @@ export function ServicesClient({
     if (!result.ok) return;
 
     toast.success(
-      svc.is_active ? "Servico desativado" : "Servico ativado"
+      svc.is_active ? "Service deactivated" : "Service activated"
     );
     router.refresh();
   }
 
   function formatPrice(value: number) {
-    return new Intl.NumberFormat("pt-BR", {
+    return new Intl.NumberFormat("en-AU", {
       style: "currency",
-      currency: "BRL",
+      currency: "AUD",
     }).format(value);
   }
 
@@ -156,9 +157,9 @@ export function ServicesClient({
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Servicos</h1>
+          <h1 className="text-2xl font-bold">Services</h1>
           <p className="text-muted-foreground">
-            Gerencie os servicos por categoria
+            Manage services by category
           </p>
         </div>
         <Dialog
@@ -171,21 +172,21 @@ export function ServicesClient({
           <DialogTrigger asChild>
             <Button className="bg-rose-600 hover:bg-rose-700">
               <Plus className="mr-2 h-4 w-4" />
-              Novo Servico
+              New Service
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {editing ? "Editar Servico" : "Novo Servico"}
+                {editing ? "Edit Service" : "New Service"}
               </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label>Categoria</Label>
+                <Label>Category</Label>
                 <Select value={categoryId} onValueChange={setCategoryId}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione a categoria" />
+                    <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((cat) => (
@@ -197,27 +198,27 @@ export function ServicesClient({
                 </Select>
               </div>
               <div>
-                <Label htmlFor="svc-name">Nome</Label>
+                <Label htmlFor="svc-name">Name</Label>
                 <Input
                   id="svc-name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Ex: Design de Sobrancelha"
+                  placeholder="e.g. Eyebrow Design"
                   required
                 />
               </div>
               <div>
-                <Label htmlFor="svc-desc">Descricao</Label>
+                <Label htmlFor="svc-desc">Description</Label>
                 <Textarea
                   id="svc-desc"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Descricao do servico"
+                  placeholder="Service description"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="svc-price">Preco (R$)</Label>
+                  <Label htmlFor="svc-price">Price (AUD)</Label>
                   <Input
                     id="svc-price"
                     type="number"
@@ -230,7 +231,7 @@ export function ServicesClient({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="svc-duration">Duracao (min)</Label>
+                  <Label htmlFor="svc-duration">Duration (min)</Label>
                   <Input
                     id="svc-duration"
                     type="number"
@@ -243,7 +244,7 @@ export function ServicesClient({
                 </div>
               </div>
               <div>
-                <Label>Imagem</Label>
+                <Label>Image</Label>
                 <ImageUpload
                   bucket="services"
                   currentUrl={imageUrl}
@@ -257,7 +258,7 @@ export function ServicesClient({
                 disabled={loading}
                 className="w-full bg-rose-600 hover:bg-rose-700"
               >
-                {loading ? "Salvando..." : "Salvar"}
+                {loading ? "Saving..." : "Save"}
               </Button>
             </form>
           </DialogContent>
@@ -267,10 +268,10 @@ export function ServicesClient({
       <div className="mb-4">
         <Select value={filterCategory} onValueChange={setFilterCategory}>
           <SelectTrigger className="w-[250px]">
-            <SelectValue placeholder="Filtrar por categoria" />
+            <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Todas as categorias</SelectItem>
+            <SelectItem value="all">All categories</SelectItem>
             {categories.map((cat) => (
               <SelectItem key={cat.id} value={cat.id}>
                 {cat.name}
@@ -284,20 +285,20 @@ export function ServicesClient({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[60px]">Foto</TableHead>
-              <TableHead>Nome</TableHead>
-              <TableHead>Categoria</TableHead>
-              <TableHead>Preco</TableHead>
-              <TableHead>Duracao</TableHead>
+              <TableHead className="w-[60px]">Photo</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead>Duration</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="text-right">Acoes</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredServices.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                  Nenhum servico encontrado
+                  No services found
                 </TableCell>
               </TableRow>
             ) : (
@@ -329,25 +330,27 @@ export function ServicesClient({
                         svc.is_active ? "bg-green-100 text-green-800" : ""
                       }
                     >
-                      {svc.is_active ? "Ativo" : "Inativo"}
+                      {svc.is_active ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button
+                      <IconButton
                         variant="ghost"
-                        size="sm"
+                        size="icon"
+                        tooltip="Edit"
                         onClick={() => openEdit(svc)}
                       >
                         <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
+                      </IconButton>
+                      <IconButton
                         variant="ghost"
-                        size="sm"
+                        size="icon"
+                        tooltip="Delete"
                         onClick={() => handleToggle(svc)}
                       >
                         <Trash2 className="h-4 w-4 text-red-500" />
-                      </Button>
+                      </IconButton>
                     </div>
                   </TableCell>
                 </TableRow>

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface RankingEntry {
   position: number;
@@ -61,7 +62,7 @@ export function RankingClient({ userId }: RankingClientProps) {
           className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
         >
           <ArrowLeft className="h-4 w-4" />
-          Jogos
+          Games
         </Link>
         <h1 className="text-xl font-bold text-gray-900">Ranking</h1>
       </div>
@@ -70,10 +71,10 @@ export function RankingClient({ userId }: RankingClientProps) {
       <Tabs value={period} onValueChange={(v) => setPeriod(v as "weekly" | "monthly")}>
         <TabsList className="w-full">
           <TabsTrigger value="weekly" className="flex-1">
-            Semanal
+            Weekly
           </TabsTrigger>
           <TabsTrigger value="monthly" className="flex-1">
-            Mensal
+            Monthly
           </TabsTrigger>
         </TabsList>
       </Tabs>
@@ -83,11 +84,11 @@ export function RankingClient({ userId }: RankingClientProps) {
         <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50">
           <CardContent className="flex items-center justify-between p-4">
             <div>
-              <p className="text-sm text-gray-500">Sua posicao</p>
+              <p className="text-sm text-gray-500">Your position</p>
               <p className="text-2xl font-bold text-gray-900">#{data.user_position.position}</p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-gray-500">Moedas ganhas</p>
+              <p className="text-sm text-gray-500">Coins earned</p>
               <p className="flex items-center gap-1 text-xl font-bold text-amber-600">
                 <Coins className="h-5 w-5" />
                 {data.user_position.coins_earned}
@@ -102,9 +103,11 @@ export function RankingClient({ userId }: RankingClientProps) {
           <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
         </div>
       ) : !data || data.rankings.length === 0 ? (
-        <p className="py-8 text-center text-gray-500">
-          Nenhum jogador no ranking ainda. Seja o primeiro!
-        </p>
+        <EmptyState
+          icon={Trophy}
+          title="Ranking is empty"
+          description="Be the first to collect coins and appear on the ranking!"
+        />
       ) : (
         <div className="space-y-2">
           {data.rankings.map((entry) => (
@@ -134,7 +137,7 @@ export function RankingClient({ userId }: RankingClientProps) {
                     {entry.name}
                     {entry.is_current_user && (
                       <Badge variant="outline" className="ml-1.5 text-[10px]">
-                        Voce
+                        You
                       </Badge>
                     )}
                   </p>
@@ -154,9 +157,9 @@ export function RankingClient({ userId }: RankingClientProps) {
       {/* Info */}
       <p className="text-center text-xs text-gray-400">
         {period === "weekly"
-          ? "Ranking reinicia toda segunda-feira"
-          : "Ranking reinicia no primeiro dia do mes"}
-        . Top 3 ganham bonus de moedas!
+          ? "Ranking resets every Monday"
+          : "Ranking resets on the first day of the month"}
+        . Top 3 earn bonus coins!
       </p>
     </div>
   );

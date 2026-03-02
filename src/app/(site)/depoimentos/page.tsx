@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // revalida a cada 1 hora
 
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
@@ -6,8 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import StarRating from "@/components/reviews/StarRating";
 
 export const metadata: Metadata = {
-  title: "Depoimentos | Bela Orsine Beauty",
-  description: "Veja o que nossas clientes dizem sobre nossos servicos",
+  title: "Testimonials | Bela Orsine Beauty",
+  description: "See what our clients say about our services",
 };
 
 export default async function DepoimentosPage() {
@@ -42,10 +42,10 @@ export default async function DepoimentosPage() {
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-10 text-center">
         <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          O que nossas clientes dizem
+          What our clients say
         </h1>
         <p className="mt-2 text-gray-500">
-          Avaliacoes reais de quem ja experimentou nossos servicos
+          Real reviews from those who have experienced our services
         </p>
         {totalReviews > 0 && (
           <div className="mt-4 flex items-center justify-center gap-3">
@@ -54,7 +54,7 @@ export default async function DepoimentosPage() {
               {avgRating}
             </span>
             <span className="text-sm text-gray-500">
-              ({totalReviews} avaliacao{totalReviews !== 1 ? "oes" : ""})
+              ({totalReviews} review{totalReviews !== 1 ? "s" : ""})
             </span>
           </div>
         )}
@@ -62,7 +62,7 @@ export default async function DepoimentosPage() {
 
       {!reviews || reviews.length === 0 ? (
         <div className="py-16 text-center text-muted-foreground">
-          Nenhuma avaliacao ainda. Seja a primeira!
+          No reviews yet. Be the first!
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
@@ -85,7 +85,7 @@ export default async function DepoimentosPage() {
                     </div>
                     <div>
                       <p className="font-medium">
-                        {review.profiles?.full_name || "Cliente"}
+                        {review.profiles?.full_name || "Client"}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {review.services?.name}
@@ -105,7 +105,7 @@ export default async function DepoimentosPage() {
                     </p>
                   )}
                   <p className="mt-3 text-xs text-muted-foreground">
-                    {new Date(review.created_at).toLocaleDateString("pt-BR", {
+                    {new Date(review.created_at).toLocaleDateString("en-AU", {
                       day: "numeric",
                       month: "long",
                       year: "numeric",

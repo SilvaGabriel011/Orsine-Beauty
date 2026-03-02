@@ -70,7 +70,7 @@ export default function LoyaltyBanner({
 
   async function handleRedeem(rule: RedeemRule) {
     if (appliedDiscount > 0) {
-      toast.error("Desconto ja aplicado neste agendamento");
+      toast.error("Discount already applied to this booking");
       return;
     }
 
@@ -92,7 +92,7 @@ export default function LoyaltyBanner({
     onDiscount(result.data.discountValue, rule.id);
     setPoints((prev) => prev - result.data.pointsDeducted);
     toast.success(
-      `Desconto de R$ ${result.data.discountValue.toFixed(2)} aplicado!`
+      `$${result.data.discountValue.toFixed(2)} discount applied!`
     );
   }
 
@@ -118,7 +118,7 @@ export default function LoyaltyBanner({
           <Gift className="h-5 w-5 shrink-0 text-amber-600" />
           <div className="flex-1">
             <p className="text-sm font-medium text-amber-900">
-              Voce tem <strong>{points} pontos</strong>
+              You have <strong>{points} points</strong>
             </p>
             <div className="mt-1 h-1.5 rounded-full bg-amber-200">
               <div
@@ -127,8 +127,8 @@ export default function LoyaltyBanner({
               />
             </div>
             <p className="mt-1 text-xs text-amber-700">
-              Faltam {nextRule.points_threshold - points} pontos para R${" "}
-              {nextRule.discount_value.toFixed(2)} de desconto
+              {nextRule.points_threshold - points} points to go for a ${" "}
+              ${nextRule.discount_value.toFixed(2)} discount
             </p>
           </div>
         </CardContent>
@@ -143,10 +143,10 @@ export default function LoyaltyBanner({
           <Gift className="h-5 w-5 shrink-0 text-green-600" />
           <div>
             <p className="text-sm font-medium text-green-900">
-              Desconto aplicado: R$ {appliedDiscount.toFixed(2)}
+              Discount applied: ${appliedDiscount.toFixed(2)}
             </p>
             <p className="text-xs text-green-700">
-              Saldo restante: {points} pontos
+              Remaining balance: {points} points
             </p>
           </div>
         </CardContent>
@@ -161,7 +161,7 @@ export default function LoyaltyBanner({
           <Gift className="h-5 w-5 shrink-0 text-rose-600" />
           <div className="flex-1">
             <p className="text-sm font-medium text-rose-900">
-              Voce tem <strong>{points} pontos</strong> de fidelidade!
+              You have <strong>{points} loyalty points</strong>!
             </p>
           </div>
         </div>
@@ -178,8 +178,8 @@ export default function LoyaltyBanner({
               {redeeming ? (
                 <Loader2 className="mr-1 h-3 w-3 animate-spin" />
               ) : null}
-              Usar {rule.points_threshold} pts → R${" "}
-              {rule.discount_value.toFixed(2)} off
+              Use {rule.points_threshold} pts → ${" "}
+              ${rule.discount_value.toFixed(2)} off
             </Button>
           ))}
         </div>

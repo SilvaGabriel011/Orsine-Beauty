@@ -38,8 +38,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   }
 
   // Query dinamica: busca servicos com categoria relacionada, ordenado por sort_order
-  let query = (supabase
-    .from("services") as any)
+  let query = supabase
+    .from("services")
     .select("*, categories(id, name, slug)")
     .order("sort_order");
 
@@ -48,7 +48,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     query = query.eq("category_id", categoryId);
   }
 
-  const { data, error } = (await query) as unknown as { data: any[] | null; error: any };
+  const { data, error } = await query as unknown as { data: any[] | null; error: any };
 
   if (error) {
     throw new AppError("SYS_DATABASE", error.message, error);
@@ -84,8 +84,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   } = parsed.data;
 
   // Insercao do servico na BD
-  const { data, error } = (await (supabase
-    .from("services") as any)
+  const { data, error } = await (supabase
+    .from("services")
     .insert({
       category_id,
       name,

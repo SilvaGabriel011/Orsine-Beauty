@@ -25,13 +25,13 @@ export function RaspadinhaClient({ initialCoins, alreadyPlayed }: RaspadinhaClie
           className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
         >
           <ArrowLeft className="h-4 w-4" />
-          Voltar
+          Back
         </Link>
-        <h1 className="text-xl font-bold text-gray-900">Raspadinha</h1>
+        <h1 className="text-xl font-bold text-gray-900">Scratch Card</h1>
       </div>
 
       <p className="text-center text-sm text-gray-500">
-        Toque nas celulas para revelar os simbolos. 3 iguais = premio maximo!
+        Tap the cells to reveal symbols. 3 matching = jackpot!
       </p>
 
       <ScratchCard

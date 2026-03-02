@@ -47,14 +47,14 @@ export default function MinhaContaClient({
 
     if (!result.ok) return;
 
-    toast.success("Dados atualizados com sucesso");
+    toast.success("Details updated successfully");
     setEditing(false);
     router.refresh();
   }
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">Minha Conta</h1>
+      <h1 className="mb-6 text-2xl font-bold">My Account</h1>
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
@@ -64,7 +64,7 @@ export default function MinhaContaClient({
             </div>
             <div>
               <p className="text-2xl font-bold">{profile.loyalty_points}</p>
-              <p className="text-sm text-muted-foreground">Pontos</p>
+              <p className="text-sm text-muted-foreground">Points</p>
             </div>
           </CardContent>
         </Card>
@@ -76,7 +76,7 @@ export default function MinhaContaClient({
             </div>
             <div>
               <p className="text-2xl font-bold">{profile.total_completed}</p>
-              <p className="text-sm text-muted-foreground">Atendimentos</p>
+              <p className="text-sm text-muted-foreground">Appointments</p>
             </div>
           </CardContent>
         </Card>
@@ -88,7 +88,7 @@ export default function MinhaContaClient({
             </div>
             <div>
               <p className="text-2xl font-bold">
-                {profile.role === "admin" ? "Admin" : "Cliente"}
+                {profile.role === "admin" ? "Admin" : "Client"}
               </p>
               <p className="text-sm text-muted-foreground">Status</p>
             </div>
@@ -102,10 +102,10 @@ export default function MinhaContaClient({
           <CardContent className="flex items-center justify-between p-4">
             <div>
               <p className="font-medium text-rose-900">
-                Voce tem {profile.loyalty_points} pontos de fidelidade!
+                You have {profile.loyalty_points} loyalty points!
               </p>
               <p className="text-sm text-rose-700">
-                Acompanhe seu historico e resgate descontos
+                Track your history and redeem discounts
               </p>
             </div>
             <Link href="/cliente/meus-pontos">
@@ -114,7 +114,7 @@ export default function MinhaContaClient({
                 size="sm"
                 className="border-rose-300 text-rose-700 hover:bg-rose-100"
               >
-                Ver pontos
+                View points
               </Button>
             </Link>
           </CardContent>
@@ -123,7 +123,7 @@ export default function MinhaContaClient({
 
       <Card className="mt-6">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Dados Pessoais</CardTitle>
+          <CardTitle>Personal Details</CardTitle>
           {!editing && (
             <Button
               variant="outline"
@@ -132,7 +132,7 @@ export default function MinhaContaClient({
               onClick={() => setEditing(true)}
             >
               <Pencil className="h-3 w-3" />
-              Editar
+              Edit
             </Button>
           )}
         </CardHeader>
@@ -140,7 +140,7 @@ export default function MinhaContaClient({
           {editing ? (
             <>
               <div>
-                <Label>Nome</Label>
+                <Label>Name</Label>
                 <Input
                   className="mt-1"
                   value={fullName}
@@ -151,16 +151,16 @@ export default function MinhaContaClient({
                 <Label>Email</Label>
                 <Input className="mt-1" value={profile.email} disabled />
                 <p className="mt-1 text-xs text-muted-foreground">
-                  O email nao pode ser alterado
+                  Email cannot be changed
                 </p>
               </div>
               <div>
-                <Label>Telefone</Label>
+                <Label>Phone</Label>
                 <Input
                   className="mt-1"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="(00) 00000-0000"
+                  placeholder="04XX XXX XXX"
                 />
               </div>
               <div className="flex gap-2">
@@ -169,7 +169,7 @@ export default function MinhaContaClient({
                   disabled={saving}
                   className="bg-rose-600 hover:bg-rose-700"
                 >
-                  {saving ? "Salvando..." : "Salvar"}
+                  {saving ? "Saving..." : "Save"}
                 </Button>
                 <Button
                   variant="outline"
@@ -179,7 +179,7 @@ export default function MinhaContaClient({
                     setPhone(profile.phone || "");
                   }}
                 >
-                  Cancelar
+                  Cancel
                 </Button>
               </div>
             </>
@@ -187,7 +187,7 @@ export default function MinhaContaClient({
             <>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">
-                  Nome
+                  Name
                 </label>
                 <p>{profile.full_name}</p>
               </div>
@@ -199,7 +199,7 @@ export default function MinhaContaClient({
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">
-                  Telefone
+                  Phone
                 </label>
                 <p>{profile.phone || "—"}</p>
               </div>

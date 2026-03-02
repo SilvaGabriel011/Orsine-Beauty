@@ -27,9 +27,9 @@ export function RoletaClient({
   if (gameDisabled) {
     return (
       <div className="flex flex-col items-center gap-4 py-12 text-center">
-        <p className="text-lg text-gray-500">A roleta esta desabilitada no momento.</p>
+        <p className="text-lg text-gray-500">The wheel is currently disabled.</p>
         <Link href="/cliente/jogar" className="text-rose-600 hover:underline">
-          Voltar aos jogos
+          Back to games
         </Link>
       </div>
     );
@@ -43,13 +43,13 @@ export function RoletaClient({
           className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
         >
           <ArrowLeft className="h-4 w-4" />
-          Voltar
+          Back
         </Link>
-        <h1 className="text-xl font-bold text-gray-900">Roleta da Sorte</h1>
+        <h1 className="text-xl font-bold text-gray-900">Lucky Wheel</h1>
       </div>
 
       <p className="text-center text-sm text-gray-500">
-        Gire a roleta uma vez por dia e ganhe moedas! Quanto mais sorte, mais moedas.
+        Spin the wheel once a day and win coins! The luckier you are, the more coins you get.
       </p>
 
       <SpinWheel

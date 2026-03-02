@@ -106,14 +106,14 @@ export default function ClientRanking({
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
+    return new Intl.NumberFormat("en-AU", {
       style: "currency",
-      currency: "BRL",
+      currency: "AUD",
     }).format(value);
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString("pt-BR", {
+    return new Date(dateStr).toLocaleDateString("en-AU", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
@@ -135,9 +135,9 @@ export default function ClientRanking({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Ranking de Clientes</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Client Ranking</h2>
           <p className="text-sm text-gray-500">
-            Clientes mais fiéis e frequentes
+            Most loyal and frequent clients
           </p>
         </div>
         <div className="flex gap-2">
@@ -146,9 +146,9 @@ export default function ClientRanking({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="30">Últimos 30 dias</SelectItem>
-              <SelectItem value="60">Últimos 60 dias</SelectItem>
-              <SelectItem value="90">Últimos 90 dias</SelectItem>
+              <SelectItem value="30">Last 30 days</SelectItem>
+              <SelectItem value="60">Last 60 days</SelectItem>
+              <SelectItem value="90">Last 90 days</SelectItem>
             </SelectContent>
           </Select>
           <Select value={sortBy} onValueChange={(v: "appointments" | "spent" | "points") => setSortBy(v)}>
@@ -156,9 +156,9 @@ export default function ClientRanking({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="appointments">Por Atendimentos</SelectItem>
-              <SelectItem value="spent">Por Gastos</SelectItem>
-              <SelectItem value="points">Por Pontos</SelectItem>
+              <SelectItem value="appointments">By Appointments</SelectItem>
+              <SelectItem value="spent">By Spending</SelectItem>
+              <SelectItem value="points">By Points</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -171,7 +171,7 @@ export default function ClientRanking({
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">Clientes Ativos</p>
+                <p className="text-sm text-muted-foreground">Active Clients</p>
               </div>
               <p className="mt-1 text-2xl font-bold">{stats.total_clients}</p>
             </CardContent>
@@ -180,7 +180,7 @@ export default function ClientRanking({
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">Total Atendimentos</p>
+                <p className="text-sm text-muted-foreground">Total Appointments</p>
               </div>
               <p className="mt-1 text-2xl font-bold">{stats.total_appointments}</p>
             </CardContent>
@@ -189,7 +189,7 @@ export default function ClientRanking({
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">Média por Cliente</p>
+                <p className="text-sm text-muted-foreground">Avg per Client</p>
               </div>
               <p className="mt-1 text-2xl font-bold">{stats.avg_appointments_per_client.toFixed(1)}</p>
             </CardContent>
@@ -198,7 +198,7 @@ export default function ClientRanking({
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">Receita Total</p>
+                <p className="text-sm text-muted-foreground">Total Revenue</p>
               </div>
               <p className="mt-1 text-2xl font-bold">{formatCurrency(stats.total_revenue)}</p>
             </CardContent>
@@ -211,7 +211,7 @@ export default function ClientRanking({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Trophy className="h-5 w-5" />
-            Top Clientes
+            Top Clients
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -226,7 +226,7 @@ export default function ClientRanking({
             </div>
           ) : data.length === 0 ? (
             <p className="py-8 text-center text-muted-foreground">
-              Nenhum cliente encontrado no período selecionado
+              No clients found in the selected period
             </p>
           ) : (
             <div className="space-y-4">
@@ -263,16 +263,16 @@ export default function ClientRanking({
                         {client.email}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Último atendimento: {formatDate(client.last_appointment)}
+                        Last appointment: {formatDate(client.last_appointment)}
                       </p>
 
                       {/* Progress Bar */}
                       <div className="mt-3">
                         <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
                           <span>
-                            {sortBy === "appointments" && "Atendimentos"}
-                            {sortBy === "spent" && "Valor gasto"}
-                            {sortBy === "points" && "Pontos de fidelidade"}
+                            {sortBy === "appointments" && "Appointments"}
+                            {sortBy === "spent" && "Amount spent"}
+                            {sortBy === "points" && "Loyalty points"}
                           </span>
                           <span className="font-medium">
                             {sortBy === "appointments" && client.total_completed}

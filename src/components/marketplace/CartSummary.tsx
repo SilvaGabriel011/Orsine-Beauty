@@ -14,15 +14,16 @@
 import { Clock, ShoppingBag, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { IconButton } from "@/components/ui/icon-button";
 import { useCart } from "@/lib/cart-context";
 
 export default function CartSummary() {
   const { items, removeItem, totalPrice, totalDuration, itemCount } = useCart();
 
   // Formata o total em moeda brasileira
-  const formattedTotal = new Intl.NumberFormat("pt-BR", {
+  const formattedTotal = new Intl.NumberFormat("en-AU", {
     style: "currency",
-    currency: "BRL",
+    currency: "AUD",
   }).format(totalPrice);
 
   // Nao exibe o card se nao houver itens no carrinho
@@ -34,7 +35,7 @@ export default function CartSummary() {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <ShoppingBag className="h-4 w-4 text-rose-600" />
-          Servicos selecionados
+          Selected services
           <span className="ml-auto rounded-full bg-rose-100 px-2 py-0.5 text-xs font-medium text-rose-700">
             {itemCount}
           </span>
@@ -44,9 +45,9 @@ export default function CartSummary() {
         {/* Lista compacta de servicos */}
         {items.map((item) => {
           // Formata o preco em moeda brasileira
-          const price = new Intl.NumberFormat("pt-BR", {
+          const price = new Intl.NumberFormat("en-AU", {
             style: "currency",
-            currency: "BRL",
+            currency: "AUD",
           }).format(item.service.price);
 
           return (
@@ -67,13 +68,16 @@ export default function CartSummary() {
                   <span>{price}</span>
                 </p>
               </div>
-              {/* Botao para remover item */}
-              <button
+              {/* Botao para remover item com tooltip */}
+              <IconButton
+                variant="ghost"
+                size="icon"
+                tooltip={`Remove ${item.service.name}`}
                 onClick={() => removeItem(item.service.id)}
-                className="ml-2 shrink-0 rounded-md p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600"
+                className="ml-2 h-6 w-6"
               >
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
+                <Trash2 className="h-3.5 w-3.5 text-red-400" />
+              </IconButton>
             </div>
           );
         })}
@@ -84,7 +88,7 @@ export default function CartSummary() {
           <div className="flex items-center justify-between text-xs text-gray-500">
             <span className="flex items-center gap-1">
               <Clock className="h-3 w-3" />
-              Duracao total estimada
+              Total estimated duration
             </span>
             <span className="font-medium">{totalDuration} min</span>
           </div>

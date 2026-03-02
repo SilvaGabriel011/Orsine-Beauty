@@ -10,14 +10,24 @@
  * - Renderiza MarketplaceClient com dados iniciais
  * - Permite selecionar multiplos servicos antes de agendar horario
  */
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // revalida a cada 1 hora
 
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import type { Category, Service } from "@/types/database";
 import MarketplaceClient from "./marketplace-client";
 
-export const metadata = { title: "Agendar | Bela Orsine Beauty" };
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Book an Appointment | Bela Orsine Beauty",
+  description: "Book your beauty appointment online — choose from brows, nails, waxing and more services at Bela Orsine Beauty Studio.",
+  openGraph: {
+    title: "Book an Appointment | Bela Orsine Beauty",
+    description: "Choose your service and book online. Fast, easy and secure.",
+    type: "website",
+  },
+};
 
 export default async function AgendarPage() {
   let categories: Category[] | null = null;
@@ -27,11 +37,13 @@ export default async function AgendarPage() {
     const supabase = await createClient();
 
     const [catResult, svcResult] = await Promise.all([
-      (supabase.from("categories") as any)
+      supabase
+        .from("categories")
         .select("*")
         .eq("is_active", true)
         .order("sort_order"),
-      (supabase.from("services") as any)
+      supabase
+        .from("services")
         .select("*, categories(id, name, slug)")
         .eq("is_active", true)
         .order("sort_order"),

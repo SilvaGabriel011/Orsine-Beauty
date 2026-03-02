@@ -21,13 +21,13 @@ export function ShakeClient({ initialCoins, alreadyPlayed }: ShakeClientProps) {
           className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
         >
           <ArrowLeft className="h-4 w-4" />
-          Voltar
+          Back
         </Link>
         <h1 className="text-xl font-bold text-gray-900">Shake</h1>
       </div>
 
       <p className="text-center text-sm text-gray-500">
-        Chacoalhe seu celular (ou clique rapidamente) para derrubar moedas!
+        Shake your phone (or tap rapidly) to drop coins!
       </p>
 
       <ShakeGame

@@ -37,14 +37,14 @@ export function ConfigClient({
           jsonValue = JSON.stringify(value.replace(/^"|"$/g, ""));
         }
 
-        await (supabase
-          .from("settings") as any)
+        await supabase
+          .from("settings")
           .upsert({ key, value: jsonValue, updated_at: new Date().toISOString() });
       }
 
-      toast.success("Configuracoes salvas!");
+      toast.success("Settings saved!");
     } catch {
-      toast.error("Erro ao salvar configuracoes");
+      toast.error("Error saving settings");
     } finally {
       setLoading(false);
     }
@@ -53,33 +53,33 @@ export function ConfigClient({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Configuracoes</h1>
+        <h1 className="text-2xl font-bold">Settings</h1>
         <p className="text-muted-foreground">
-          Configuracoes gerais do sistema
+          General system settings
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Dados do Estudio</CardTitle>
+          <CardTitle>Studio Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label>Nome do Estudio</Label>
+            <Label>Studio Name</Label>
             <Input
               value={(settings.business_name || "").replace(/^"|"$/g, "")}
               onChange={(e) => updateField("business_name", e.target.value)}
             />
           </div>
           <div>
-            <Label>Telefone</Label>
+            <Label>Phone</Label>
             <Input
               value={(settings.business_phone || "").replace(/^"|"$/g, "")}
               onChange={(e) => updateField("business_phone", e.target.value)}
             />
           </div>
           <div>
-            <Label>Endereco</Label>
+            <Label>Address</Label>
             <Input
               value={(settings.business_address || "").replace(/^"|"$/g, "")}
               onChange={(e) => updateField("business_address", e.target.value)}
@@ -97,11 +97,11 @@ export function ConfigClient({
 
       <Card>
         <CardHeader>
-          <CardTitle>Politicas</CardTitle>
+          <CardTitle>Policies</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label>Horas para cancelamento (antes do atendimento)</Label>
+            <Label>Cancellation window (hours before appointment)</Label>
             <Input
               type="number"
               value={settings.cancellation_policy_hours || "24"}
@@ -111,7 +111,7 @@ export function ConfigClient({
             />
           </div>
           <div>
-            <Label>Duracao padrao do slot (minutos)</Label>
+            <Label>Default slot duration (minutes)</Label>
             <Input
               type="number"
               value={settings.default_slot_duration || "40"}
@@ -121,7 +121,7 @@ export function ConfigClient({
             />
           </div>
           <div>
-            <Label>Delay do alerta de feedback (minutos apos atendimento)</Label>
+            <Label>Feedback alert delay (minutes after appointment)</Label>
             <Input
               type="number"
               value={settings.feedback_delay_minutes || "60"}
@@ -138,7 +138,7 @@ export function ConfigClient({
         disabled={loading}
         className="bg-rose-600 hover:bg-rose-700"
       >
-        {loading ? "Salvando..." : "Salvar Configuracoes"}
+        {loading ? "Saving..." : "Save Settings"}
       </Button>
     </div>
   );

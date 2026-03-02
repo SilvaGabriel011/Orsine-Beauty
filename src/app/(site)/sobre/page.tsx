@@ -10,59 +10,54 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Heart, Sparkles, Calendar, Award, Star, Clock } from "lucide-react";
+import { Heart, Calendar, Target, Eye } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Sobre",
+  title: "About",
 };
 
 export default function SobrePage() {
   return (
     <>
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-rose-50 via-rose-100/50 to-white py-16 sm:py-24">
+      {/* Header */}
+      <section className="bg-gradient-to-b from-warm-100 to-cream pt-24 pb-16 sm:pt-28 sm:pb-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-1.5 text-sm font-medium text-rose-700 shadow-sm">
-              <Heart className="h-4 w-4" />
-              Sobre Nos
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-              Bela Orsine <span className="text-rose-600">Beauty</span>
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="font-display text-sm italic tracking-widest text-gold-500 uppercase">
+              Our Story
+            </p>
+            <h1 className="mt-3 font-serif text-4xl tracking-tight text-warm-900 sm:text-5xl">
+              About Us
             </h1>
-            <p className="mt-6 text-lg leading-relaxed text-gray-600">
-              Um espaco dedicado a realcar a beleza de cada mulher, com carinho,
-              profissionalismo e atencao aos detalhes.
+            <p className="mt-4 text-lg text-warm-500">
+              How Bela Orsine Beauty was born and our commitment to you
             </p>
           </div>
         </div>
       </section>
 
       {/* Our Story */}
-      <section className="bg-white py-16 sm:py-20">
+      <section className="bg-cream py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
-            <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-              Nossa Historia
-            </h2>
-            <div className="mt-6 space-y-4 text-gray-600 leading-relaxed">
+            <div className="space-y-6 text-base leading-relaxed text-warm-600">
               <p>
-                O Bela Orsine Beauty nasceu do sonho de criar um espaco onde cada
-                pessoa pudesse se sentir acolhida e sair se sentindo mais bonita
-                e confiante. Com paixao pela beleza e anos de dedicacao ao
-                aperfeicoamento profissional, construimos um estudio que une
-                tecnica, qualidade e muito carinho.
+                Bela Orsine Beauty was born from the dream of creating a space where
+                everyone could feel welcomed and leave feeling more beautiful
+                and confident. With a passion for beauty and years of dedication to
+                professional development, we built a studio that combines
+                technique, quality and lots of care.
               </p>
               <p>
-                Acreditamos que a beleza vai alem da estetica -- ela esta na
-                autoestima, na confianca e no cuidado consigo mesma. Por isso,
-                cada atendimento e personalizado, pensado para atender as suas
-                necessidades e realcar o que voce tem de mais bonito.
+                We believe beauty goes beyond aesthetics — it lives in
+                self-esteem, confidence and self-care. That is why
+                every appointment is personalised, designed to meet your
+                needs and enhance what makes you uniquely beautiful.
               </p>
               <p>
-                Nosso compromisso e oferecer servicos de excelencia em um
-                ambiente acolhedor e confortavel, utilizando sempre os melhores
-                produtos e as tecnicas mais atualizadas do mercado.
+                Our commitment is to deliver excellent services in a
+                welcoming and comfortable environment, always using the best
+                products and the most up-to-date techniques in the industry.
               </p>
             </div>
           </div>
@@ -70,117 +65,82 @@ export default function SobrePage() {
       </section>
 
       {/* Values */}
-      <section className="bg-gray-50 py-16 sm:py-20">
+      <section className="relative bg-warm-50 py-16 sm:py-20">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-300/30 to-transparent" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-              Nossos Valores
-            </h2>
-            <p className="mt-3 text-gray-500">
-              O que nos guia em cada atendimento
+            <p className="font-display text-sm italic tracking-widest text-gold-500 uppercase">
+              Our foundation
             </p>
+            <h2 className="mt-2 font-serif text-3xl tracking-tight text-warm-900 sm:text-4xl">
+              What Guides Us
+            </h2>
           </div>
-
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-xl bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100">
-                <Heart className="h-6 w-6 text-rose-600" />
+          <div className="mx-auto mt-12 grid max-w-4xl gap-8 sm:grid-cols-3">
+            <div className="rounded-2xl border border-warm-200/50 bg-white p-7 shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-burgundy-600/5">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-gold-200 bg-gradient-to-br from-gold-50 to-gold-100">
+                <Target className="h-6 w-6 text-burgundy-600" />
               </div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">
-                Carinho
+              <h3 className="font-serif text-lg text-warm-900">
+                Our Mission
               </h3>
-              <p className="mt-2 text-sm text-gray-500">
-                Cada atendimento e feito com amor e dedicacao. Queremos que voce
-                se sinta acolhida do inicio ao fim.
+              <p className="mt-2 text-sm leading-relaxed text-warm-500">
+                To enhance the natural beauty of each client, providing
+                high-quality services with care and professionalism.
               </p>
             </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100">
-                <Award className="h-6 w-6 text-rose-600" />
+            <div className="rounded-2xl border border-warm-200/50 bg-white p-7 shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-burgundy-600/5">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-gold-200 bg-gradient-to-br from-gold-50 to-gold-100">
+                <Eye className="h-6 w-6 text-burgundy-600" />
               </div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">
-                Qualidade
+              <h3 className="font-serif text-lg text-warm-900">
+                Our Vision
               </h3>
-              <p className="mt-2 text-sm text-gray-500">
-                Usamos os melhores produtos e tecnicas atualizadas para garantir
-                resultados impecaveis.
+              <p className="mt-2 text-sm leading-relaxed text-warm-500">
+                To be the most loved and recommended beauty studio,
+                known for excellent service and welcoming environment.
               </p>
             </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100">
-                <Sparkles className="h-6 w-6 text-rose-600" />
+            <div className="rounded-2xl border border-warm-200/50 bg-white p-7 shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-burgundy-600/5">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-gold-200 bg-gradient-to-br from-gold-50 to-gold-100">
+                <Heart className="h-6 w-6 text-burgundy-600" />
               </div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">
-                Beleza Natural
+              <h3 className="font-serif text-lg text-warm-900">
+                Our Values
               </h3>
-              <p className="mt-2 text-sm text-gray-500">
-                Valorizamos a sua beleza unica. Nosso objetivo e realcar o que
-                voce ja tem de mais bonito.
-              </p>
-            </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100">
-                <Star className="h-6 w-6 text-rose-600" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">
-                Excelencia
-              </h3>
-              <p className="mt-2 text-sm text-gray-500">
-                Buscamos a perfeicao em cada detalhe, sempre nos atualizando e
-                aprimorando nossos servicos.
-              </p>
-            </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100">
-                <Clock className="h-6 w-6 text-rose-600" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">
-                Pontualidade
-              </h3>
-              <p className="mt-2 text-sm text-gray-500">
-                Valorizamos o seu tempo. Trabalhamos com agendamento para garantir
-                um atendimento sem esperas.
-              </p>
-            </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100">
-                <Calendar className="h-6 w-6 text-rose-600" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">
-                Facilidade
-              </h3>
-              <p className="mt-2 text-sm text-gray-500">
-                Agendamento online pratico e rapido. Cuide da sua beleza sem
-                complicacao.
+              <p className="mt-2 text-sm leading-relaxed text-warm-500">
+                Dedication, quality, respect, innovation and, above all,
+                love for what we do.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-gradient-to-br from-rose-600 to-pink-600 py-16 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* Final CTA */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-burgundy-700 via-burgundy-800 to-warm-900 py-20 sm:py-28">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute left-1/4 top-0 h-64 w-64 rounded-full bg-burgundy-600/20 blur-3xl" />
+          <div className="absolute right-1/4 bottom-0 h-48 w-48 rounded-full bg-gold-400/10 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Venha nos conhecer
-            </h2>
-            <p className="mt-4 text-lg text-rose-100">
-              Agende o seu atendimento e descubra a experiencia Bela Orsine
-              Beauty.
+            <p className="font-display text-sm italic tracking-widest text-gold-400 uppercase">
+              Start your journey
             </p>
-            <Link href="/agendar" className="mt-8 inline-block">
+            <h2 className="mt-4 font-serif text-3xl tracking-tight text-white sm:text-4xl">
+              Ready to experience the difference?
+            </h2>
+            <p className="mt-4 text-lg text-burgundy-200">
+              Book your appointment and let us take care of you.
+            </p>
+            <Link href="/agendar" className="mt-10 inline-block">
               <Button
                 size="lg"
-                className="gap-2 bg-white px-8 text-rose-600 shadow-lg hover:bg-rose-50"
+                className="gap-2 rounded-full bg-gold-300 px-10 text-burgundy-900 shadow-xl shadow-gold-400/20 hover:bg-gold-200 hover:shadow-2xl transition-all duration-300"
               >
                 <Calendar className="h-5 w-5" />
-                Agendar Agora
+                Book Now
               </Button>
             </Link>
           </div>

@@ -22,23 +22,23 @@ export default function SiteError({
           <AlertCircle className="h-8 w-8 text-red-600" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900">
-          Algo deu errado
+          Something went wrong
         </h2>
         <p className="text-muted-foreground">
-          Desculpe, ocorreu um erro inesperado. Tente novamente ou volte para a pagina inicial.
+          Sorry, an unexpected error occurred. Please try again or go back to the home page.
         </p>
         <div className="flex gap-3 justify-center">
           <Button
             onClick={reset}
             variant="outline"
           >
-            Tentar novamente
+            Try Again
           </Button>
           <Button
             onClick={() => (window.location.href = "/")}
             className="bg-rose-600 text-white hover:bg-rose-700"
           >
-            Pagina inicial
+            Home Page
           </Button>
         </div>
       </div>

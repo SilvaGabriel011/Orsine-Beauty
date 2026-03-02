@@ -41,25 +41,25 @@ export const metadata: Metadata = {
 };
 
 function formatCurrency(value: number) {
-  return new Intl.NumberFormat("pt-BR", {
+  return new Intl.NumberFormat("en-AU", {
     style: "currency",
-    currency: "BRL",
+    currency: "AUD",
   }).format(value);
 }
 
 function formatTime(dateStr: string) {
-  return new Date(dateStr).toLocaleTimeString("pt-BR", {
+  return new Date(dateStr).toLocaleTimeString("en-AU", {
     hour: "2-digit",
     minute: "2-digit",
   });
 }
 
 const statusMap: Record<string, { label: string; color: string }> = {
-  pending: { label: "Pendente", color: "bg-yellow-100 text-yellow-800" },
-  confirmed: { label: "Confirmado", color: "bg-blue-100 text-blue-800" },
-  completed: { label: "Concluido", color: "bg-green-100 text-green-800" },
-  cancelled: { label: "Cancelado", color: "bg-red-100 text-red-800" },
-  no_show: { label: "Nao compareceu", color: "bg-gray-100 text-gray-800" },
+  pending: { label: "Pending", color: "bg-yellow-100 text-yellow-800" },
+  confirmed: { label: "Confirmed", color: "bg-blue-100 text-blue-800" },
+  completed: { label: "Completed", color: "bg-green-100 text-green-800" },
+  cancelled: { label: "Cancelled", color: "bg-red-100 text-red-800" },
+  no_show: { label: "No show", color: "bg-gray-100 text-gray-800" },
 };
 
 export default async function DashboardPage() {
@@ -203,7 +203,7 @@ export default async function DashboardPage() {
         <h1 className="text-3xl font-bold tracking-tight text-gray-900">
           Dashboard
         </h1>
-        <p className="mt-2 text-gray-600">Bem-vinda, {displayName}!</p>
+        <p className="mt-2 text-gray-600">Welcome, {displayName}!</p>
       </div>
 
       {/* Stats Cards */}
@@ -211,7 +211,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Hoje
+              Today
             </CardTitle>
             <CalendarDays className="h-5 w-5 text-rose-500" />
           </CardHeader>
@@ -220,7 +220,7 @@ export default async function DashboardPage() {
               {todayCount}
             </div>
             <p className="mt-1 text-xs text-gray-500">
-              agendamento{todayCount !== 1 ? "s" : ""} para hoje
+              booking{todayCount !== 1 ? "s" : ""} today
             </p>
           </CardContent>
         </Card>
@@ -228,7 +228,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Esta Semana
+              This Week
             </CardTitle>
             <TrendingUp className="h-5 w-5 text-rose-500" />
           </CardHeader>
@@ -237,7 +237,7 @@ export default async function DashboardPage() {
               {weeklyCount}
             </div>
             <p className="mt-1 text-xs text-gray-500">
-              agendamentos na semana
+              bookings this week
             </p>
           </CardContent>
         </Card>
@@ -245,7 +245,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Receita do Mes
+              Monthly Revenue
             </CardTitle>
             <DollarSign className="h-5 w-5 text-rose-500" />
           </CardHeader>
@@ -254,10 +254,9 @@ export default async function DashboardPage() {
               {formatCurrency(monthlyRevenue)}
             </div>
             <p className="mt-1 text-xs text-gray-500">
-              {monthlyAppointmentCount} agendamento
+              {monthlyAppointmentCount} booking
               {monthlyAppointmentCount !== 1 ? "s" : ""} /{" "}
-              {completedThisMonth} concluido
-              {completedThisMonth !== 1 ? "s" : ""}
+              {completedThisMonth} completed
             </p>
           </CardContent>
         </Card>
@@ -265,7 +264,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Clientes
+              Clients
             </CardTitle>
             <Users className="h-5 w-5 text-rose-500" />
           </CardHeader>
@@ -274,8 +273,7 @@ export default async function DashboardPage() {
               {totalClients ?? 0}
             </div>
             <p className="mt-1 text-xs text-gray-500">
-              {newClientsCount ?? 0} novo
-              {(newClientsCount ?? 0) !== 1 ? "s" : ""} este mes
+              {newClientsCount ?? 0} new this month
             </p>
           </CardContent>
         </Card>
@@ -286,7 +284,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Avaliacao Media
+              Average Rating
             </CardTitle>
             <Star className="h-5 w-5 text-yellow-500" />
           </CardHeader>
@@ -295,14 +293,14 @@ export default async function DashboardPage() {
               {avgRating > 0 ? `${avgRating} / 5` : "—"}
             </div>
             <p className="mt-1 text-xs text-gray-500">
-              {reviewCount} avaliacao{reviewCount !== 1 ? "oes" : ""} total
+              {reviewCount} review{reviewCount !== 1 ? "s" : ""} total
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Avaliacoes
+              Reviews
             </CardTitle>
             <MessageSquare className="h-5 w-5 text-rose-500" />
           </CardHeader>
@@ -314,7 +312,7 @@ export default async function DashboardPage() {
               href="/admin/feedbacks"
               className="mt-1 inline-block text-xs text-rose-600 hover:underline"
             >
-              Ver todas as avaliacoes →
+              View all reviews →
             </Link>
           </CardContent>
         </Card>
@@ -326,10 +324,10 @@ export default async function DashboardPage() {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle className="text-lg font-semibold text-gray-900">
-              Agenda de Hoje
+              Today&apos;s Schedule
             </CardTitle>
             <p className="mt-1 text-sm text-gray-500">
-              {new Date().toLocaleDateString("pt-BR", {
+              {new Date().toLocaleDateString("en-AU", {
                 weekday: "long",
                 day: "numeric",
                 month: "long",
@@ -339,7 +337,7 @@ export default async function DashboardPage() {
           <Link href="/admin/agendamentos">
             <Button variant="outline" size="sm" className="gap-1">
               <CalendarClock className="h-4 w-4" />
-              Ver todos
+              View all
             </Button>
           </Link>
         </CardHeader>
@@ -348,7 +346,7 @@ export default async function DashboardPage() {
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <CalendarDays className="mb-3 h-10 w-10 text-gray-300" />
               <p className="text-sm text-gray-500">
-                Nenhum agendamento para hoje
+                No bookings for today
               </p>
             </div>
           ) : (
@@ -383,12 +381,12 @@ export default async function DashboardPage() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-gray-900">
-                        {apt.profiles?.full_name || "Cliente"}
+                        {apt.profiles?.full_name || "Client"}
                       </p>
                       <p className="truncate text-xs text-gray-500">
                         {serviceNames.length > 0
                           ? serviceNames.join(", ")
-                          : "Servico"}
+                          : "Service"}
                         {apt.total_duration
                           ? ` · ${apt.total_duration} min`
                           : ""}

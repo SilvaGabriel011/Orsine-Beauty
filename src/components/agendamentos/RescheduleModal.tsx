@@ -6,9 +6,9 @@ import { Calendar, Clock, Loader2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { toast } from "@/lib/errors/client";
+import { toast } from "sonner";
 import { format, addDays, isBefore, startOfDay } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { enAU } from "date-fns/locale";
 
 interface RescheduleModalProps {
   open: boolean;
@@ -111,20 +111,20 @@ export default function RescheduleModal({
 
     if (!result.ok) {
       if (result.error?.code === "APPT_RESCHEDULE_TOO_LATE") {
-        toast.error("Não é possível reagendar com menos de 24h de antecedência");
+        toast.error("Cannot reschedule less than 24 hours before the appointment");
       } else if (result.error?.code === "APPT_RESCHEDULE_TOO_SOON") {
-        toast.error("O novo horário deve ter pelo menos 24h de antecedência");
+        toast.error("The new time must be at least 24 hours from now");
       } else if (result.error?.code === "SLOT_UNAVAILABLE") {
-        toast.error("Horário não está mais disponível");
+        toast.error("This time slot is no longer available");
       } else if (result.error?.code === "SLOT_DOUBLE_BOOKING") {
-        toast.error("Este horário foi agendado por outra cliente");
+        toast.error("This time slot has been booked by another client");
       } else {
-        toast.error(result.error?.message || "Erro ao reagendar");
+        toast.error(result.error?.message || "Error rescheduling");
       }
       return;
     }
 
-    toast.success("Agendamento reagendado com sucesso!");
+    toast.success("Rescheduled successfully!");
     onOpenChange(false);
     router.refresh();
   };
@@ -140,9 +140,9 @@ export default function RescheduleModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Reagendar Agendamento</DialogTitle>
+          <DialogTitle>Reschedule Booking</DialogTitle>
           <DialogDescription>
-            Selecione uma nova data e horário para {getServiceNames()}
+            Select a new date and time for {getServiceNames()}
           </DialogDescription>
         </DialogHeader>
 
@@ -151,7 +151,7 @@ export default function RescheduleModal({
           <div className="space-y-2">
             <Label className="flex items-center gap-2">
               <CalendarDays className="h-4 w-4" />
-              Nova Data
+              New Date
             </Label>
             <div className="flex justify-center">
               <Calendar
@@ -159,7 +159,7 @@ export default function RescheduleModal({
                 selected={selectedDate}
                 onSelect={setSelectedDate}
                 disabled={disabledDays}
-                locale={ptBR}
+                locale={enAU}
                 className="rounded-md border"
               />
             </div>
@@ -170,7 +170,7 @@ export default function RescheduleModal({
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <Clock className="h-4 w-4" />
-                Novo Horário
+                New Time
               </Label>
               
               {loadingSlots ? (
@@ -205,7 +205,7 @@ export default function RescheduleModal({
                 <div className="flex items-center gap-2 p-3 bg-amber-50 rounded-md">
                   <AlertTriangle className="h-4 w-4 text-amber-600" />
                   <p className="text-sm text-amber-800">
-                    Não há horários disponíveis nesta data
+                    No time slots available on this date
                   </p>
                 </div>
               )}
@@ -217,22 +217,22 @@ export default function RescheduleModal({
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            disabled={loading}
+            disabled={submitting}
           >
-            Cancelar
+            Cancel
           </Button>
           <Button
             onClick={handleReschedule}
-            disabled={!selectedDate || !selectedTime || loading}
+            disabled={!selectedDate || !selectedTime || submitting}
             className="bg-rose-600 hover:bg-rose-700"
           >
-            {loading ? (
+            {submitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Reagendando...
+                Rescheduling...
               </>
             ) : (
-              "Confirmar Reagendamento"
+              "Confirm Reschedule"
             )}
           </Button>
         </DialogFooter>

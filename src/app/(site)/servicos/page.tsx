@@ -24,7 +24,7 @@ import { Sparkles, Clock, ArrowRight } from "lucide-react";
 import type { Category, Service } from "@/types/database";
 
 export const metadata: Metadata = {
-  title: "Servicos",
+  title: "Services",
 };
 
 type CategoryWithServices = Category & {
@@ -70,42 +70,41 @@ export default async function ServicosPage() {
   return (
     <>
       {/* Header */}
-      <section className="bg-gradient-to-br from-rose-50 via-rose-100/50 to-white py-16 sm:py-20">
+      <section className="bg-gradient-to-b from-warm-100 to-cream pt-24 pb-16 sm:pt-28 sm:pb-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-1.5 text-sm font-medium text-rose-700 shadow-sm">
-              <Sparkles className="h-4 w-4" />
-              Servicos
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-              Nossos Servicos
+            <p className="font-display text-sm italic tracking-widest text-gold-500 uppercase">
+              What we offer
+            </p>
+            <h1 className="mt-3 font-serif text-4xl tracking-tight text-warm-900 sm:text-5xl">
+              Our Services
             </h1>
-            <p className="mt-4 text-lg text-gray-600">
-              Conhega todos os servicos que oferecemos para realcar a sua beleza
+            <p className="mt-4 text-lg text-warm-500">
+              Discover all the services we offer to enhance your beauty
             </p>
           </div>
         </div>
       </section>
 
       {/* Categories with Services */}
-      <section className="bg-white py-16 sm:py-20">
+      <section className="bg-cream py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {categoriesWithServices.length > 0 ? (
-            <div className="space-y-16">
+            <div className="space-y-20">
               {categoriesWithServices.map((category) => (
                 <div key={category.id}>
                   {/* Category Header */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-100">
-                        <Sparkles className="h-5 w-5 text-rose-500" />
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-200 bg-gradient-to-br from-gold-50 to-gold-100">
+                        <Sparkles className="h-5 w-5 text-burgundy-500" />
                       </div>
                       <div>
-                        <h2 className="text-2xl font-bold text-gray-900">
+                        <h2 className="font-serif text-2xl text-warm-900">
                           {category.name}
                         </h2>
                         {category.description && (
-                          <p className="mt-0.5 text-sm text-gray-500">
+                          <p className="mt-0.5 text-sm text-warm-500">
                             {category.description}
                           </p>
                         )}
@@ -115,9 +114,9 @@ export default async function ServicosPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="gap-1 text-rose-600 hover:bg-rose-50 hover:text-rose-700"
+                        className="gap-1 text-burgundy-600 hover:bg-burgundy-50 hover:text-burgundy-700"
                       >
-                        Ver todos
+                        View all
                         <ArrowRight className="h-4 w-4" />
                       </Button>
                     </Link>
@@ -125,42 +124,39 @@ export default async function ServicosPage() {
 
                   {/* Services Grid */}
                   {category.services.length > 0 ? (
-                    <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                       {category.services.map((service) => (
                         <Card
                           key={service.id}
-                          className="border border-gray-100 shadow-sm transition-all hover:shadow-md"
+                          className="border border-warm-200/50 shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-burgundy-600/5 hover:-translate-y-0.5"
                         >
                           <CardHeader className="pb-2">
-                            <CardTitle className="text-base text-gray-900">
+                            <CardTitle className="text-base text-warm-900">
                               {service.name}
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
                             {service.description && (
-                              <CardDescription className="mb-3 line-clamp-2 text-sm text-gray-500">
+                              <CardDescription className="mb-3 line-clamp-2 text-sm text-warm-500">
                                 {service.description}
                               </CardDescription>
                             )}
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3 text-sm">
-                                <span className="flex items-center gap-1 text-gray-500">
+                                <span className="flex items-center gap-1 text-warm-400">
                                   <Clock className="h-3.5 w-3.5" />
                                   {service.duration_minutes} min
                                 </span>
-                                <span className="font-semibold text-rose-600">
-                                  R${" "}
-                                  {service.price
-                                    .toFixed(2)
-                                    .replace(".", ",")}
+                                <span className="font-semibold text-burgundy-600">
+                                  ${service.price.toFixed(2)}
                                 </span>
                               </div>
                               <Link href={`/agendar?service=${service.id}`}>
                                 <Button
                                   size="sm"
-                                  className="bg-rose-600 text-white hover:bg-rose-700"
+                                  className="rounded-full bg-burgundy-600 text-white hover:bg-burgundy-700"
                                 >
-                                  Agendar
+                                  Book
                                 </Button>
                               </Link>
                             </div>
@@ -169,21 +165,21 @@ export default async function ServicosPage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="mt-6 rounded-lg bg-gray-50 p-6 text-center text-sm text-gray-500">
-                      Nenhum servico cadastrado nesta categoria ainda.
+                    <div className="mt-6 rounded-xl bg-warm-100 p-6 text-center text-sm text-warm-500">
+                      No services listed in this category yet.
                     </div>
                   )}
                 </div>
               ))}
             </div>
           ) : (
-            <div className="rounded-lg bg-rose-50 p-12 text-center">
-              <Sparkles className="mx-auto h-12 w-12 text-rose-300" />
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">
-                Em breve
+            <div className="rounded-xl bg-warm-100 p-12 text-center">
+              <Sparkles className="mx-auto h-12 w-12 text-burgundy-200" />
+              <h3 className="mt-4 font-serif text-lg text-warm-900">
+                Coming Soon
               </h3>
-              <p className="mt-2 text-gray-500">
-                Nossos servicos estao sendo preparados. Volte em breve!
+              <p className="mt-2 text-warm-500">
+                Our services are being prepared. Check back soon!
               </p>
             </div>
           )}

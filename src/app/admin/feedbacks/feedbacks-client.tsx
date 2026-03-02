@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   Select,
   SelectContent,
@@ -23,7 +24,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { MessageSquare, Star, Clock } from "lucide-react";
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { enAU } from "date-fns/locale";
 import { toast } from "sonner";
 import { safeFetch } from "@/lib/errors/client";
 import StarRating from "@/components/reviews/StarRating";
@@ -92,14 +93,14 @@ export default function FeedbacksClient({
     if (!result.ok) return;
 
     toast.success(
-      review.is_visible ? "Avaliacao ocultada" : "Avaliacao publicada"
+      review.is_visible ? "Review hidden" : "Review published"
     );
     router.refresh();
   }
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">Avaliacoes</h1>
+      <h1 className="mb-6 text-2xl font-bold">Reviews</h1>
 
       {/* Stats Cards */}
       <div className="mb-6 grid gap-4 md:grid-cols-3">
@@ -121,7 +122,7 @@ export default function FeedbacksClient({
             </div>
             <div>
               <p className="text-2xl font-bold">{stats.average}</p>
-              <p className="text-sm text-muted-foreground">Media</p>
+              <p className="text-sm text-muted-foreground">Average</p>
             </div>
           </CardContent>
         </Card>
@@ -132,7 +133,7 @@ export default function FeedbacksClient({
             </div>
             <div>
               <p className="text-2xl font-bold">{stats.pending}</p>
-              <p className="text-sm text-muted-foreground">Pendentes</p>
+              <p className="text-sm text-muted-foreground">Pending</p>
             </div>
           </CardContent>
         </Card>
@@ -142,13 +143,13 @@ export default function FeedbacksClient({
       <Card className="mb-6">
         <CardContent className="flex flex-wrap items-end gap-4 p-4">
           <div className="min-w-[160px]">
-            <Label>Servico</Label>
+            <Label>Service</Label>
             <Select value={filterService} onValueChange={setFilterService}>
               <SelectTrigger className="mt-1">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="all">All</SelectItem>
                 {services.map((s) => (
                   <SelectItem key={s.id} value={s.id}>
                     {s.name}
@@ -158,23 +159,23 @@ export default function FeedbacksClient({
             </Select>
           </div>
           <div className="min-w-[120px]">
-            <Label>Nota</Label>
+            <Label>Rating</Label>
             <Select value={filterRating} onValueChange={setFilterRating}>
               <SelectTrigger className="mt-1">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todas</SelectItem>
+                <SelectItem value="all">All</SelectItem>
                 {[5, 4, 3, 2, 1].map((n) => (
                   <SelectItem key={n} value={String(n)}>
-                    {n} estrela{n > 1 ? "s" : ""}
+                    {n} star{n > 1 ? "s" : ""}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div className="min-w-[140px]">
-            <Label>Visibilidade</Label>
+            <Label>Visibility</Label>
             <Select
               value={filterVisibility}
               onValueChange={setFilterVisibility}
@@ -183,9 +184,9 @@ export default function FeedbacksClient({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todas</SelectItem>
-                <SelectItem value="visible">Visiveis</SelectItem>
-                <SelectItem value="hidden">Ocultas</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="visible">Visible</SelectItem>
+                <SelectItem value="hidden">Hidden</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -195,26 +196,28 @@ export default function FeedbacksClient({
       {/* Reviews Table */}
       <Card>
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Cliente</TableHead>
-                <TableHead>Servico</TableHead>
-                <TableHead>Nota</TableHead>
-                <TableHead className="max-w-[300px]">Comentario</TableHead>
-                <TableHead>Visivel</TableHead>
-                <TableHead>Data</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.length === 0 ? (
+          {filtered.length === 0 ? (
+            <div className="py-8">
+              <EmptyState
+                icon={MessageSquare}
+                title="No reviews found"
+                description="There are no reviews to display with the selected filters."
+              />
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8">
-                    Nenhuma avaliacao encontrada.
-                  </TableCell>
+                  <TableHead>Client</TableHead>
+                  <TableHead>Service</TableHead>
+                  <TableHead>Rating</TableHead>
+                  <TableHead className="max-w-[300px]">Comment</TableHead>
+                  <TableHead>Visible</TableHead>
+                  <TableHead>Date</TableHead>
                 </TableRow>
-              ) : (
-                filtered.map((review) => (
+              </TableHeader>
+              <TableBody>
+                {filtered.map((review) => (
                   <TableRow key={review.id}>
                     <TableCell>
                       <div>
@@ -250,7 +253,7 @@ export default function FeedbacksClient({
                         </p>
                       ) : (
                         <span className="text-sm text-muted-foreground">
-                          Sem comentario
+                          No comment
                         </span>
                       )}
                     </TableCell>
@@ -263,14 +266,14 @@ export default function FeedbacksClient({
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {format(new Date(review.created_at), "dd/MM/yyyy", {
-                        locale: ptBR,
+                        locale: enAU,
                       })}
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>

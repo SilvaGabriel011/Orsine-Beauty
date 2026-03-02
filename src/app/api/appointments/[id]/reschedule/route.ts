@@ -56,15 +56,6 @@ export const PATCH = withErrorHandler(async (
     throw new AppError("APPT_NOT_FOUND", fetchError?.message);
   }
 
-  // Verificar se usuário está autenticado
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    throw new AppError("AUTH_NOT_AUTHENTICATED", "Usuário não autenticado");
-  }
-
   // Verificar se appointment pode ser alterado (não cancelado/completado)
   if (["cancelled", "completed", "no_show"].includes(appointment.status)) {
     throw new AppError("APPT_INVALID_STATUS");
@@ -215,9 +206,9 @@ export const PATCH = withErrorHandler(async (
     .eq("status", "pending");
 
   // Criar novas notificações para o novo horário
-  const appointmentDateTime = adelaideDateTime(new_date, new_start_time);
-  const reminder24h = new Date(appointmentDateTime.getTime() - 24 * 60 * 60 * 1000);
-  const reminder2h = new Date(appointmentDateTime.getTime() - 2 * 60 * 60 * 1000);
+  const newAppointmentDateTime = adelaideDateTime(new_date, new_start_time);
+  const reminder24h = new Date(newAppointmentDateTime.getTime() - 24 * 60 * 60 * 1000);
+  const reminder2h = new Date(newAppointmentDateTime.getTime() - 2 * 60 * 60 * 1000);
 
   if (reminder24h > now) {
     await (supabase

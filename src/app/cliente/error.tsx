@@ -22,23 +22,23 @@ export default function ClienteError({
           <AlertCircle className="h-8 w-8 text-red-600" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900">
-          Algo deu errado
+          Something went wrong
         </h2>
         <p className="text-muted-foreground">
-          Ocorreu um erro inesperado na sua area do cliente. Tente novamente.
+          An unexpected error occurred in your client area. Please try again.
         </p>
         <div className="flex gap-3 justify-center">
           <Button
             onClick={reset}
             variant="outline"
           >
-            Tentar novamente
+            Try again
           </Button>
           <Button
             onClick={() => (window.location.href = "/cliente/minha-conta")}
             className="bg-rose-600 text-white hover:bg-rose-700"
           >
-            Minha conta
+            My account
           </Button>
         </div>
       </div>
