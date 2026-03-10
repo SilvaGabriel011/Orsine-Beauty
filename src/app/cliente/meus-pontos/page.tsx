@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { format } from "date-fns";
-import { enAU } from "date-fns/locale";
+import { ptBR } from "date-fns/locale";
 import type { LoyaltyHistory, LoyaltyRule } from "@/types/database";
 
 export const metadata = { title: "Meus Pontos" };
@@ -50,17 +50,17 @@ export default async function MeusPontosPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">My Points</h1>
+      <h1 className="mb-6 text-2xl font-bold">Meus Pontos</h1>
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground">Current Balance</p>
+            <p className="text-sm text-muted-foreground">Saldo Atual</p>
             <p className="text-4xl font-bold text-rose-600">{points} pts</p>
             {nextReward && (
               <div className="mt-4">
                 <div className="flex justify-between text-sm">
-                  <span>Next Discount</span>
+                  <span>Proximo desconto</span>
                   <span>
                     {points}/{nextReward.points_threshold} pts
                   </span>
@@ -73,8 +73,8 @@ export default async function MeusPontosPage() {
                 </div>
                 {nextReward.discount_value > 0 && (
                   <p className="mt-2 text-sm text-muted-foreground">
-                    {nextReward.points_threshold} points = ${" "}
-                    {nextReward.discount_value.toFixed(2)} discount
+                    {nextReward.points_threshold} pontos = R${" "}
+                    {nextReward.discount_value.toFixed(2)} de desconto
                   </p>
                 )}
               </div>
@@ -84,11 +84,11 @@ export default async function MeusPontosPage() {
 
         <Card>
           <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground">How it works</p>
+            <p className="text-sm text-muted-foreground">Como funciona</p>
             <ul className="mt-2 space-y-2 text-sm">
-              <li>Earn points with every completed appointment</li>
-              <li>🎁 Accumulate and redeem for discounts</li>
-              <li>💫 The more you come, the more discount you earn</li>
+              <li>✨ Ganhe pontos a cada atendimento concluido</li>
+              <li>🎁 Acumule e troque por descontos</li>
+              <li>💫 Quanto mais voce vem, mais desconto ganha</li>
             </ul>
           </CardContent>
         </Card>
@@ -96,21 +96,21 @@ export default async function MeusPontosPage() {
 
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle>History</CardTitle>
+          <CardTitle>Historico</CardTitle>
         </CardHeader>
         <CardContent>
           {(!history || history.length === 0) ? (
             <p className="py-4 text-center text-muted-foreground">
-              No transactions yet
+              Nenhuma movimentacao ainda
             </p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-left text-xs font-medium text-muted-foreground">Date</TableHead>
-                  <TableHead className="text-left text-xs font-medium text-muted-foreground">Description</TableHead>
-                  <TableHead className="text-left text-xs font-medium text-muted-foreground">Type</TableHead>
-                  <TableHead className="text-right text-xs font-medium text-muted-foreground">Points</TableHead>
+                  <TableHead>Data</TableHead>
+                  <TableHead>Descricao</TableHead>
+                  <TableHead>Tipo</TableHead>
+                  <TableHead className="text-right">Pontos</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -118,7 +118,7 @@ export default async function MeusPontosPage() {
                   <TableRow key={item.id}>
                     <TableCell>
                       {format(new Date(item.created_at), "dd/MM/yyyy", {
-                        locale: enAU,
+                        locale: ptBR,
                       })}
                     </TableCell>
                     <TableCell>{item.description}</TableCell>

@@ -63,8 +63,6 @@ export default function StarRating({
           )}
           onClick={() => isInput && onChange(star)}
           onMouseEnter={() => isInput && setHoverRating(star)}
-          aria-label={`Avaliar ${star} estrela${star > 1 ? 's' : ''}`}
-          aria-pressed={rating >= star}
         >
           {/* Estrela preenchida ou vazia baseado na avaliacao */}
           <Star

@@ -17,49 +17,24 @@
  * - Carrossel de depoimentos/reviews
  * - Diferenciais da empresa
  */
-export const revalidate = 3600; // revalida a cada 1 hora
+export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import {
+  Sparkles,
+  Calendar,
+  ArrowRight,
+  Heart,
+  Star,
+  Users,
+  Award,
+} from "lucide-react";
 import type { Category, Service } from "@/types/database";
 import LandingCategoriesCarousel from "./landing-categories";
 import LandingServicesCarousel from "./landing-services";
 import TestimonialCarousel from "@/components/shared/TestimonialCarousel";
-import HomeHeroClient from "./home-hero-client";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Bela Orsine Beauty | Beauty Studio in Australia",
-  description: "Premium beauty services including brows, nails, waxing and more. Book your appointment online at Bela Orsine Beauty Studio.",
-  keywords: ["beauty studio", "brow shaping", "nail salon", "waxing", "Bela Orsine", "Australia"],
-  openGraph: {
-    title: "Bela Orsine Beauty Studio",
-    description: "Premium beauty services — brows, nails, waxing and more. Book online today.",
-    type: "website",
-    locale: "en_AU",
-    siteName: "Bela Orsine Beauty",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Bela Orsine Beauty Studio",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Bela Orsine Beauty Studio",
-    description: "Premium beauty services — book online today.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
-
 
 export default async function HomePage() {
   let categories: Category[] | null = null;
@@ -70,19 +45,16 @@ export default async function HomePage() {
     const supabase = await createClient();
 
     const [catResult, svcResult, revResult] = await Promise.all([
-      supabase
-        .from("categories")
+      (supabase.from("categories") as any)
         .select("*")
         .eq("is_active", true)
         .order("sort_order", { ascending: true }),
-      supabase
-        .from("services")
+      (supabase.from("services") as any)
         .select("*, categories(id, name, slug)")
         .eq("is_active", true)
         .order("sort_order", { ascending: true })
         .limit(12),
-      supabase
-        .from("reviews")
+      (supabase.from("reviews") as any)
         .select("id, rating, comment, created_at, profiles(full_name), services(name)")
         .eq("is_visible", true)
         .order("created_at", { ascending: false })
@@ -98,29 +70,94 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero Section — Cinematic fullscreen */}
-      <HomeHeroClient />
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-rose-50 via-rose-100 to-pink-50">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-rose-200/40 via-transparent to-transparent" />
+        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
+          <div className="mx-auto max-w-2xl text-center">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-1.5 text-sm font-medium text-rose-700 shadow-sm backdrop-blur">
+              <Sparkles className="h-4 w-4" />
+              Estudio de Beleza
+            </div>
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+              Bela Orsine{" "}
+              <span className="text-rose-600">Beauty</span>
+            </h1>
+            <p className="mx-auto mt-6 max-w-lg text-lg leading-relaxed text-gray-600">
+              Realce a sua beleza natural com os nossos servicos especializados.
+              Escolha os servicos, monte seu carrinho e agende com poucos
+              cliques.
+            </p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Link href="/agendar">
+                <Button
+                  size="lg"
+                  className="gap-2 bg-rose-600 px-8 text-white shadow-lg hover:bg-rose-700 hover:shadow-xl"
+                >
+                  <Calendar className="h-5 w-5" />
+                  Agendar Agora
+                </Button>
+              </Link>
+              <Link href="/agendar">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="gap-2 border-rose-200 px-8 text-rose-700 hover:bg-rose-50"
+                >
+                  Ver catalogo
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
 
-      {/* Categories Section */}
+            {/* Quick stats */}
+            <div className="mx-auto mt-12 flex max-w-md justify-center gap-8 sm:gap-12">
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-1">
+                  <Users className="h-4 w-4 text-rose-500" />
+                  <span className="text-2xl font-bold text-rose-600">+500</span>
+                </div>
+                <div className="text-xs text-gray-500">Clientes felizes</div>
+              </div>
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-1">
+                  <Star className="h-4 w-4 text-rose-500" />
+                  <span className="text-2xl font-bold text-rose-600">5.0</span>
+                </div>
+                <div className="text-xs text-gray-500">Avaliacao media</div>
+              </div>
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-1">
+                  <Award className="h-4 w-4 text-rose-500" />
+                  <span className="text-2xl font-bold text-rose-600">3+</span>
+                </div>
+                <div className="text-xs text-gray-500">Anos de experiencia</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories Carousel */}
       {categories && categories.length > 0 && (
-        <section className="relative bg-cream dark:bg-[#1A1412] py-20 sm:py-28">
+        <section className="bg-white py-12 sm:py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mb-10 flex items-end justify-between">
+            <div className="mb-6 flex items-center justify-between">
               <div>
-                <p className="font-display text-sm italic tracking-widest text-gold-500 dark:text-gold-400 uppercase">
-                  Explore
-                </p>
-                <h2 className="mt-2 font-serif text-3xl tracking-tight text-warm-900 dark:text-warm-100 sm:text-4xl">
-                  Our Categories
+                <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                  Categorias
                 </h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  Explore nossos servicos por categoria
+                </p>
               </div>
               <Link href="/agendar">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="gap-1.5 text-burgundy-600 dark:text-burgundy-400 hover:text-burgundy-700 dark:hover:text-burgundy-300 hover:bg-burgundy-50 dark:hover:bg-burgundy-900/30"
+                  className="gap-1 text-rose-600 hover:text-rose-700"
                 >
-                  View all
+                  Ver todos
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               </Link>
@@ -130,28 +167,26 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Featured Services Section */}
+      {/* Popular Services Carousel */}
       {services && services.length > 0 && (
-        <section className="relative bg-warm-50 dark:bg-[#1E1814] py-20 sm:py-28">
-          {/* Decorative top line */}
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-300/30 to-transparent" />
+        <section className="bg-gray-50/50 py-12 sm:py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mb-10 flex items-end justify-between">
+            <div className="mb-6 flex items-center justify-between">
               <div>
-                <p className="font-display text-sm italic tracking-widest text-gold-500 dark:text-gold-400 uppercase">
-                  Curated for you
-                </p>
-                <h2 className="mt-2 font-serif text-3xl tracking-tight text-warm-900 dark:text-warm-100 sm:text-4xl">
-                  Featured Services
+                <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                  Servicos em destaque
                 </h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  Adicione ao carrinho e agende varios de uma vez
+                </p>
               </div>
               <Link href="/agendar">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="gap-1.5 text-burgundy-600 dark:text-burgundy-400 hover:text-burgundy-700 dark:hover:text-burgundy-300 hover:bg-burgundy-50 dark:hover:bg-burgundy-900/30"
+                  className="gap-1 text-rose-600 hover:text-rose-700"
                 >
-                  Full Catalogue
+                  Ver catalogo
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               </Link>
@@ -161,50 +196,49 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* How it works — Editorial style */}
-      <section className="relative bg-cream dark:bg-[#1A1412] py-20 sm:py-28">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-warm-300/50 to-transparent" />
+      {/* How it works */}
+      <section className="bg-white py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="font-display text-sm italic tracking-widest text-gold-500 dark:text-gold-400 uppercase">
-              How it works
-            </p>
-            <h2 className="mt-2 font-serif text-3xl tracking-tight text-warm-900 dark:text-warm-100 sm:text-4xl">
-              Book in Three Steps
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+              Agende em 3 passos
             </h2>
+            <p className="mt-2 text-sm text-gray-500">
+              Simples, rapido e sem complicacao
+            </p>
           </div>
-          <div className="mx-auto mt-16 grid max-w-4xl gap-12 sm:grid-cols-3">
+          <div className="mx-auto mt-10 grid max-w-3xl gap-8 sm:grid-cols-3">
             <div className="text-center">
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border-2 border-gold-300/50 dark:border-gold-500/30 bg-gradient-to-br from-gold-50 to-gold-100 dark:from-warm-800 dark:to-warm-700 font-serif text-2xl font-bold text-burgundy-600 dark:text-burgundy-400">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-100 text-2xl font-bold text-rose-600">
                 1
               </div>
-              <h3 className="font-serif text-lg text-warm-900 dark:text-warm-100">
-                Choose Services
+              <h3 className="text-sm font-semibold text-gray-900">
+                Escolha os servicos
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-warm-500 dark:text-warm-400">
-                Browse our curated catalogue and add your favourite services to the cart
+              <p className="mt-1 text-xs text-gray-500">
+                Navegue pelo catalogo e adicione ao carrinho
               </p>
             </div>
             <div className="text-center">
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border-2 border-gold-300/50 dark:border-gold-500/30 bg-gradient-to-br from-gold-50 to-gold-100 dark:from-warm-800 dark:to-warm-700 font-serif text-2xl font-bold text-burgundy-600 dark:text-burgundy-400">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-100 text-2xl font-bold text-rose-600">
                 2
               </div>
-              <h3 className="font-serif text-lg text-warm-900 dark:text-warm-100">
-                Pick Date & Time
+              <h3 className="text-sm font-semibold text-gray-900">
+                Escolha data e horario
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-warm-500 dark:text-warm-400">
-                See real-time availability and select the perfect time slot
+              <p className="mt-1 text-xs text-gray-500">
+                Veja os horarios disponiveis e selecione o melhor
               </p>
             </div>
             <div className="text-center">
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border-2 border-gold-300/50 dark:border-gold-500/30 bg-gradient-to-br from-gold-50 to-gold-100 dark:from-warm-800 dark:to-warm-700 font-serif text-2xl font-bold text-burgundy-600 dark:text-burgundy-400">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-100 text-2xl font-bold text-rose-600">
                 3
               </div>
-              <h3 className="font-serif text-lg text-warm-900 dark:text-warm-100">
-                Confirm & Enjoy
+              <h3 className="text-sm font-semibold text-gray-900">
+                Confirme o agendamento
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-warm-500 dark:text-warm-400">
-                Receive instant confirmation and get ready for your beauty experience
+              <p className="mt-1 text-xs text-gray-500">
+                Pronto! Voce recebe a confirmacao por email
               </p>
             </div>
           </div>
@@ -216,28 +250,28 @@ export default async function HomePage() {
         <TestimonialCarousel testimonials={reviews} loading={false} />
       )}
 
-      {/* About Preview — Editorial */}
-      <section className="relative bg-warm-50 dark:bg-[#1E1814] py-20 sm:py-28">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-300/30 to-transparent" />
+      {/* About Preview */}
+      <section className="bg-gray-50/50 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="font-display text-sm italic tracking-widest text-gold-500 dark:text-gold-400 uppercase">
-              Our Philosophy
-            </p>
-            <h2 className="mt-3 font-serif text-3xl tracking-tight text-warm-900 dark:text-warm-100 sm:text-4xl">
-              Care and love in every detail
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-rose-50 px-4 py-1.5 text-sm font-medium text-rose-700">
+              <Heart className="h-4 w-4" />
+              Sobre Nos
+            </div>
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+              Cuidado e carinho em cada detalhe
             </h2>
-            <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-warm-500 dark:text-warm-400">
-              At Bela Orsine Beauty, we believe everyone deserves to feel
-              special. With years of experience and dedication, we offer
-              high-quality services in a welcoming and comfortable environment.
+            <p className="mt-4 text-base leading-relaxed text-gray-500">
+              No Bela Orsine Beauty, acreditamos que cada pessoa merece se sentir
+              especial. Com anos de experiencia e dedicacao, oferecemos servicos
+              de alta qualidade em um ambiente acolhedor e confortavel.
             </p>
-            <Link href="/sobre" className="mt-8 inline-block">
+            <Link href="/sobre" className="mt-6 inline-block">
               <Button
                 variant="outline"
-                className="gap-2 rounded-full border-burgundy-200 dark:border-burgundy-700 px-6 text-burgundy-600 dark:text-burgundy-400 hover:bg-burgundy-50 dark:hover:bg-burgundy-900/30 hover:border-burgundy-300 dark:hover:border-burgundy-600"
+                className="gap-2 border-rose-200 text-rose-700 hover:bg-rose-50"
               >
-                Discover our story
+                Conhecer nossa historia
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
@@ -245,32 +279,23 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Final CTA — Premium gradient */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-burgundy-700 via-burgundy-800 to-warm-900 py-20 sm:py-28">
-        {/* Decorative elements */}
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/4 top-0 h-64 w-64 rounded-full bg-burgundy-600/20 blur-3xl" />
-          <div className="absolute right-1/4 bottom-0 h-48 w-48 rounded-full bg-gold-400/10 blur-3xl" />
-        </div>
-
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* Final CTA */}
+      <section className="bg-gradient-to-br from-rose-600 to-pink-600 py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="font-display text-sm italic tracking-widest text-gold-400 uppercase">
-              Your beauty journey starts here
-            </p>
-            <h2 className="mt-4 font-serif text-4xl tracking-tight text-white sm:text-5xl">
-              Ready to feel even more beautiful?
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Pronta para se sentir ainda mais bonita?
             </h2>
-            <p className="mt-6 text-lg text-burgundy-200">
-              Build your service cart and book everything at once.
+            <p className="mt-4 text-lg text-rose-100">
+              Monte seu carrinho de servicos e agende tudo de uma vez.
             </p>
-            <Link href="/agendar" className="mt-10 inline-block">
+            <Link href="/agendar" className="mt-8 inline-block">
               <Button
                 size="lg"
-                className="gap-2 rounded-full bg-gold-300 px-10 text-burgundy-900 shadow-xl shadow-gold-400/20 hover:bg-gold-200 hover:shadow-2xl transition-all duration-300"
+                className="gap-2 bg-white px-8 text-rose-600 shadow-lg hover:bg-rose-50 hover:shadow-xl"
               >
-                Book Now
-                <ArrowRight className="h-4 w-4" />
+                <Calendar className="h-5 w-5" />
+                Agendar Agora
               </Button>
             </Link>
           </div>

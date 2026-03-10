@@ -39,8 +39,8 @@ interface GameCard {
 const GAMES: GameCard[] = [
   {
     id: "wheel",
-    name: "Lucky Wheel",
-    description: "Spin and win coins!",
+    name: "Roleta da Sorte",
+    description: "Gire e ganhe moedas!",
     icon: <Disc3 className="h-7 w-7" />,
     href: "/cliente/jogar/roleta",
     color: "text-rose-600",
@@ -48,8 +48,8 @@ const GAMES: GameCard[] = [
   },
   {
     id: "scratch",
-    name: "Scratch Card",
-    description: "Scratch and discover your prize",
+    name: "Raspadinha",
+    description: "Raspe e descubra seu premio",
     icon: <Sparkles className="h-7 w-7" />,
     href: "/cliente/jogar/raspadinha",
     color: "text-purple-600",
@@ -57,8 +57,8 @@ const GAMES: GameCard[] = [
   },
   {
     id: "quiz",
-    name: "Beauty Quiz",
-    description: "Test your knowledge",
+    name: "Quiz Beleza",
+    description: "Teste seus conhecimentos",
     icon: <HelpCircle className="h-7 w-7" />,
     href: "/cliente/jogar/quiz",
     color: "text-blue-600",
@@ -67,7 +67,7 @@ const GAMES: GameCard[] = [
   {
     id: "shake",
     name: "Shake",
-    description: "Shake and win coins",
+    description: "Chacoalhe e ganhe moedas",
     icon: <Smartphone className="h-7 w-7" />,
     href: "/cliente/jogar/shake",
     color: "text-emerald-600",
@@ -101,24 +101,24 @@ export function GameHub({
     <div className="space-y-6">
       {/* Header with coin balance */}
       <div className="flex flex-col items-center gap-3 rounded-2xl bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border border-amber-200 p-6 text-center">
-        <h1 className="text-2xl font-bold text-gray-900">Daily Minigames</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Minigames Diarios</h1>
         <p className="text-sm text-gray-500">
-          Play every day and collect coins to redeem for rewards!
+          Jogue todo dia e acumule moedas para trocar por recompensas!
         </p>
         <CoinBalance coins={coins} size="lg" />
         <div className="flex items-center gap-4 text-sm text-gray-500">
           <span className="flex items-center gap-1">
             <Flame className="h-4 w-4 text-orange-500" />
-            Streak: {streak} days
+            Streak: {streak} dias
           </span>
           <span className="flex items-center gap-1">
             <Trophy className="h-4 w-4 text-amber-500" />
-            Record: {Math.max(longestStreak, streak)} days
+            Recorde: {Math.max(longestStreak, streak)} dias
           </span>
         </div>
         {allPlayedToday && (
           <Badge variant="outline" className="border-green-300 bg-green-50 text-green-700">
-            All games completed today!
+            Todos os jogos feitos hoje!
           </Badge>
         )}
       </div>
@@ -155,11 +155,11 @@ export function GameHub({
                     <p className="mt-0.5 text-xs text-gray-500">{game.description}</p>
                     {hasPlayed ? (
                       <Badge variant="secondary" className="mt-2 text-[10px]">
-                        Played today
+                        Jogou hoje
                       </Badge>
                     ) : (
                       <Badge className="mt-2 bg-rose-500 text-[10px] text-white hover:bg-rose-600">
-                        Available
+                        Disponivel
                       </Badge>
                     )}
                   </CardContent>
@@ -176,7 +176,7 @@ export function GameHub({
           <Card className="cursor-pointer transition-all hover:shadow-md">
             <CardContent className="flex flex-col items-center p-3 text-center">
               <Store className="mb-1 h-5 w-5 text-amber-600" />
-              <span className="text-xs font-medium text-gray-700">Shop</span>
+              <span className="text-xs font-medium text-gray-700">Loja</span>
             </CardContent>
           </Card>
         </Link>
@@ -184,7 +184,7 @@ export function GameHub({
           <Card className="cursor-pointer transition-all hover:shadow-md">
             <CardContent className="flex flex-col items-center p-3 text-center">
               <Crown className="mb-1 h-5 w-5 text-purple-600" />
-              <span className="text-xs font-medium text-gray-700">Achievements</span>
+              <span className="text-xs font-medium text-gray-700">Conquistas</span>
             </CardContent>
           </Card>
         </Link>

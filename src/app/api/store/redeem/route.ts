@@ -35,35 +35,82 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const { item_id } = parsed.data;
   const adminSupabase = createAdminClient();
 
-  // Executa resgate atomicamente via RPC (coins + estoque + redemption em uma transacao)
-  const { data: redeemResult, error: redeemError } = await adminSupabase.rpc("redeem_store_item", {
-    p_client_id: user.id,
-    p_item_id: item_id,
-  });
+  // Busca item na loja
+  const { data: item, error: itemError } = await adminSupabase
+    .from("reward_store_items")
+    .select("*")
+    .eq("id", item_id)
+    .eq("is_active", true)
+    .single();
 
-  if (redeemError) {
-    throw new AppError("SYS_INTERNAL", redeemError.message);
+  if (itemError || !item) {
+    throw new AppError("GAME_ITEM_NOT_FOUND");
   }
 
-  const result = redeemResult as {
+  const storeItem = item as unknown as {
+    id: string;
+    coin_price: number;
+    stock: number | null;
+    name: string;
+    type: string;
+    metadata: Record<string, unknown>;
+  };
+
+  // Validacao: verificar estoque (se limitado)
+  if (storeItem.stock !== null && storeItem.stock <= 0) {
+    throw new AppError("GAME_ITEM_OUT_OF_STOCK");
+  }
+
+  // Deduz moedas do usuario atomicamente (SQL function garante transacao)
+  const { data: spendResult, error: spendError } = await adminSupabase.rpc("spend_game_coins", {
+    p_client_id: user.id,
+    p_amount: storeItem.coin_price,
+    p_source: "store",
+    p_description: `Troca: ${storeItem.name}`,
+    p_item_id: storeItem.id,
+  });
+
+  if (spendError) {
+    throw new AppError("SYS_INTERNAL", spendError.message);
+  }
+
+  const result = spendResult as unknown as {
     success: boolean;
     error?: string;
-    redemption_id?: string;
-    remaining_coins?: number;
-    item_type?: string;
+    remaining?: number;
   };
 
   if (!result.success) {
-    switch (result.error) {
-      case "ITEM_NOT_FOUND":
-        throw new AppError("GAME_ITEM_NOT_FOUND");
-      case "OUT_OF_STOCK":
-        throw new AppError("GAME_ITEM_OUT_OF_STOCK");
-      case "INSUFFICIENT_COINS":
-        throw new AppError("GAME_INSUFFICIENT_COINS");
-      default:
-        throw new AppError("SYS_INTERNAL", result.error);
+    // Caso especial: usuario sem moedas suficientes
+    if (result.error === "INSUFFICIENT_COINS") {
+      throw new AppError("GAME_INSUFFICIENT_COINS");
     }
+    throw new AppError("SYS_INTERNAL", result.error);
+  }
+
+  // Decrementa estoque (se item tem limite)
+  if (storeItem.stock !== null) {
+    await adminSupabase
+      .from("reward_store_items")
+      .update({ stock: storeItem.stock - 1 })
+      .eq("id", storeItem.id);
+  }
+
+  // Cria registro de resgate: status depende do tipo (produto aguarda, desconto imediato)
+  const { data: redemption, error: redemptionError } = await adminSupabase
+    .from("reward_redemptions")
+    .insert({
+      client_id: user.id,
+      item_id: storeItem.id,
+      coins_spent: storeItem.coin_price,
+      status: storeItem.type === "product" ? "pending" : "fulfilled",
+      fulfilled_at: storeItem.type !== "product" ? new Date().toISOString() : null,
+    })
+    .select()
+    .single();
+
+  if (redemptionError) {
+    throw new AppError("RES_CREATE_FAILED", redemptionError.message);
   }
 
   // Verifica e premia achievements (nao-bloqueante)
@@ -72,13 +119,13 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 
   return NextResponse.json({
     success: true,
-    redemption_id: result.redemption_id,
-    remaining_coins: result.remaining_coins,
-    item_type: result.item_type,
+    redemption_id: (redemption as unknown as { id: string })?.id,
+    remaining_coins: result.remaining,
+    item_type: storeItem.type,
     new_achievements: newAchievements.map((a) => ({
       name: a.name,
       description: a.description,
-      coin_reward: (a as { coin_reward?: number }).coin_reward,
+      coin_reward: a.coin_reward,
     })),
   });
 });

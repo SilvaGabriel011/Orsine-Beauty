@@ -10,7 +10,7 @@ import { ArrowLeft, Clock, Check } from "lucide-react";
 import { toast } from "sonner";
 import { safeFetch } from "@/lib/errors/client";
 import { format, addDays, isBefore, startOfDay } from "date-fns";
-import { enAU } from "date-fns/locale";
+import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 
 interface TimeSlot {
@@ -95,13 +95,13 @@ export function BookingClient({
     if (!result.ok) return;
 
     setBooked(true);
-    toast.success("Booking confirmed!");
+    toast.success("Agendamento confirmado!");
   }
 
   function formatPrice(value: number) {
-    return new Intl.NumberFormat("en-AU", {
+    return new Intl.NumberFormat("pt-BR", {
       style: "currency",
-      currency: "AUD",
+      currency: "BRL",
     }).format(value);
   }
 
@@ -111,25 +111,25 @@ export function BookingClient({
         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
           <Check className="h-10 w-10 text-green-600" />
         </div>
-        <h1 className="text-2xl font-bold">Booking Confirmed!</h1>
+        <h1 className="text-2xl font-bold">Agendamento Confirmado!</h1>
         <p className="mt-3 text-muted-foreground">
-          Your booking for <strong>{service.name}</strong> on{" "}
+          Seu agendamento para <strong>{service.name}</strong> no dia{" "}
           <strong>
             {selectedDate &&
-              format(selectedDate, "dd/MM/yyyy (EEEE)", { locale: enAU })}
+              format(selectedDate, "dd/MM/yyyy (EEEE)", { locale: ptBR })}
           </strong>{" "}
-          at <strong>{selectedSlot?.start}</strong> has been confirmed.
+          as <strong>{selectedSlot?.start}</strong> foi confirmado.
         </p>
         <p className="mt-2 text-muted-foreground">
-          You will receive a confirmation email.
+          Voce recebera um email de confirmacao.
         </p>
         <div className="mt-8 flex justify-center gap-4">
           <Link href="/">
-            <Button variant="outline">Back to Home</Button>
+            <Button variant="outline">Voltar ao Inicio</Button>
           </Link>
           <Link href="/cliente/meus-agendamentos">
             <Button className="bg-rose-600 hover:bg-rose-700">
-              My Bookings
+              Meus Agendamentos
             </Button>
           </Link>
         </div>
@@ -144,11 +144,11 @@ export function BookingClient({
         className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="mr-1 h-4 w-4" />
-        Back
+        Voltar
       </Link>
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Select Time Slot</h1>
+        <h1 className="text-3xl font-bold">Selecionar Horario</h1>
         <div className="mt-2 flex items-center gap-4">
           <Badge variant="secondary">{service.categories?.name}</Badge>
           <span className="font-medium">{service.name}</span>
@@ -165,14 +165,14 @@ export function BookingClient({
       <div className="grid gap-8 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Choose a Date</CardTitle>
+            <CardTitle>Escolha a Data</CardTitle>
           </CardHeader>
           <CardContent className="flex justify-center">
             <Calendar
               mode="single"
               selected={selectedDate}
               onSelect={setSelectedDate}
-              locale={enAU}
+              locale={ptBR}
               disabled={(date) =>
                 isBefore(date, startOfDay(new Date())) ||
                 date.getDay() === 0 // Disable Sundays
@@ -187,14 +187,14 @@ export function BookingClient({
           <CardHeader>
             <CardTitle>
               {selectedDate
-                ? `Time Slots - ${format(selectedDate, "dd/MM (EEE)", { locale: enAU })}`
-                : "Select a date"}
+                ? `Horarios - ${format(selectedDate, "dd/MM (EEE)", { locale: ptBR })}`
+                : "Selecione uma data"}
             </CardTitle>
           </CardHeader>
           <CardContent>
             {!selectedDate && (
               <p className="py-8 text-center text-muted-foreground">
-                Select a date on the calendar
+                Selecione uma data no calendario
               </p>
             )}
 
@@ -206,7 +206,7 @@ export function BookingClient({
 
             {selectedDate && !loadingSlots && slots.length === 0 && (
               <p className="py-8 text-center text-muted-foreground">
-                No time slots available on this date
+                Nenhum horario disponivel nesta data
               </p>
             )}
 
@@ -235,23 +235,23 @@ export function BookingClient({
 
             {selectedSlot && (
               <div className="mt-6 rounded-lg border bg-rose-50 p-4">
-                <h3 className="font-semibold">Summary</h3>
+                <h3 className="font-semibold">Resumo</h3>
                 <div className="mt-2 space-y-1 text-sm">
                   <p>
-                    <strong>Service:</strong> {service.name}
+                    <strong>Servico:</strong> {service.name}
                   </p>
                   <p>
-                    <strong>Date:</strong>{" "}
+                    <strong>Data:</strong>{" "}
                     {format(selectedDate!, "dd/MM/yyyy (EEEE)", {
-                      locale: enAU,
+                      locale: ptBR,
                     })}
                   </p>
                   <p>
-                    <strong>Time:</strong> {selectedSlot.start} -{" "}
+                    <strong>Horario:</strong> {selectedSlot.start} -{" "}
                     {selectedSlot.end}
                   </p>
                   <p>
-                    <strong>Price:</strong> {formatPrice(service.price)}
+                    <strong>Valor:</strong> {formatPrice(service.price)}
                   </p>
                 </div>
                 <Button
@@ -260,10 +260,10 @@ export function BookingClient({
                   disabled={booking}
                 >
                   {booking
-                    ? "Booking..."
+                    ? "Agendando..."
                     : isLoggedIn
-                      ? "Confirm Booking"
-                      : "Log In to Book"}
+                      ? "Confirmar Agendamento"
+                      : "Fazer Login para Agendar"}
                 </Button>
               </div>
             )}

@@ -47,12 +47,12 @@ export default function ImageUpload({
     async (file: File) => {
       // Valida tipo de arquivo
       if (!file.type.startsWith("image/")) {
-        toast.error("Only images are allowed");
+        toast.error("Apenas imagens sao permitidas");
         return;
       }
       // Valida tamanho (maximo 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image too large. Maximum 5MB.");
+        toast.error("Imagem muito grande. Maximo 5MB.");
         return;
       }
 
@@ -75,7 +75,7 @@ export default function ImageUpload({
 
       // Callback com URL da imagem enviada
       onUpload(result.data.url);
-      toast.success("Image uploaded!");
+      toast.success("Imagem enviada!");
     },
     [bucket, onUpload]
   );
@@ -159,16 +159,16 @@ export default function ImageUpload({
         {uploading ? (
           <>
             <Loader2 className="mb-2 h-8 w-8 animate-spin text-rose-500" />
-            <span className="text-sm text-gray-500">Uploading...</span>
+            <span className="text-sm text-gray-500">Enviando...</span>
           </>
         ) : (
           <>
             <Upload className="mb-2 h-8 w-8 text-gray-400" />
             <span className="text-sm font-medium text-gray-600">
-              Click or drag an image
+              Clique ou arraste uma imagem
             </span>
             <span className="mt-1 text-xs text-gray-400">
-              JPG, PNG or WebP (max 5MB)
+              JPG, PNG ou WebP (max 5MB)
             </span>
           </>
         )}

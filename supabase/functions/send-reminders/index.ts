@@ -14,31 +14,6 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const APP_URL = Deno.env.get("NEXT_PUBLIC_APP_URL") || "https://belaorsinebeauty.com.br";
 
 Deno.serve(async () => {
-
-  // Funcao SMS para Edge Function (Deno/Supabase)
-  async function sendTwilioSms(to: string, message: string): Promise<void> {
-    const accountSid = Deno.env.get("TWILIO_ACCOUNT_SID");
-    const authToken = Deno.env.get("TWILIO_AUTH_TOKEN");
-    const fromNumber = Deno.env.get("TWILIO_PHONE_NUMBER");
-
-    if (!accountSid || !authToken || !fromNumber || !to) return;
-
-    // Normaliza numero australiano
-    const clean = to.replace(/[\s\-\(\)]/g, "");
-    const normalized = clean.startsWith("+") ? clean : clean.startsWith("0") ? `+61${clean.slice(1)}` : `+61${clean}`;
-
-    const credentials = btoa(`${accountSid}:${authToken}`);
-    await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`, {
-      method: "POST",
-      headers: {
-        "Authorization": `Basic ${credentials}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({ From: fromNumber, To: normalized, Body: message }),
-    }).catch(console.error);
-  }
-
-
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const now = new Date().toISOString();
@@ -159,20 +134,6 @@ Deno.serve(async () => {
               .update({ status: "sent", sent_at: now })
               .eq("id", notif.id);
             sentCount++;
-
-            // Enviar SMS alem do email
-            const phone = (apt as any).profiles?.phone;
-            if (phone) {
-              const firstName = (apt as any).profiles.full_name?.split(" ")[0] || "there";
-              const serviceName = (apt as any).appointment_services?.[0]?.services?.name || (apt as any).services?.name || "your service";
-              const timeStr = (apt as any).start_time?.slice(0, 5) || "";
-              
-              const smsMessage = notif.type === "reminder_24h"
-                ? `Hi ${firstName}! Reminder: you have an appointment at Bela Orsine Beauty tomorrow at ${timeStr} for ${serviceName}. See you then! 💅`
-                : `Hi ${firstName}! Your ${serviceName} appointment at Bela Orsine Beauty is in 2 hours (${timeStr}). We're looking forward to seeing you! 🌸`;
-              
-              await sendTwilioSms(phone, smsMessage).catch(() => {});
-            }
           } else {
             console.error("Resend error:", await emailRes.text());
             await supabase

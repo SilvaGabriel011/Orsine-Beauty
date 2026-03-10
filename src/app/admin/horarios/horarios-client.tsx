@@ -27,13 +27,13 @@ import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 
 const dayNames = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
+  "Domingo",
+  "Segunda-feira",
+  "Terca-feira",
+  "Quarta-feira",
+  "Quinta-feira",
+  "Sexta-feira",
+  "Sabado",
 ];
 
 interface WorkingHour {
@@ -73,12 +73,12 @@ export function HorariosClient({
       .eq("id", hour.id);
 
     if (error) {
-      toast.error("Error updating");
+      toast.error("Erro ao atualizar");
       return;
     }
 
     toast.success(
-      `${dayNames[hour.day_of_week]} ${!hour.is_active ? "enabled" : "disabled"}`
+      `${dayNames[hour.day_of_week]} ${!hour.is_active ? "ativado" : "desativado"}`
     );
     router.refresh();
   }
@@ -94,7 +94,7 @@ export function HorariosClient({
       .eq("id", hour.id);
 
     if (error) {
-      toast.error("Error updating schedule");
+      toast.error("Erro ao atualizar horario");
       return;
     }
 
@@ -111,9 +111,9 @@ export function HorariosClient({
     });
 
     if (error) {
-      toast.error("Error blocking date");
+      toast.error("Erro ao bloquear data");
     } else {
-      toast.success("Date blocked!");
+      toast.success("Data bloqueada!");
       setOpenBlock(false);
       setBlockDate("");
       setBlockReason("");
@@ -130,26 +130,26 @@ export function HorariosClient({
       .eq("id", id);
 
     if (error) {
-      toast.error("Error removing block");
+      toast.error("Erro ao remover bloqueio");
       return;
     }
 
-    toast.success("Block removed!");
+    toast.success("Bloqueio removido!");
     router.refresh();
   }
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Working Hours</h1>
+        <h1 className="text-2xl font-bold">Horarios de Funcionamento</h1>
         <p className="text-muted-foreground">
-          Set up working days and hours
+          Configure os dias e horarios de atendimento
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Weekly Schedule</CardTitle>
+          <CardTitle>Horario Semanal</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -167,7 +167,7 @@ export function HorariosClient({
                   onClick={() => toggleDay(hour)}
                   className={hour.is_active ? "bg-green-600 hover:bg-green-700" : ""}
                 >
-                  {hour.is_active ? "Open" : "Closed"}
+                  {hour.is_active ? "Aberto" : "Fechado"}
                 </Button>
                 {hour.is_active && (
                   <>
@@ -179,7 +179,7 @@ export function HorariosClient({
                         updateTime(hour, "start_time", e.target.value)
                       }
                     />
-                    <span>to</span>
+                    <span>ate</span>
                     <Input
                       type="time"
                       defaultValue={hour.end_time}
@@ -198,21 +198,21 @@ export function HorariosClient({
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Blocked Dates</CardTitle>
+          <CardTitle>Datas Bloqueadas</CardTitle>
           <Dialog open={openBlock} onOpenChange={setOpenBlock}>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm">
                 <Plus className="mr-2 h-4 w-4" />
-                Block Date
+                Bloquear Data
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Block Date</DialogTitle>
+                <DialogTitle>Bloquear Data</DialogTitle>
               </DialogHeader>
               <form onSubmit={addBlock} className="space-y-4">
                 <div>
-                  <Label htmlFor="block-date">Date</Label>
+                  <Label htmlFor="block-date">Data</Label>
                   <Input
                     id="block-date"
                     type="date"
@@ -222,12 +222,12 @@ export function HorariosClient({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="block-reason">Reason (optional)</Label>
+                  <Label htmlFor="block-reason">Motivo (opcional)</Label>
                   <Input
                     id="block-reason"
                     value={blockReason}
                     onChange={(e) => setBlockReason(e.target.value)}
-                    placeholder="e.g. Holiday, Vacation"
+                    placeholder="Ex: Feriado, Ferias"
                   />
                 </div>
                 <Button
@@ -235,7 +235,7 @@ export function HorariosClient({
                   disabled={loading}
                   className="w-full bg-rose-600 hover:bg-rose-700"
                 >
-                  {loading ? "Saving..." : "Block"}
+                  {loading ? "Salvando..." : "Bloquear"}
                 </Button>
               </form>
             </DialogContent>
@@ -244,15 +244,15 @@ export function HorariosClient({
         <CardContent>
           {initialBlocked.length === 0 ? (
             <p className="text-center py-4 text-muted-foreground">
-              No blocked dates
+              Nenhuma data bloqueada
             </p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Reason</TableHead>
-                  <TableHead className="text-right">Action</TableHead>
+                  <TableHead>Data</TableHead>
+                  <TableHead>Motivo</TableHead>
+                  <TableHead className="text-right">Acao</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -260,7 +260,7 @@ export function HorariosClient({
                   <TableRow key={block.id}>
                     <TableCell>
                       {new Date(block.block_date + "T12:00:00").toLocaleDateString(
-                        "en-AU"
+                        "pt-BR"
                       )}
                     </TableCell>
                     <TableCell>

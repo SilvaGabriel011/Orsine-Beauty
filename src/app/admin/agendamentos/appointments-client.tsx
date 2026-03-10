@@ -29,7 +29,7 @@ import { MoreHorizontal, Check, X, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { safeFetch } from "@/lib/errors/client";
 import { format } from "date-fns";
-import { enAU } from "date-fns/locale";
+import { ptBR } from "date-fns/locale";
 
 interface Appointment {
   id: string;
@@ -80,11 +80,11 @@ const statusColors: Record<string, string> = {
 };
 
 const statusLabels: Record<string, string> = {
-  pending: "Pending",
-  confirmed: "Confirmed",
-  completed: "Completed",
-  cancelled: "Cancelled",
-  no_show: "No show",
+  pending: "Pendente",
+  confirmed: "Confirmado",
+  completed: "Concluido",
+  cancelled: "Cancelado",
+  no_show: "Nao compareceu",
 };
 
 export function AppointmentsClient({
@@ -109,43 +109,43 @@ export function AppointmentsClient({
 
     if (!result.ok) return;
 
-    toast.success(`Status updated to: ${statusLabels[status]}`);
+    toast.success(`Status atualizado para: ${statusLabels[status]}`);
     router.refresh();
   }
 
   function formatDate(dateStr: string) {
     return format(new Date(dateStr + "T12:00:00"), "dd/MM/yyyy (EEE)", {
-      locale: enAU,
+      locale: ptBR,
     });
   }
 
   function formatPrice(value: number) {
-    return new Intl.NumberFormat("en-AU", {
+    return new Intl.NumberFormat("pt-BR", {
       style: "currency",
-      currency: "AUD",
+      currency: "BRL",
     }).format(value);
   }
 
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Bookings</h1>
+        <h1 className="text-2xl font-bold">Agendamentos</h1>
         <p className="text-muted-foreground">
-          Manage the studio&apos;s bookings
+          Gerencie os agendamentos do estudio
         </p>
       </div>
 
       <div className="mb-4">
         <Select value={filterStatus} onValueChange={setFilterStatus}>
           <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Filter by status" />
+            <SelectValue placeholder="Filtrar por status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="confirmed">Confirmed</SelectItem>
-            <SelectItem value="completed">Completed</SelectItem>
-            <SelectItem value="cancelled">Cancelled</SelectItem>
+            <SelectItem value="all">Todos</SelectItem>
+            <SelectItem value="pending">Pendentes</SelectItem>
+            <SelectItem value="confirmed">Confirmados</SelectItem>
+            <SelectItem value="completed">Concluidos</SelectItem>
+            <SelectItem value="cancelled">Cancelados</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -154,20 +154,20 @@ export function AppointmentsClient({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Time</TableHead>
-              <TableHead>Client</TableHead>
-              <TableHead>Service(s)</TableHead>
-              <TableHead>Amount</TableHead>
+              <TableHead>Data</TableHead>
+              <TableHead>Horario</TableHead>
+              <TableHead>Cliente</TableHead>
+              <TableHead>Servico(s)</TableHead>
+              <TableHead>Valor</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right">Acoes</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                  No bookings found
+                  Nenhum agendamento encontrado
                 </TableCell>
               </TableRow>
             ) : (
@@ -236,7 +236,7 @@ export function AppointmentsClient({
                             }
                           >
                             <Check className="mr-2 h-4 w-4 text-green-600" />
-                            Mark as Completed
+                            Marcar como Concluido
                           </DropdownMenuItem>
                         )}
                         {apt.status !== "cancelled" && (
@@ -246,7 +246,7 @@ export function AppointmentsClient({
                             }
                           >
                             <X className="mr-2 h-4 w-4 text-red-600" />
-                            Cancel
+                            Cancelar
                           </DropdownMenuItem>
                         )}
                         {apt.status !== "no_show" && (
@@ -256,7 +256,7 @@ export function AppointmentsClient({
                             }
                           >
                             <Clock className="mr-2 h-4 w-4 text-gray-600" />
-                            No Show
+                            Nao Compareceu
                           </DropdownMenuItem>
                         )}
                       </DropdownMenuContent>

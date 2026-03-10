@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
-import { enAU } from "date-fns/locale";
+import { ptBR } from "date-fns/locale";
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -42,7 +42,6 @@ export default function CheckoutClient() {
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [discount, setDiscount] = useState(0);
   const [discountRuleId, setDiscountRuleId] = useState<string | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<"presencial" | "online">("presencial");
 
   // Check auth
   useEffect(() => {
@@ -95,7 +94,7 @@ export default function CheckoutClient() {
 
     setBooking(true);
 
-    const result = await safeFetch<{ id: string }>("/api/appointments", {
+    const result = await safeFetch("/api/appointments", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -105,7 +104,7 @@ export default function CheckoutClient() {
         appointment_date: format(selectedDate, "yyyy-MM-dd"),
         start_time: selectedSlot.start,
         end_time: selectedSlot.end,
-        payment_method: paymentMethod,
+        payment_method: "presencial",
         discount_applied: discount,
       }),
     });
@@ -116,20 +115,7 @@ export default function CheckoutClient() {
 
     setSuccess(true);
     clearCart();
-    toast.success("Booking confirmed!");
-
-    // Se pagamento online, redirecionar para gateway
-    if (paymentMethod === "online" && result.data?.id) {
-      const payRes = await safeFetch<{ checkout_url: string }>("/api/payments/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ appointment_id: result.data.id }),
-      });
-      if (payRes.ok && payRes.data.checkout_url) {
-        window.location.href = payRes.data.checkout_url;
-        return;
-      }
-    }
+    toast.success("Agendamento confirmado!");
   };
 
   // Loading state
@@ -150,21 +136,21 @@ export default function CheckoutClient() {
             <CheckCircle2 className="h-8 w-8 text-emerald-600" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Booking confirmed!
+            Agendamento confirmado!
           </h1>
           <p className="mt-2 text-gray-600">
-            Your services have been successfully booked. You will receive a
-            reminder by email.
+            Seus servicos foram agendados com sucesso. Voce recebera um lembrete
+            por email.
           </p>
           <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
             <Link href="/cliente/meus-agendamentos">
               <Button className="w-full bg-rose-600 text-white hover:bg-rose-700 sm:w-auto">
-                View my bookings
+                Ver meus agendamentos
               </Button>
             </Link>
             <Link href="/">
               <Button variant="outline" className="w-full sm:w-auto">
-                Back to home
+                Voltar ao inicio
               </Button>
             </Link>
           </div>
@@ -178,9 +164,9 @@ export default function CheckoutClient() {
     return null; // Will redirect via useEffect
   }
 
-  const formattedTotal = new Intl.NumberFormat("en-AU", {
+  const formattedTotal = new Intl.NumberFormat("pt-BR", {
     style: "currency",
-    currency: "AUD",
+    currency: "BRL",
   }).format(totalPrice);
 
   // Disable dates: past, sundays, >60 days out
@@ -205,10 +191,10 @@ export default function CheckoutClient() {
           </Link>
           <div>
             <h1 className="text-lg font-bold text-gray-900">
-              Complete Booking
+              Finalizar agendamento
             </h1>
             <p className="text-xs text-gray-500">
-              Choose a date and time
+              Escolha a data e o horario
             </p>
           </div>
         </div>
@@ -235,7 +221,7 @@ export default function CheckoutClient() {
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-base">
                   <CalendarIcon className="h-4 w-4 text-rose-600" />
-                  Choose a date
+                  Escolha a data
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -243,7 +229,7 @@ export default function CheckoutClient() {
                   mode="single"
                   selected={selectedDate}
                   onSelect={setSelectedDate}
-                  locale={enAU}
+                  locale={ptBR}
                   disabled={isDisabled}
                   className="mx-auto"
                 />
@@ -256,9 +242,9 @@ export default function CheckoutClient() {
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-base">
                     <Clock className="h-4 w-4 text-rose-600" />
-                    Available time slots
+                    Horarios disponiveis
                     <span className="ml-auto text-xs font-normal text-gray-500">
-                      {format(selectedDate, "d MMMM", { locale: enAU })}
+                      {format(selectedDate, "dd 'de' MMMM", { locale: ptBR })}
                     </span>
                   </CardTitle>
                 </CardHeader>
@@ -267,17 +253,17 @@ export default function CheckoutClient() {
                     <div className="flex items-center justify-center py-8">
                       <Loader2 className="h-6 w-6 animate-spin text-rose-400" />
                       <span className="ml-2 text-sm text-gray-500">
-                        Loading time slots...
+                        Buscando horarios...
                       </span>
                     </div>
                   ) : slots.length === 0 ? (
                     <div className="py-8 text-center">
                       <Clock className="mx-auto mb-2 h-8 w-8 text-gray-300" />
                       <p className="text-sm text-gray-500">
-                        No time slots available on this date
+                        Nenhum horario disponivel nesta data
                       </p>
                       <p className="mt-1 text-xs text-gray-400">
-                        Try another date
+                        Tente outra data
                       </p>
                     </div>
                   ) : (
@@ -300,39 +286,6 @@ export default function CheckoutClient() {
                 </CardContent>
               </Card>
             )}
-
-            {/* Método de pagamento */}
-            <div className="rounded-xl border bg-white p-4">
-              <h3 className="mb-3 text-sm font-semibold text-gray-900">Payment method</h3>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("presencial")}
-                  className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-4 text-center transition-all ${
-                    paymentMethod === "presencial"
-                      ? "border-rose-500 bg-rose-50"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <span className="text-xl">🏪</span>
-                  <span className="text-sm font-medium text-gray-900">In-person</span>
-                  <span className="text-xs text-gray-500">Pay at the studio</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("online")}
-                  className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-4 text-center transition-all ${
-                    paymentMethod === "online"
-                      ? "border-rose-500 bg-rose-50"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <span className="text-xl">💳</span>
-                  <span className="text-sm font-medium text-gray-900">Online</span>
-                  <span className="text-xs text-gray-500">Card or transfer now</span>
-                </button>
-              </div>
-            </div>
           </div>
 
           {/* Sidebar: Confirmation */}
@@ -340,7 +293,7 @@ export default function CheckoutClient() {
             <Card className="border-rose-100 bg-rose-50/50">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">
-                  Booking summary
+                  Resumo do agendamento
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -355,9 +308,9 @@ export default function CheckoutClient() {
                         {item.service.name}
                       </span>
                       <span className="font-medium text-gray-900">
-                        {new Intl.NumberFormat("en-AU", {
+                        {new Intl.NumberFormat("pt-BR", {
                           style: "currency",
-                          currency: "AUD",
+                          currency: "BRL",
                         }).format(item.service.price)}
                       </span>
                     </div>
@@ -369,7 +322,7 @@ export default function CheckoutClient() {
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <span className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
-                      Estimated duration
+                      Duracao estimada
                     </span>
                     <span>{totalDuration} min</span>
                   </div>
@@ -392,7 +345,7 @@ export default function CheckoutClient() {
                     <div className="mt-1 flex items-center justify-between text-xs text-gray-500">
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        Time
+                        Horario
                       </span>
                       <span>
                         {selectedSlot.start.slice(0, 5)} -{" "}
@@ -404,12 +357,12 @@ export default function CheckoutClient() {
                   {/* Discount */}
                   {discount > 0 && (
                     <div className="mt-1 flex items-center justify-between text-xs text-green-600">
-                      <span>Loyalty discount</span>
+                      <span>Desconto fidelidade</span>
                       <span>
                         -{" "}
-                        {new Intl.NumberFormat("en-AU", {
+                        {new Intl.NumberFormat("pt-BR", {
                           style: "currency",
-                          currency: "AUD",
+                          currency: "BRL",
                         }).format(discount)}
                       </span>
                     </div>
@@ -419,9 +372,9 @@ export default function CheckoutClient() {
                   <div className="mt-3 flex items-center justify-between border-t border-rose-200/50 pt-2">
                     <span className="font-medium text-gray-900">Total</span>
                     <span className="text-xl font-bold text-rose-600">
-                      {new Intl.NumberFormat("en-AU", {
+                      {new Intl.NumberFormat("pt-BR", {
                         style: "currency",
-                        currency: "AUD",
+                        currency: "BRL",
                       }).format(Math.max(0, totalPrice - discount))}
                     </span>
                   </div>
@@ -434,7 +387,7 @@ export default function CheckoutClient() {
                     className="block"
                   >
                     <Button className="w-full bg-rose-600 text-white hover:bg-rose-700">
-                      Log in to book
+                      Fazer login para agendar
                     </Button>
                   </Link>
                 ) : (
@@ -446,12 +399,12 @@ export default function CheckoutClient() {
                     {booking ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Confirming...
+                        Confirmando...
                       </>
                     ) : (
                       <>
                         <ShoppingBag className="mr-2 h-4 w-4" />
-                        Confirm booking
+                        Confirmar agendamento
                       </>
                     )}
                   </Button>
@@ -459,7 +412,7 @@ export default function CheckoutClient() {
 
                 {!selectedDate && (
                   <p className="text-center text-xs text-gray-400">
-                    Select a date to see available times
+                    Selecione uma data para ver os horarios
                   </p>
                 )}
               </CardContent>

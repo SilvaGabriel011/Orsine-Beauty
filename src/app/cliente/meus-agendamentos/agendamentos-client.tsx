@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { CalendarDays, Clock, Star, RefreshCw, Calendar } from "lucide-react";
 import { format } from "date-fns";
-import { enAU } from "date-fns/locale";
+import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 import { safeFetch } from "@/lib/errors/client";
 import StarRating from "@/components/reviews/StarRating";
@@ -61,17 +61,17 @@ const statusColors: Record<string, string> = {
 };
 
 const statusLabels: Record<string, string> = {
-  pending: "Pending",
-  confirmed: "Confirmed",
-  completed: "Completed",
-  cancelled: "Cancelled",
-  no_show: "No show",
+  pending: "Pendente",
+  confirmed: "Confirmado",
+  completed: "Concluido",
+  cancelled: "Cancelado",
+  no_show: "Nao compareceu",
 };
 
 function formatPrice(value: number) {
-  return new Intl.NumberFormat("en-AU", {
+  return new Intl.NumberFormat("pt-BR", {
     style: "currency",
-    currency: "AUD",
+    currency: "BRL",
   }).format(value);
 }
 
@@ -82,7 +82,7 @@ function getServiceNames(apt: Appointment): string {
       .filter(Boolean)
       .join(", ");
   }
-  return apt.services?.name || "Service";
+  return apt.services?.name || "Servico";
 }
 
 function getCategoryName(apt: Appointment): string | null {
@@ -148,18 +148,18 @@ export default function AgendamentosClient({
 
     if (!result.ok) return;
 
-    toast.success("Booking cancelled successfully");
+    toast.success("Agendamento cancelado com sucesso");
     router.refresh();
   }
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">My Bookings</h1>
+      <h1 className="mb-6 text-2xl font-bold">Meus Agendamentos</h1>
 
-      <h2 className="mb-4 text-lg font-semibold">Upcoming</h2>
+      <h2 className="mb-4 text-lg font-semibold">Proximos</h2>
       {upcoming.length === 0 ? (
         <p className="mb-8 text-muted-foreground">
-          No upcoming bookings.
+          Nenhum agendamento proximo.
         </p>
       ) : (
         <div className="mb-8 space-y-3">
@@ -184,7 +184,7 @@ export default function AgendamentosClient({
                     {format(
                       new Date(apt.appointment_date + "T12:00:00"),
                       "dd/MM/yyyy",
-                      { locale: enAU }
+                      { locale: ptBR }
                     )}
                   </p>
                   <p className="text-sm text-muted-foreground">
@@ -208,7 +208,7 @@ export default function AgendamentosClient({
                         onClick={() => openRescheduleModal(apt)}
                       >
                         <Calendar className="h-3 w-3" />
-                        Reschedule
+                        Reagendar
                       </Button>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -219,32 +219,32 @@ export default function AgendamentosClient({
                             disabled={cancellingId === apt.id}
                           >
                             {cancellingId === apt.id
-                              ? "Cancelling..."
-                              : "Cancel"}
+                              ? "Cancelando..."
+                              : "Cancelar"}
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>
-                              Cancel booking?
+                              Cancelar agendamento?
                             </AlertDialogTitle>
                             <AlertDialogDescription>
-                              Are you sure you want to cancel the booking for{" "}
-                              <strong>{getServiceNames(apt)}</strong> on{" "}
+                              Tem certeza que deseja cancelar o agendamento de{" "}
+                              <strong>{getServiceNames(apt)}</strong> em{" "}
                               {format(
                                 new Date(apt.appointment_date + "T12:00:00"),
                                 "dd/MM/yyyy"
                               )}
-                              ? This action cannot be undone.
+                              ? Esta acao nao pode ser desfeita.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Keep</AlertDialogCancel>
+                            <AlertDialogCancel>Manter</AlertDialogCancel>
                             <AlertDialogAction
                               className="bg-red-600 hover:bg-red-700"
                               onClick={() => handleCancel(apt.id)}
                             >
-                              Yes, cancel
+                              Sim, cancelar
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
@@ -258,9 +258,9 @@ export default function AgendamentosClient({
         </div>
       )}
 
-      <h2 className="mb-4 text-lg font-semibold">History</h2>
+      <h2 className="mb-4 text-lg font-semibold">Historico</h2>
       {past.length === 0 ? (
-        <p className="text-muted-foreground">No history yet.</p>
+        <p className="text-muted-foreground">Nenhum historico.</p>
       ) : (
         <div className="space-y-3">
           {past.map((apt) => (
@@ -284,7 +284,7 @@ export default function AgendamentosClient({
                     {format(
                       new Date(apt.appointment_date + "T12:00:00"),
                       "dd/MM/yyyy",
-                      { locale: enAU }
+                      { locale: ptBR }
                     )}
                   </p>
                   <Badge className={statusColors[apt.status]}>
@@ -301,7 +301,7 @@ export default function AgendamentosClient({
                       }
                     >
                       <Star className="mr-1 h-4 w-4" />
-                      Review
+                      Avaliar
                     </Button>
                   )}
                   {apt.review && (

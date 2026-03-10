@@ -24,8 +24,7 @@ export const PATCH = withErrorHandler(async (
   const body = await request.json();
 
   // Atualiza campos da regra: type, points, description, is_active
-  const { data, error } = await (supabase
-    .from("loyalty_rules")
+  const { data, error } = (await (supabase.from("loyalty_rules") as any)
     .update(body)
     .eq("id", id)
     .select()
@@ -49,8 +48,7 @@ export const DELETE = withErrorHandler(async (
   await requireAdmin(supabase);
 
   // Deleta regra permanentemente
-  const { error } = await (supabase
-    .from("loyalty_rules")
+  const { error } = (await (supabase.from("loyalty_rules") as any)
     .delete()
     .eq("id", id)) as { error: any };
 

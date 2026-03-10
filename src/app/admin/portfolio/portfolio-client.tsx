@@ -24,11 +24,9 @@ import {
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Plus, Trash2 } from "lucide-react";
-import { IconButton } from "@/components/ui/icon-button";
 import { toast } from "sonner";
 import { safeFetch } from "@/lib/errors/client";
 import ImageUpload from "@/components/admin/ImageUpload";
-import { BLUR_ROSE } from "@/lib/image-blur";
 
 interface PortfolioItem {
   id: string;
@@ -87,7 +85,7 @@ export default function PortfolioClient({
 
   async function handleSave() {
     if (!title.trim() || !imageUrl) {
-      toast.error("Title and image are required");
+      toast.error("Titulo e imagem sao obrigatorios");
       return;
     }
 
@@ -116,20 +114,20 @@ export default function PortfolioClient({
 
     if (!result.ok) return;
 
-    toast.success(editingId ? "Photo updated" : "Photo added");
+    toast.success(editingId ? "Foto atualizada" : "Foto adicionada");
     setDialogOpen(false);
     resetForm();
     router.refresh();
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Remove this photo from the portfolio?")) return;
+    if (!confirm("Remover esta foto do portfolio?")) return;
 
     const result = await safeFetch(`/api/portfolio/${id}`, { method: "DELETE" });
 
     if (!result.ok) return;
 
-    toast.success("Photo removed");
+    toast.success("Foto removida");
     router.refresh();
   }
 
@@ -142,7 +140,7 @@ export default function PortfolioClient({
 
     if (!result.ok) return;
 
-    toast.success(item.is_active ? "Photo hidden" : "Photo visible");
+    toast.success(item.is_active ? "Foto ocultada" : "Foto visivel");
     router.refresh();
   }
 
@@ -163,7 +161,7 @@ export default function PortfolioClient({
           }}
         >
           <Plus className="h-4 w-4" />
-          New Photo
+          Nova Foto
         </Button>
       </div>
 
@@ -171,10 +169,10 @@ export default function PortfolioClient({
       <div className="mb-6">
         <Select value={filterCategory} onValueChange={setFilterCategory}>
           <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Filter by category" />
+            <SelectValue placeholder="Filtrar categoria" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All categories</SelectItem>
+            <SelectItem value="all">Todas as categorias</SelectItem>
             {categories.map((c) => (
               <SelectItem key={c.id} value={c.id}>
                 {c.name}
@@ -187,7 +185,7 @@ export default function PortfolioClient({
       {/* Grid */}
       {filtered.length === 0 ? (
         <div className="py-16 text-center text-muted-foreground">
-          No photos in the portfolio.
+          Nenhuma foto no portfolio.
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -202,8 +200,6 @@ export default function PortfolioClient({
                   alt={item.title}
                   fill
                   className="object-cover"
-                  placeholder="blur"
-                  blurDataURL={BLUR_ROSE}
                 />
               </div>
               <CardContent className="p-4">
@@ -233,17 +229,16 @@ export default function PortfolioClient({
                     className="flex-1"
                     onClick={() => openEdit(item)}
                   >
-                    Edit
+                    Editar
                   </Button>
-                  <IconButton
+                  <Button
                     variant="outline"
-                    size="icon"
-                    tooltip="Delete"
-                    onClick={() => handleDelete(item.id)}
+                    size="sm"
                     className="text-red-600 hover:text-red-700"
+                    onClick={() => handleDelete(item.id)}
                   >
                     <Trash2 className="h-4 w-4" />
-                  </IconButton>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -262,7 +257,7 @@ export default function PortfolioClient({
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {editingId ? "Edit Photo" : "New Photo"}
+              {editingId ? "Editar Foto" : "Nova Foto"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -273,16 +268,16 @@ export default function PortfolioClient({
               onRemove={() => setImageUrl("")}
             />
             <div>
-              <Label>Title</Label>
+              <Label>Titulo</Label>
               <Input
                 className="mt-1"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Microblading eyebrow design"
+                placeholder="Ex: Design de sobrancelha fio a fio"
               />
             </div>
             <div>
-              <Label>Description (optional)</Label>
+              <Label>Descricao (opcional)</Label>
               <Textarea
                 className="mt-1"
                 value={description}
@@ -291,10 +286,10 @@ export default function PortfolioClient({
               />
             </div>
             <div>
-              <Label>Category</Label>
+              <Label>Categoria</Label>
               <Select value={categoryId} onValueChange={setCategoryId}>
                 <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue placeholder="Selecionar categoria" />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((c) => (
@@ -306,7 +301,7 @@ export default function PortfolioClient({
               </Select>
             </div>
             <div>
-              <Label>Order</Label>
+              <Label>Ordem</Label>
               <Input
                 className="mt-1"
                 type="number"
@@ -318,14 +313,14 @@ export default function PortfolioClient({
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
-              Cancel
+              Cancelar
             </Button>
             <Button
               onClick={handleSave}
               disabled={saving}
               className="bg-rose-600 hover:bg-rose-700"
             >
-              {saving ? "Saving..." : "Save"}
+              {saving ? "Salvando..." : "Salvar"}
             </Button>
           </DialogFooter>
         </DialogContent>

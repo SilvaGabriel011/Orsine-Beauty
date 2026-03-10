@@ -28,8 +28,8 @@ export default async function MeusAgendamentosPage() {
   if (!user) redirect("/auth/login");
 
   // Fetch appointments with services + appointment_services (multi-service)
-  const { data: appointments } = await (supabase
-    .from("appointments")
+  const { data: appointments } = (await (supabase
+    .from("appointments") as any)
     .select(
       "id, status, appointment_date, start_time, end_time, amount_paid, service_id, services(id, name, price, duration_minutes, categories(id, name)), appointment_services(service_id, services(id, name, price, duration_minutes, categories(id, name)))"
     )
@@ -43,8 +43,7 @@ export default async function MeusAgendamentosPage() {
   let reviewsMap: Record<string, { id: string; rating: number }> = {};
 
   if (appointmentIds.length > 0) {
-    const { data: reviews } = await (supabase
-      .from("reviews")
+    const { data: reviews } = (await (supabase.from("reviews") as any)
       .select("id, rating, appointment_id")
       .eq("client_id", user.id)
       .in("appointment_id", appointmentIds)) as { data: any[] | null };

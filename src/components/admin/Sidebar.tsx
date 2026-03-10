@@ -57,17 +57,17 @@ import { createClient } from "@/lib/supabase/client";
 // Itens do menu de navegacao
 const navItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/agendamentos", label: "Bookings", icon: CalendarDays },
-  { href: "/admin/categorias", label: "Categories", icon: FolderOpen },
-  { href: "/admin/servicos", label: "Services", icon: Scissors },
-  { href: "/admin/horarios", label: "Schedule", icon: Clock },
+  { href: "/admin/agendamentos", label: "Agendamentos", icon: CalendarDays },
+  { href: "/admin/categorias", label: "Categorias", icon: FolderOpen },
+  { href: "/admin/servicos", label: "Servicos", icon: Scissors },
+  { href: "/admin/horarios", label: "Horarios", icon: Clock },
   { href: "/admin/portfolio", label: "Portfolio", icon: Image },
-  { href: "/admin/feedbacks", label: "Reviews", icon: MessageSquare },
-  { href: "/admin/fidelidade", label: "Loyalty", icon: Award },
-  { href: "/admin/gamificacao", label: "Gamification", icon: Gamepad2 },
-  { href: "/admin/loja", label: "Rewards Shop", icon: Store },
-  { href: "/admin/clientes", label: "Clients", icon: Users },
-  { href: "/admin/configuracoes", label: "Settings", icon: Settings },
+  { href: "/admin/feedbacks", label: "Feedbacks", icon: MessageSquare },
+  { href: "/admin/fidelidade", label: "Fidelidade", icon: Award },
+  { href: "/admin/gamificacao", label: "Gamificacao", icon: Gamepad2 },
+  { href: "/admin/loja", label: "Loja Recompensas", icon: Store },
+  { href: "/admin/clientes", label: "Clientes", icon: Users },
+  { href: "/admin/configuracoes", label: "Configuracoes", icon: Settings },
 ];
 
 interface SidebarProps {
@@ -151,7 +151,7 @@ function UserSection({ profile }: { profile: SidebarProps["profile"] }) {
           size="icon-sm"
           onClick={handleLogout}
           className="text-gray-400 hover:text-gray-600"
-          title="Log out"
+          title="Sair"
         >
           <LogOut className="h-4 w-4" />
         </Button>
@@ -198,11 +198,11 @@ export function Sidebar({ profile }: SidebarProps) {
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
               <Menu className="h-5 w-5" />
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Abrir menu</span>
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0" showCloseButton={false}>
-            <SheetTitle className="sr-only">Navigation menu</SheetTitle>
+            <SheetTitle className="sr-only">Menu de navegacao</SheetTitle>
             <SidebarContent profile={profile} />
           </SheetContent>
         </Sheet>

@@ -32,12 +32,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       .single()) as unknown as { data: { name: string } | null };
 
     if (!category) {
-      return { title: "Category not found" };
+      return { title: "Categoria nao encontrada" };
     }
 
     return { title: category.name };
   } catch {
-    return { title: "Services" };
+    return { title: "Servicos" };
   }
 }
 
@@ -86,7 +86,7 @@ export default async function CategoryServicosPage({ params }: Props) {
               className="mb-6 inline-flex items-center gap-1 text-sm font-medium text-rose-600 hover:text-rose-700"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back to services
+              Voltar para servicos
             </Link>
 
             <div className="mb-4 flex justify-center">
@@ -161,7 +161,7 @@ export default async function CategoryServicosPage({ params }: Props) {
                         {service.duration_minutes} min
                       </span>
                       <span className="text-lg font-bold text-rose-600">
-                        ${service.price.toFixed(2)}
+                        R$ {service.price.toFixed(2).replace(".", ",")}
                       </span>
                     </div>
 
@@ -171,7 +171,7 @@ export default async function CategoryServicosPage({ params }: Props) {
                     >
                       <Button className="w-full gap-2 bg-rose-600 text-white hover:bg-rose-700">
                         <Calendar className="h-4 w-4" />
-                        Book
+                        Agendar
                       </Button>
                     </Link>
                   </CardContent>
@@ -182,11 +182,11 @@ export default async function CategoryServicosPage({ params }: Props) {
             <div className="rounded-lg bg-rose-50 p-12 text-center">
               <Sparkles className="mx-auto h-12 w-12 text-rose-300" />
               <h3 className="mt-4 text-lg font-semibold text-gray-900">
-                No services available
+                Nenhum servico disponivel
               </h3>
               <p className="mt-2 text-gray-500">
-                Services in this category are being prepared. Check back
-                soon!
+                Os servicos desta categoria estao sendo preparados. Volte em
+                breve!
               </p>
               <Link href="/servicos" className="mt-6 inline-block">
                 <Button
@@ -194,7 +194,7 @@ export default async function CategoryServicosPage({ params }: Props) {
                   className="gap-2 border-rose-200 text-rose-700 hover:bg-rose-50"
                 >
                   <ArrowLeft className="h-4 w-4" />
-                  View all categories
+                  Ver todas as categorias
                 </Button>
               </Link>
             </div>
@@ -207,10 +207,10 @@ export default async function CategoryServicosPage({ params }: Props) {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-              Can&apos;t find what you&apos;re looking for?
+              Nao encontrou o que procura?
             </h2>
             <p className="mt-3 text-gray-500">
-              Get in touch with us on WhatsApp and we&apos;ll be happy to help.
+              Entre em contato conosco pelo WhatsApp e teremos prazer em ajudar.
             </p>
             <div className="mt-6 flex justify-center gap-3">
               <Link href="/servicos">
@@ -218,13 +218,13 @@ export default async function CategoryServicosPage({ params }: Props) {
                   variant="outline"
                   className="gap-2 border-rose-200 text-rose-700 hover:bg-rose-50"
                 >
-                  View all services
+                  Ver todos os servicos
                 </Button>
               </Link>
               <Link href="/agendar">
                 <Button className="gap-2 bg-rose-600 text-white hover:bg-rose-700">
                   <Calendar className="h-4 w-4" />
-                  Book
+                  Agendar
                 </Button>
               </Link>
             </div>

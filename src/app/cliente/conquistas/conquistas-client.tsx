@@ -4,7 +4,6 @@ import Link from "next/link";
 import { ArrowLeft, Trophy } from "lucide-react";
 import { AchievementCard } from "@/components/games/AchievementCard";
 import { Badge } from "@/components/ui/badge";
-import { EmptyState } from "@/components/ui/empty-state";
 
 interface AchievementItem {
   id: string;
@@ -24,36 +23,12 @@ interface ConquistasClientProps {
 const CATEGORY_LABELS: Record<string, string> = {
   streak: "Streak",
   games: "Minigames",
-  spending: "Shop",
+  spending: "Loja",
   social: "Social",
 };
 
 export function ConquistasClient({ achievements }: ConquistasClientProps) {
   const totalUnlocked = achievements.filter((a) => a.unlocked_at).length;
-
-  // Show empty state if no achievements
-  if (!achievements || achievements.length === 0) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-3">
-          <Link
-            href="/cliente/jogar"
-            className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Games
-          </Link>
-          <h1 className="text-xl font-bold text-gray-900">Achievements</h1>
-        </div>
-        <EmptyState
-          icon={Trophy}
-          title="No achievements yet"
-          description="Play the daily minigames and complete appointments to unlock achievements."
-          action={{ label: "Go to games", href: "/cliente/jogar" }}
-        />
-      </div>
-    );
-  }
 
   // Group by category
   const grouped = achievements.reduce<Record<string, AchievementItem[]>>((acc, a) => {
@@ -82,7 +57,7 @@ export function ConquistasClient({ achievements }: ConquistasClientProps) {
           <p className="text-2xl font-bold text-gray-900">
             {totalUnlocked}/{achievements.length}
           </p>
-          <p className="text-xs text-gray-500">achievements unlocked</p>
+          <p className="text-xs text-gray-500">conquistas desbloqueadas</p>
         </div>
       </div>
 

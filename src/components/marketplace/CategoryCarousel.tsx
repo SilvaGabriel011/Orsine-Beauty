@@ -16,7 +16,6 @@ import { useRef } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { IconButton } from "@/components/ui/icon-button";
 import type { Category } from "@/types/database";
 
 interface CategoryCarouselProps {
@@ -45,15 +44,14 @@ export default function CategoryCarousel({
   return (
     <div className="relative w-full">
       {/* Seta esquerda para navegar (visivel apenas em desktop) */}
-      <IconButton
-        tooltip="Previous"
+      <Button
         variant="ghost"
         size="icon"
         className="absolute -left-2 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-white/80 shadow-md backdrop-blur-sm hover:bg-white md:flex"
         onClick={() => scroll("left")}
       >
         <ChevronLeft className="h-4 w-4" />
-      </IconButton>
+      </Button>
 
       {/* Faixa scrollavel do carrossel */}
       <div
@@ -71,29 +69,27 @@ export default function CategoryCarousel({
           onClick={() => onSelectCategory(null)}
           className={`flex flex-shrink-0 flex-col items-center gap-1.5 rounded-2xl px-4 py-3 transition-all ${
             selectedCategoryId === null
-              ? "bg-burgundy-600 text-white shadow-lg shadow-burgundy-600/20"
-              : "bg-white text-warm-700 shadow-sm hover:bg-warm-100 hover:shadow-md"
+              ? "bg-rose-600 text-white shadow-lg shadow-rose-200"
+              : "bg-white text-gray-700 shadow-sm hover:bg-rose-50 hover:shadow-md"
           }`}
           style={{ scrollSnapAlign: "start" }}
-          aria-pressed={selectedCategoryId === null}
-          title="Show all services"
         >
           <div
             className={`flex h-12 w-12 items-center justify-center rounded-full ${
               selectedCategoryId === null
                 ? "bg-white/20"
-                : "bg-warm-100"
+                : "bg-rose-50"
             }`}
           >
             <LayoutGrid
               className={`h-5 w-5 ${
                 selectedCategoryId === null
                   ? "text-white"
-                  : "text-burgundy-600"
+                  : "text-rose-600"
               }`}
             />
           </div>
-          <span className="whitespace-nowrap text-xs font-medium">All</span>
+          <span className="whitespace-nowrap text-xs font-medium">Todos</span>
         </button>
 
         {/* Category pills */}
@@ -103,18 +99,16 @@ export default function CategoryCarousel({
             onClick={() => onSelectCategory(category.id)}
             className={`flex flex-shrink-0 flex-col items-center gap-1.5 rounded-2xl px-4 py-3 transition-all ${
               selectedCategoryId === category.id
-                ? "bg-burgundy-600 text-white shadow-lg shadow-burgundy-600/20"
-                : "bg-white text-warm-700 shadow-sm hover:bg-warm-100 hover:shadow-md"
+                ? "bg-rose-600 text-white shadow-lg shadow-rose-200"
+                : "bg-white text-gray-700 shadow-sm hover:bg-rose-50 hover:shadow-md"
             }`}
             style={{ scrollSnapAlign: "start" }}
-            aria-pressed={selectedCategoryId === category.id}
-            title={`Filter by ${category.name}`}
           >
             <div
               className={`flex h-12 w-12 items-center justify-center overflow-hidden rounded-full ${
                 selectedCategoryId === category.id
                   ? "bg-white/20"
-                  : "bg-warm-100"
+                  : "bg-rose-50"
               }`}
             >
               {category.image_url ? (
@@ -139,15 +133,14 @@ export default function CategoryCarousel({
       </div>
 
       {/* Right arrow (desktop only) */}
-      <IconButton
-        tooltip="Next"
+      <Button
         variant="ghost"
         size="icon"
         className="absolute -right-2 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-white/80 shadow-md backdrop-blur-sm hover:bg-white md:flex"
         onClick={() => scroll("right")}
       >
         <ChevronRight className="h-4 w-4" />
-      </IconButton>
+      </Button>
     </div>
   );
 }

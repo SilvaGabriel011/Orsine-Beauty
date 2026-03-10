@@ -24,7 +24,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Plus, Pencil, Trash2 } from "lucide-react";
-import { IconButton } from "@/components/ui/icon-button";
 import { toast } from "sonner";
 import { safeFetch } from "@/lib/errors/client";
 import ImageUpload from "@/components/admin/ImageUpload";
@@ -100,7 +99,7 @@ export function CategoriesClient({
     if (!result.ok) return;
 
     toast.success(
-      editing ? "Category updated!" : "Category created!"
+      editing ? "Categoria atualizada!" : "Categoria criada!"
     );
     setOpen(false);
     resetForm();
@@ -117,7 +116,7 @@ export function CategoriesClient({
     if (!result.ok) return;
 
     toast.success(
-      cat.is_active ? "Category deactivated" : "Category activated"
+      cat.is_active ? "Categoria desativada" : "Categoria ativada"
     );
     router.refresh();
   }
@@ -126,9 +125,9 @@ export function CategoriesClient({
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Categories</h1>
+          <h1 className="text-2xl font-bold">Categorias</h1>
           <p className="text-muted-foreground">
-            Manage service areas
+            Gerencie as areas de atendimento
           </p>
         </div>
         <Dialog
@@ -141,18 +140,18 @@ export function CategoriesClient({
           <DialogTrigger asChild>
             <Button className="bg-rose-600 hover:bg-rose-700">
               <Plus className="mr-2 h-4 w-4" />
-              New Category
+              Nova Categoria
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {editing ? "Edit Category" : "New Category"}
+                {editing ? "Editar Categoria" : "Nova Categoria"}
               </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">Nome</Label>
                 <Input
                   id="name"
                   value={name}
@@ -160,7 +159,7 @@ export function CategoriesClient({
                     setName(e.target.value);
                     if (!editing) setSlug(slugify(e.target.value));
                   }}
-                  placeholder="e.g. Eyebrows"
+                  placeholder="Ex: Sobrancelha"
                   required
                 />
               </div>
@@ -170,21 +169,21 @@ export function CategoriesClient({
                   id="slug"
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
-                  placeholder="e.g. eyebrows"
+                  placeholder="Ex: sobrancelha"
                   required
                 />
               </div>
               <div>
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Descricao</Label>
                 <Textarea
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Brief category description"
+                  placeholder="Breve descricao da categoria"
                 />
               </div>
               <div>
-                <Label>Image</Label>
+                <Label>Imagem</Label>
                 <ImageUpload
                   bucket="categories"
                   currentUrl={imageUrl}
@@ -198,7 +197,7 @@ export function CategoriesClient({
                 disabled={loading}
                 className="w-full bg-rose-600 hover:bg-rose-700"
               >
-                {loading ? "Saving..." : "Save"}
+                {loading ? "Salvando..." : "Salvar"}
               </Button>
             </form>
           </DialogContent>
@@ -209,19 +208,19 @@ export function CategoriesClient({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[60px]">Photo</TableHead>
-              <TableHead>Name</TableHead>
+              <TableHead className="w-[60px]">Foto</TableHead>
+              <TableHead>Nome</TableHead>
               <TableHead>Slug</TableHead>
-              <TableHead>Services</TableHead>
+              <TableHead>Servicos</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right">Acoes</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {initialCategories.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                  No categories registered
+                  Nenhuma categoria cadastrada
                 </TableCell>
               </TableRow>
             ) : (
@@ -247,7 +246,7 @@ export function CategoriesClient({
                     {cat.slug}
                   </TableCell>
                   <TableCell>
-                    {cat.services?.[0]?.count || 0} services
+                    {cat.services?.[0]?.count || 0} servicos
                   </TableCell>
                   <TableCell>
                     <Badge
@@ -256,27 +255,25 @@ export function CategoriesClient({
                         cat.is_active ? "bg-green-100 text-green-800" : ""
                       }
                     >
-                      {cat.is_active ? "Active" : "Inactive"}
+                      {cat.is_active ? "Ativa" : "Inativa"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <IconButton
+                      <Button
                         variant="ghost"
-                        size="icon"
-                        tooltip="Edit"
+                        size="sm"
                         onClick={() => openEdit(cat)}
                       >
                         <Pencil className="h-4 w-4" />
-                      </IconButton>
-                      <IconButton
+                      </Button>
+                      <Button
                         variant="ghost"
-                        size="icon"
-                        tooltip="Delete"
+                        size="sm"
                         onClick={() => handleToggle(cat)}
                       >
                         <Trash2 className="h-4 w-4 text-red-500" />
-                      </IconButton>
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>

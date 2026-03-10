@@ -60,9 +60,9 @@ interface LojaAdminClientProps {
 }
 
 const TYPE_LABELS: Record<string, string> = {
-  discount: "Discount",
-  service: "Service",
-  product: "Product",
+  discount: "Desconto",
+  service: "Servico",
+  product: "Produto",
 };
 
 const TYPE_ICONS: Record<string, React.ReactNode> = {
@@ -85,7 +85,7 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
 
   const handleCreateItem = async () => {
     if (!newItem.name || !newItem.coin_price) {
-      toast.error("Fill in name and price");
+      toast.error("Preencha nome e preco");
       return;
     }
 
@@ -103,7 +103,7 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
       });
 
       if (!res.ok) {
-        toast.error("Error creating item");
+        toast.error("Erro ao criar item");
         return;
       }
 
@@ -111,9 +111,9 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
       setItems((prev) => [...prev, data.item]);
       setShowCreateDialog(false);
       setNewItem({ name: "", description: "", type: "discount", coin_price: 100, stock: "" });
-      toast.success("Item created successfully");
+      toast.success("Item criado com sucesso");
     } catch {
-      toast.error("Connection error");
+      toast.error("Erro de conexao");
     }
   };
 
@@ -126,7 +126,7 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
       });
 
       if (!res.ok) {
-        toast.error("Error updating item");
+        toast.error("Erro ao atualizar item");
         return;
       }
 
@@ -135,14 +135,14 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
           item.id === itemId ? { ...item, is_active: !isActive } : item
         )
       );
-      toast.success(isActive ? "Item deactivated" : "Item activated");
+      toast.success(isActive ? "Item desativado" : "Item ativado");
     } catch {
-      toast.error("Connection error");
+      toast.error("Erro de conexao");
     }
   };
 
   const handleDeleteItem = async (itemId: string) => {
-    if (!confirm("Are you sure? This cannot be undone.")) return;
+    if (!confirm("Tem certeza? Isso nao pode ser desfeito.")) return;
 
     try {
       const res = await fetch(`/api/admin/store/items/${itemId}`, {
@@ -150,14 +150,14 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
       });
 
       if (!res.ok) {
-        toast.error("Error deleting item");
+        toast.error("Erro ao excluir item");
         return;
       }
 
       setItems((prev) => prev.filter((item) => item.id !== itemId));
-      toast.success("Item deleted");
+      toast.success("Item excluido");
     } catch {
-      toast.error("Connection error");
+      toast.error("Erro de conexao");
     }
   };
 
@@ -170,7 +170,7 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
       });
 
       if (!res.ok) {
-        toast.error("Error updating");
+        toast.error("Erro ao atualizar");
         return;
       }
 
@@ -181,9 +181,9 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
             : r
         )
       );
-      toast.success(status === "fulfilled" ? "Marked as delivered" : "Redemption cancelled and coins refunded");
+      toast.success(status === "fulfilled" ? "Marcado como entregue" : "Troca cancelada e moedas devolvidas");
     } catch {
-      toast.error("Connection error");
+      toast.error("Erro de conexao");
     }
   };
 
@@ -192,37 +192,37 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Rewards Shop</h1>
+        <h1 className="text-2xl font-bold">Loja de Recompensas</h1>
         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              New Item
+              Novo Item
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Create Shop Item</DialogTitle>
+              <DialogTitle>Criar Item da Loja</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 pt-4">
               <div>
-                <Label>Name</Label>
+                <Label>Nome</Label>
                 <Input
                   value={newItem.name}
                   onChange={(e) => setNewItem((p) => ({ ...p, name: e.target.value }))}
-                  placeholder="e.g. $15 discount"
+                  placeholder="Ex: R$15 de desconto"
                 />
               </div>
               <div>
-                <Label>Description</Label>
+                <Label>Descricao</Label>
                 <Input
                   value={newItem.description}
                   onChange={(e) => setNewItem((p) => ({ ...p, description: e.target.value }))}
-                  placeholder="e.g. Discount applicable to any service"
+                  placeholder="Ex: Desconto aplicavel em qualquer servico"
                 />
               </div>
               <div>
-                <Label>Type</Label>
+                <Label>Tipo</Label>
                 <Select
                   value={newItem.type}
                   onValueChange={(v) => setNewItem((p) => ({ ...p, type: v as typeof p.type }))}
@@ -231,14 +231,14 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="discount">Discount</SelectItem>
-                    <SelectItem value="service">Free service</SelectItem>
-                    <SelectItem value="product">Physical product</SelectItem>
+                    <SelectItem value="discount">Desconto</SelectItem>
+                    <SelectItem value="service">Servico gratis</SelectItem>
+                    <SelectItem value="product">Produto fisico</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label>Price (coins)</Label>
+                <Label>Preco (moedas)</Label>
                 <Input
                   type="number"
                   value={newItem.coin_price}
@@ -247,17 +247,17 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
                 />
               </div>
               <div>
-                <Label>Stock (empty = unlimited)</Label>
+                <Label>Estoque (vazio = ilimitado)</Label>
                 <Input
                   type="number"
                   value={newItem.stock}
                   onChange={(e) => setNewItem((p) => ({ ...p, stock: e.target.value }))}
-                  placeholder="Unlimited"
+                  placeholder="Ilimitado"
                   min={0}
                 />
               </div>
               <Button onClick={handleCreateItem} className="w-full">
-                Create Item
+                Criar Item
               </Button>
             </div>
           </DialogContent>
@@ -269,28 +269,28 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
         <Card>
           <CardContent className="pt-6 text-center">
             <p className="text-3xl font-bold">{items.length}</p>
-            <p className="text-sm text-muted-foreground">Shop items</p>
+            <p className="text-sm text-muted-foreground">Itens na loja</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
             <p className="text-3xl font-bold">{items.filter((i) => i.is_active).length}</p>
-            <p className="text-sm text-muted-foreground">Active</p>
+            <p className="text-sm text-muted-foreground">Ativos</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
             <p className="text-3xl font-bold text-amber-600">{pendingCount}</p>
-            <p className="text-sm text-muted-foreground">Pending deliveries</p>
+            <p className="text-sm text-muted-foreground">Entregas pendentes</p>
           </CardContent>
         </Card>
       </div>
 
       <Tabs defaultValue="items">
         <TabsList>
-          <TabsTrigger value="items">Items ({items.length})</TabsTrigger>
+          <TabsTrigger value="items">Itens ({items.length})</TabsTrigger>
           <TabsTrigger value="redemptions">
-            Redemptions {pendingCount > 0 && <Badge className="ml-1 bg-amber-500">{pendingCount}</Badge>}
+            Trocas {pendingCount > 0 && <Badge className="ml-1 bg-amber-500">{pendingCount}</Badge>}
           </TabsTrigger>
         </TabsList>
 
@@ -306,11 +306,11 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <span>{TYPE_LABELS[item.type]}</span>
                     <span>|</span>
-                    <span>{item.coin_price} coins</span>
+                    <span>{item.coin_price} moedas</span>
                     {item.stock !== null && (
                       <>
                         <span>|</span>
-                        <span>Stock: {item.stock}</span>
+                        <span>Estoque: {item.stock}</span>
                       </>
                     )}
                   </div>
@@ -342,7 +342,7 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
 
         <TabsContent value="redemptions" className="mt-4 space-y-3">
           {redemptions.length === 0 ? (
-            <p className="py-8 text-center text-muted-foreground">No redemptions recorded.</p>
+            <p className="py-8 text-center text-muted-foreground">Nenhuma troca registrada.</p>
           ) : (
             redemptions.map((r) => (
               <Card key={r.id}>
@@ -353,7 +353,7 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
                       {r.profiles.full_name} ({r.profiles.email})
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {r.coins_spent} coins | {new Date(r.created_at).toLocaleDateString("en-AU")}
+                      {r.coins_spent} moedas | {new Date(r.created_at).toLocaleDateString("pt-BR")}
                     </p>
                   </div>
                   {r.status === "pending" ? (
@@ -364,7 +364,7 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
                         onClick={() => handleUpdateRedemption(r.id, "fulfilled")}
                       >
                         <Check className="mr-1 h-3.5 w-3.5" />
-                        Delivered
+                        Entregue
                       </Button>
                       <Button
                         size="sm"
@@ -383,9 +383,9 @@ export function LojaAdminClient({ items: initialItems, redemptions: initialRedem
                       }
                     >
                       {r.status === "fulfilled" ? (
-                        <><Check className="mr-1 h-3 w-3" /> Delivered</>
+                        <><Check className="mr-1 h-3 w-3" /> Entregue</>
                       ) : (
-                        <><X className="mr-1 h-3 w-3" /> Cancelled</>
+                        <><X className="mr-1 h-3 w-3" /> Cancelado</>
                       )}
                     </Badge>
                   )}

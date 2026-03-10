@@ -8,7 +8,6 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { BLUR_ROSE } from "@/lib/image-blur";
 
 interface PortfolioItem {
   id: string;
@@ -44,18 +43,18 @@ export default function PortfolioFilter({
   return (
     <>
       {/* Category Filter */}
-      <div className="mb-10 flex flex-wrap justify-center gap-2">
+      <div className="mb-8 flex flex-wrap justify-center gap-2">
         <Button
           variant={selectedCategory === null ? "default" : "outline"}
           size="sm"
           onClick={() => setSelectedCategory(null)}
           className={
             selectedCategory === null
-              ? "rounded-full bg-burgundy-600 text-white hover:bg-burgundy-700"
-              : "rounded-full border-warm-300 text-warm-600 hover:bg-warm-200/50 hover:text-burgundy-700"
+              ? "bg-rose-600 text-white hover:bg-rose-700"
+              : ""
           }
         >
-          All
+          Todos
         </Button>
         {categories.map((cat) => (
           <Button
@@ -65,8 +64,8 @@ export default function PortfolioFilter({
             onClick={() => setSelectedCategory(cat.id)}
             className={
               selectedCategory === cat.id
-                ? "rounded-full bg-burgundy-600 text-white hover:bg-burgundy-700"
-                : "rounded-full border-warm-300 text-warm-600 hover:bg-warm-200/50 hover:text-burgundy-700"
+                ? "bg-rose-600 text-white hover:bg-rose-700"
+                : ""
             }
           >
             {cat.name}
@@ -76,31 +75,29 @@ export default function PortfolioFilter({
 
       {/* Grid */}
       {filtered.length === 0 ? (
-        <div className="py-16 text-center text-warm-400">
-          No photos found.
+        <div className="py-16 text-center text-muted-foreground">
+          Nenhuma foto encontrada.
         </div>
       ) : (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((item) => (
             <div
               key={item.id}
-              className="group cursor-pointer overflow-hidden rounded-2xl"
+              className="group cursor-pointer overflow-hidden rounded-xl"
               onClick={() => setLightbox(item)}
             >
-              <div className="relative aspect-square overflow-hidden rounded-2xl bg-warm-100">
+              <div className="relative aspect-square overflow-hidden rounded-xl bg-gray-100">
                 <Image
                   src={item.image_url}
                   alt={item.title}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  placeholder="blur"
-                  blurDataURL={BLUR_ROSE}
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-burgundy-900/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                <div className="absolute bottom-0 left-0 right-0 p-5 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <p className="font-serif text-lg">{item.title}</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white opacity-0 transition-opacity group-hover:opacity-100">
+                  <p className="font-semibold">{item.title}</p>
                   {item.categories?.name && (
-                    <p className="text-sm text-warm-200">
+                    <p className="text-sm text-white/80">
                       {item.categories.name}
                     </p>
                   )}
@@ -118,31 +115,29 @@ export default function PortfolioFilter({
           if (!open) setLightbox(null);
         }}
       >
-        <DialogContent className="max-w-3xl p-0 overflow-hidden border-warm-200">
+        <DialogContent className="max-w-3xl p-0 overflow-hidden">
           <DialogTitle className="sr-only">
-            {lightbox?.title || "Portfolio photo"}
+            {lightbox?.title || "Foto do portfolio"}
           </DialogTitle>
           {lightbox && (
             <>
-              <div className="relative aspect-square max-h-[70vh] w-full bg-warm-100">
+              <div className="relative aspect-square max-h-[70vh] w-full">
                 <Image
                   src={lightbox.image_url}
                   alt={lightbox.title}
                   fill
                   className="object-contain"
-                  placeholder="blur"
-                  blurDataURL={BLUR_ROSE}
                 />
               </div>
-              <div className="p-5">
-                <h3 className="font-serif text-lg text-warm-900">{lightbox.title}</h3>
+              <div className="p-4">
+                <h3 className="text-lg font-semibold">{lightbox.title}</h3>
                 {lightbox.categories?.name && (
-                  <p className="text-sm text-warm-500">
+                  <p className="text-sm text-muted-foreground">
                     {lightbox.categories.name}
                   </p>
                 )}
                 {lightbox.description && (
-                  <p className="mt-2 text-sm text-warm-600">
+                  <p className="mt-2 text-sm text-gray-600">
                     {lightbox.description}
                   </p>
                 )}

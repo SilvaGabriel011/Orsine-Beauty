@@ -28,7 +28,7 @@ export default function ReviewFormClient({
     e.preventDefault();
 
     if (rating === 0) {
-      toast.error("Please select a rating from 1 to 5 stars");
+      toast.error("Selecione uma nota de 1 a 5 estrelas");
       return;
     }
 
@@ -56,10 +56,10 @@ export default function ReviewFormClient({
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <CheckCircle2 className="mb-4 h-16 w-16 text-green-500" />
         <h2 className="text-xl font-bold text-gray-900">
-          Thank you for your review!
+          Obrigada pela avaliacao!
         </h2>
         <p className="mt-2 text-sm text-gray-500">
-          Your feedback is very important to us.
+          Sua opiniao e muito importante para nos.
         </p>
         <div className="mt-4">
           <StarRating rating={rating} readonly size="lg" />
@@ -68,7 +68,7 @@ export default function ReviewFormClient({
           className="mt-6 bg-rose-600 hover:bg-rose-700"
           onClick={() => router.push("/cliente/meus-agendamentos")}
         >
-          Back to Bookings
+          Voltar aos Agendamentos
         </Button>
       </div>
     );
@@ -77,33 +77,33 @@ export default function ReviewFormClient({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>How was your experience?</CardTitle>
+        <CardTitle>Como foi seu atendimento?</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex flex-col items-center gap-2">
-            <Label className="text-base">Your rating</Label>
+            <Label className="text-base">Sua nota</Label>
             <StarRating rating={rating} onChange={setRating} size="lg" />
             {rating > 0 && (
               <p className="text-sm text-muted-foreground">
-                {rating === 1 && "Very poor"}
-                {rating === 2 && "Poor"}
-                {rating === 3 && "Average"}
-                {rating === 4 && "Good"}
-                {rating === 5 && "Excellent"}
+                {rating === 1 && "Muito ruim"}
+                {rating === 2 && "Ruim"}
+                {rating === 3 && "Regular"}
+                {rating === 4 && "Bom"}
+                {rating === 5 && "Excelente"}
               </p>
             )}
           </div>
 
           <div>
             <Label htmlFor="comment">
-              Comment (optional)
+              Comentario (opcional)
             </Label>
             <Textarea
               id="comment"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              placeholder="Tell us about your experience..."
+              placeholder="Conte como foi sua experiencia..."
               rows={4}
               className="mt-1"
             />
@@ -114,7 +114,7 @@ export default function ReviewFormClient({
             disabled={loading || rating === 0}
             className="w-full bg-rose-600 hover:bg-rose-700"
           >
-            {loading ? "Submitting..." : "Submit Review"}
+            {loading ? "Enviando..." : "Enviar Avaliacao"}
           </Button>
         </form>
       </CardContent>

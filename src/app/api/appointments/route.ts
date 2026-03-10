@@ -69,8 +69,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   }
 
   // Monta query dinamicamente com filtros: status, data e cliente
-  let query = supabase
-    .from("appointments")
+  let query = (supabase
+    .from("appointments") as any)
     .select(APPOINTMENT_SELECT)
     .order("appointment_date", { ascending: true })
     .order("start_time", { ascending: true });
@@ -93,7 +93,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     query = query.eq("client_id", clientId);
   }
 
-  const { data, error } = await query;
+  const { data, error } = (await query) as { data: any[] | null; error: any };
 
   if (error) {
     throw new AppError("SYS_DATABASE", error.message, error);
@@ -153,11 +153,11 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   }
 
   // Busca servicos na BD: valida existencia, status ativo e coleta preco/duracao
-  const { data: fetchedServices } = await supabase
-    .from("services")
+  const { data: fetchedServices } = (await (supabase
+    .from("services") as any)
     .select("id, name, price, duration_minutes")
     .in("id", serviceIds)
-    .eq("is_active", true);
+    .eq("is_active", true)) as { data: any[] | null };
 
   // Verifica se todos os servicos solicitados existem e estao ativos
   if (!fetchedServices || fetchedServices.length !== serviceIds.length) {
@@ -179,21 +179,21 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 
   // Verificacao de conflito em nivel aplicacao (BD exclusion constraint e a guarda principal)
   // Detecta se ja existe agendamento ativo que sobrepoe o intervalo solicitado
-  const { data: conflicts } = await supabase
-    .from("appointments")
+  const { data: conflicts } = (await (supabase
+    .from("appointments") as any)
     .select("id")
     .eq("appointment_date", appointment_date)
     .neq("status", "cancelled")
     .lt("start_time", end_time)
-    .gt("end_time", start_time);
+    .gt("end_time", start_time)) as { data: any[] | null };
 
   if (conflicts && conflicts.length > 0) {
     throw new AppError("APPT_SLOT_TAKEN");
   }
 
   // Insercao do agendamento na BD - constraint de exclusao evita race conditions
-  const { data: appointment, error } = await supabase
-    .from("appointments")
+  const { data: appointment, error } = (await (supabase
+    .from("appointments") as any)
     .insert({
       client_id: user.id,
       service_id: serviceIds.length === 1 ? serviceIds[0] : null,
@@ -209,7 +209,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       notes: notes || null,
     })
     .select()
-    .single();
+    .single()) as { data: any | null; error: any };
 
   if (error) {
     // Trata violacao da constraint de exclusao (duplo agendamento)
@@ -228,14 +228,13 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     duration_at_booking: s.duration_minutes,
   }));
 
-  const { error: servicesInsertError } = await supabase.from("appointment_services").insert(
+  const { error: servicesInsertError } = await (supabase.from("appointment_services") as any).insert(
     appointmentServicesData
   );
 
   if (servicesInsertError) {
     // Rollback: deleta agendamento orfao se falhar insercao de servicos
-    await supabase
-      .from("appointments")
+    await (supabase.from("appointments") as any)
       .delete()
       .eq("id", appointment.id);
     throw new AppError("RES_CREATE_FAILED", "Erro ao vincular servicos ao agendamento", servicesInsertError);
@@ -259,7 +258,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   );
 
   // Insere registros de notificacoes a serem enviadas (processadas por job assincrono)
-  await supabase.from("notifications").insert([
+  await (supabase.from("notifications") as any).insert([
     {
       appointment_id: appointment.id,
       channel: "email",
@@ -295,8 +294,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 
     // Armazena ID do evento Google para futuro acesso (cancelamento, atualizacao)
     if (calendarEventId) {
-      await supabase
-        .from("appointments")
+      await (supabase.from("appointments") as any)
         .update({ google_event_id: calendarEventId })
         .eq("id", appointment.id);
     }
@@ -307,11 +305,11 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 
   // Email de confirmacao (nao-bloqueante): notifica cliente do agendamento realizado
   try {
-    const { data: clientProfile } = await supabase
+    const { data: clientProfile } = (await supabase
       .from("profiles")
       .select("full_name, email")
       .eq("id", user.id)
-      .single() as unknown as { data: { full_name: string; email: string } | null };
+      .single()) as unknown as { data: { full_name: string; email: string } | null };
 
     if (clientProfile?.email) {
       // Gerar token de cancelamento
@@ -349,44 +347,6 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   } catch (emailErr) {
     // Falha de email nao impede agendamento - logging apenas
     logger.warn("Email error (non-blocking)", { code: "INT_EMAIL_FAILED", details: emailErr });
-
-  // Enviar SMS de confirmacao (nao-bloqueante)
-  try {
-    const { sendSms, buildConfirmationSms } = await import("@/lib/sms");
-    const { data: clientProfile } = await supabase
-      .from("profiles")
-      .select("full_name, phone")
-      .eq("id", user.id)
-      .single() as unknown as { data: { full_name: string; phone?: string } | null };
-
-    if (clientProfile?.phone) {
-      const appointmentDate = new Date(`${appointment_date}T${start_time}`);
-      const dateStr = appointmentDate.toLocaleDateString("en-AU", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-      });
-      const timeStr = appointmentDate.toLocaleTimeString("en-AU", {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      });
-
-      const smsData = buildConfirmationSms({
-        clientName: clientProfile.full_name?.split(" ")[0] || "there",
-        serviceName: serviceNames,
-        date: dateStr,
-        time: timeStr,
-        phone: clientProfile.phone,
-      });
-
-      await sendSms(smsData).catch(() => {});
-    }
-  } catch (smsErr) {
-    // Falha de SMS nao impede agendamento - logging apenas
-    logger.warn("SMS error (non-blocking)", { code: "INT_SMS_FAILED", details: smsErr });
-  }
-
   }
 
   return NextResponse.json(appointment, { status: 201 });

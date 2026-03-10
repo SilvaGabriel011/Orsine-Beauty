@@ -21,11 +21,11 @@ export const GET = withErrorHandler(async (
   const supabase = await createClient();
 
   // Busca servico com categoria relacionada
-  const { data, error } = await supabase
+  const { data, error } = (await supabase
     .from("services")
     .select("*, categories(id, name, slug)")
     .eq("id", id)
-    .single() as unknown as { data: any | null; error: any };
+    .single()) as unknown as { data: any | null; error: any };
 
   if (error) {
     throw new AppError("RES_NOT_FOUND", error.message, error);
@@ -47,8 +47,8 @@ export const PATCH = withErrorHandler(async (
   const body = await request.json();
 
   // Atualiza campos: nome, descricao, duracao, preco, imagem, status
-  const { data, error } = await (supabase
-    .from("services")
+  const { data, error } = (await (supabase
+    .from("services") as any)
     .update(body)
     .eq("id", id)
     .select("*, categories(id, name, slug)")
@@ -72,8 +72,8 @@ export const DELETE = withErrorHandler(async (
   await requireAuth(supabase);
 
   // Soft delete: apenas desativa servico (nunca deleta da BD)
-  const { error } = await supabase
-    .from("services")
+  const { error } = await (supabase
+    .from("services") as any)
     .update({ is_active: false })
     .eq("id", id);
 

@@ -73,9 +73,9 @@ export default function TopClientsCard({ className }: TopClientsCardProps) {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-AU", {
+    return new Intl.NumberFormat("pt-BR", {
       style: "currency",
-      currency: "AUD",
+      currency: "BRL",
     }).format(value);
   };
 
@@ -85,7 +85,7 @@ export default function TopClientsCard({ className }: TopClientsCardProps) {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Trophy className="h-5 w-5 text-amber-500" />
-            Top 5 Clients
+            Top 5 Clientes
           </CardTitle>
           <div className="flex gap-1">
             <Button
@@ -114,7 +114,7 @@ export default function TopClientsCard({ className }: TopClientsCardProps) {
           </div>
         ) : data.length === 0 ? (
           <p className="py-4 text-center text-sm text-muted-foreground">
-            No clients in this period
+            Nenhum cliente no período
           </p>
         ) : (
           <div className="space-y-3">
@@ -139,7 +139,7 @@ export default function TopClientsCard({ className }: TopClientsCardProps) {
                     {client.full_name}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {client.total_completed} appointments
+                    {client.total_completed} atendimentos
                   </p>
                 </div>
 
@@ -151,7 +151,7 @@ export default function TopClientsCard({ className }: TopClientsCardProps) {
                     {index === 0 && (
                       <span className="flex items-center gap-1 text-amber-600">
                         <TrendingUp className="h-3 w-3" />
-                        Leader
+                        Líder
                       </span>
                     )}
                   </p>
@@ -161,7 +161,7 @@ export default function TopClientsCard({ className }: TopClientsCardProps) {
             
             <Link href="/admin/clientes">
               <Button variant="ghost" size="sm" className="w-full mt-2">
-                View all clients
+                Ver todos os clientes
                 <ChevronRight className="ml-1 h-3 w-3" />
               </Button>
             </Link>

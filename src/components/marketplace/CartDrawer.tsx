@@ -16,7 +16,6 @@
 import Link from "next/link";
 import { Clock, Trash2, ArrowRight, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { IconButton } from "@/components/ui/icon-button";
 import {
   Drawer,
   DrawerContent,
@@ -36,9 +35,9 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
     useCart();
 
   // Formata o total em moeda brasileira
-  const formattedTotal = new Intl.NumberFormat("en-AU", {
+  const formattedTotal = new Intl.NumberFormat("pt-BR", {
     style: "currency",
-    currency: "AUD",
+    currency: "BRL",
   }).format(totalPrice);
 
   return (
@@ -48,9 +47,9 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
         <DrawerHeader className="border-b pb-4">
           <DrawerTitle className="flex items-center gap-2 text-lg">
             <ShoppingBag className="h-5 w-5 text-rose-600" />
-            Your cart
+            Seu carrinho
             <span className="ml-auto text-sm font-normal text-gray-500">
-              {itemCount} {itemCount === 1 ? "item" : "items"}
+              {itemCount} {itemCount === 1 ? "item" : "itens"}
             </span>
           </DrawerTitle>
         </DrawerHeader>
@@ -61,16 +60,16 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
             // Estado vazio - carrinho nao tem itens
             <div className="py-8 text-center text-gray-500">
               <ShoppingBag className="mx-auto mb-2 h-10 w-10 text-gray-300" />
-              <p className="text-sm">Your cart is empty</p>
+              <p className="text-sm">Seu carrinho esta vazio</p>
             </div>
           ) : (
             // Lista de servicos adicionados ao carrinho
             <div className="space-y-3">
               {items.map((item) => {
                 // Formata o preco em moeda brasileira
-                const price = new Intl.NumberFormat("en-AU", {
+                const price = new Intl.NumberFormat("pt-BR", {
                   style: "currency",
-                  currency: "AUD",
+                  currency: "BRL",
                 }).format(item.service.price);
 
                 return (
@@ -109,16 +108,13 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                       </div>
                     </div>
 
-                    {/* Botao para remover item do carrinho com tooltip */}
-                    <IconButton
-                      variant="ghost"
-                      size="icon"
-                      tooltip={`Remove ${item.service.name}`}
+                    {/* Botao para remover item do carrinho */}
+                    <button
                       onClick={() => removeItem(item.service.id)}
-                      className="shrink-0 h-8 w-8"
+                      className="shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
                     >
-                      <Trash2 className="h-4 w-4 text-red-400" />
-                    </IconButton>
+                      <Trash2 className="h-4 w-4" />
+                    </button>
                   </div>
                 );
               })}
@@ -134,7 +130,7 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               <div className="flex items-center justify-between text-sm text-gray-600">
                 <span className="flex items-center gap-1">
                   <Clock className="h-3.5 w-3.5" />
-                  Estimated duration
+                  Duracao estimada
                 </span>
                 <span className="font-medium">{totalDuration} min</span>
               </div>
@@ -151,7 +147,7 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
             {/* Botao primario para escolher horario e prosseguir */}
             <Link href="/agendar/checkout" onClick={() => onOpenChange(false)}>
               <Button className="w-full gap-2 bg-rose-600 text-white hover:bg-rose-700">
-                Choose time
+                Escolher horario
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
@@ -166,7 +162,7 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                 onOpenChange(false);
               }}
             >
-              Clear cart
+              Limpar carrinho
             </Button>
           </DrawerFooter>
         )}

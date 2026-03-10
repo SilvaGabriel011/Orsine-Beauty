@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { EmptyState } from "@/components/ui/empty-state";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -61,9 +60,9 @@ const TYPE_ICONS = {
 };
 
 const TYPE_LABELS = {
-  discount: "Discount",
-  service: "Service",
-  product: "Product",
+  discount: "Desconto",
+  service: "Servico",
+  product: "Produto",
 };
 
 const TYPE_COLORS = {
@@ -73,9 +72,9 @@ const TYPE_COLORS = {
 };
 
 const STATUS_MAP = {
-  pending: { label: "Pending", icon: <Clock className="h-3.5 w-3.5" />, color: "bg-amber-100 text-amber-700" },
-  fulfilled: { label: "Fulfilled", icon: <Check className="h-3.5 w-3.5" />, color: "bg-green-100 text-green-700" },
-  cancelled: { label: "Cancelled", icon: <X className="h-3.5 w-3.5" />, color: "bg-red-100 text-red-700" },
+  pending: { label: "Pendente", icon: <Clock className="h-3.5 w-3.5" />, color: "bg-amber-100 text-amber-700" },
+  fulfilled: { label: "Entregue", icon: <Check className="h-3.5 w-3.5" />, color: "bg-green-100 text-green-700" },
+  cancelled: { label: "Cancelado", icon: <X className="h-3.5 w-3.5" />, color: "bg-red-100 text-red-700" },
 };
 
 export function LojaClient({ initialCoins, items, redemptions }: LojaClientProps) {
@@ -101,12 +100,12 @@ export function LojaClient({ initialCoins, items, redemptions }: LojaClientProps
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(data.error?.message || "Error redeeming");
+        toast.error(data.error?.message || "Erro ao trocar");
         return;
       }
 
       setCoins(data.remaining_coins);
-      toast.success(`Redeemed! You acquired "${confirmItem.name}"`);
+      toast.success(`Troca realizada! Voce adquiriu "${confirmItem.name}"`);
 
       // Add to redemptions list
       setMyRedemptions((prev) => [
@@ -127,7 +126,7 @@ export function LojaClient({ initialCoins, items, redemptions }: LojaClientProps
         ...prev,
       ]);
     } catch {
-      toast.error("Connection error.");
+      toast.error("Erro de conexao.");
     } finally {
       setIsRedeeming(false);
       setConfirmItem(null);
@@ -142,9 +141,9 @@ export function LojaClient({ initialCoins, items, redemptions }: LojaClientProps
           className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
         >
           <ArrowLeft className="h-4 w-4" />
-          Games
+          Jogos
         </Link>
-        <h1 className="text-xl font-bold text-gray-900">Rewards Shop</h1>
+        <h1 className="text-xl font-bold text-gray-900">Loja de Recompensas</h1>
       </div>
 
       {/* Balance */}
@@ -156,11 +155,11 @@ export function LojaClient({ initialCoins, items, redemptions }: LojaClientProps
         <TabsList className="w-full">
           <TabsTrigger value="store" className="flex-1">
             <ShoppingBag className="mr-1.5 h-4 w-4" />
-            Shop
+            Loja
           </TabsTrigger>
           <TabsTrigger value="history" className="flex-1">
             <Package className="mr-1.5 h-4 w-4" />
-            My Redemptions
+            Minhas Trocas
           </TabsTrigger>
         </TabsList>
 
@@ -175,17 +174,15 @@ export function LojaClient({ initialCoins, items, redemptions }: LojaClientProps
                 onClick={() => setFilter(type)}
                 className={filter === type ? "bg-rose-500 hover:bg-rose-600" : ""}
               >
-                {type === "all" ? "All" : TYPE_LABELS[type]}
+                {type === "all" ? "Todos" : TYPE_LABELS[type]}
               </Button>
             ))}
           </div>
 
           {filteredItems.length === 0 ? (
-            <EmptyState
-              icon={ShoppingBag}
-              title="Shop is empty"
-              description="No rewards available at the moment. Check back soon!"
-            />
+            <p className="py-8 text-center text-gray-500">
+              Nenhum item disponivel nesta categoria.
+            </p>
           ) : (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {filteredItems.map((item) => {
@@ -208,7 +205,7 @@ export function LojaClient({ initialCoins, items, redemptions }: LojaClientProps
                             <CoinBalance coins={item.coin_price} size="sm" />
                             {item.stock !== null && (
                               <Badge variant="outline" className="text-[10px]">
-                                {item.stock} left
+                                {item.stock} restantes
                               </Badge>
                             )}
                           </div>
@@ -222,10 +219,10 @@ export function LojaClient({ initialCoins, items, redemptions }: LojaClientProps
                         variant={canAfford && !outOfStock ? "default" : "secondary"}
                       >
                         {outOfStock
-                          ? "Sold out"
+                          ? "Esgotado"
                           : !canAfford
-                            ? `Need ${item.coin_price - coins} more coins`
-                            : "Redeem"}
+                            ? `Faltam ${item.coin_price - coins} moedas`
+                            : "Trocar"}
                       </Button>
                     </CardContent>
                   </Card>
@@ -238,7 +235,7 @@ export function LojaClient({ initialCoins, items, redemptions }: LojaClientProps
         <TabsContent value="history" className="mt-4">
           {myRedemptions.length === 0 ? (
             <p className="py-8 text-center text-gray-500">
-              You haven&apos;t made any redemptions yet.
+              Voce ainda nao fez nenhuma troca.
             </p>
           ) : (
             <div className="space-y-3">
@@ -254,7 +251,7 @@ export function LojaClient({ initialCoins, items, redemptions }: LojaClientProps
                         <div className="flex items-center gap-2 mt-1">
                           <CoinBalance coins={r.coins_spent} size="sm" />
                           <span className="text-[10px] text-gray-400">
-                            {new Date(r.created_at).toLocaleDateString("en-AU")}
+                            {new Date(r.created_at).toLocaleDateString("pt-BR")}
                           </span>
                         </div>
                       </div>
@@ -275,21 +272,21 @@ export function LojaClient({ initialCoins, items, redemptions }: LojaClientProps
       <AlertDialog open={!!confirmItem} onOpenChange={() => setConfirmItem(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Redemption</AlertDialogTitle>
+            <AlertDialogTitle>Confirmar Troca</AlertDialogTitle>
             <AlertDialogDescription>
-              Do you want to redeem <strong>{confirmItem?.coin_price} coins</strong> for{" "}
+              Deseja trocar <strong>{confirmItem?.coin_price} moedas</strong> por{" "}
               <strong>{confirmItem?.name}</strong>?
               {confirmItem?.type === "product" && (
                 <span className="block mt-1 text-amber-600">
-                  Physical products will be delivered at your next appointment.
+                  Produtos fisicos serao entregues no proximo atendimento.
                 </span>
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isRedeeming}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isRedeeming}>Cancelar</AlertDialogCancel>
             <AlertDialogAction onClick={handleRedeem} disabled={isRedeeming}>
-              {isRedeeming ? "Redeeming..." : "Confirm Redemption"}
+              {isRedeeming ? "Trocando..." : "Confirmar Troca"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

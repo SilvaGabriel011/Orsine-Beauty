@@ -14,33 +14,32 @@ export default function FloatingCartBar() {
 
   if (!isHydrated || itemCount === 0) return null;
 
-  const formattedPrice = new Intl.NumberFormat("en-AU", {
+  const formattedPrice = new Intl.NumberFormat("pt-BR", {
     style: "currency",
-    currency: "AUD",
+    currency: "BRL",
   }).format(totalPrice);
 
   return (
     <>
       {/* Mobile: full-width bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-warm-200/50 bg-white/90 px-4 py-3 shadow-[0_-4px_30px_rgba(139,34,82,0.08)] backdrop-blur-xl md:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-rose-100 bg-white/95 px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] backdrop-blur-lg md:hidden">
         <div className="flex items-center justify-between">
           {/* Cart info (clickable to open drawer) */}
           <button
             onClick={() => setDrawerOpen(true)}
             className="flex flex-1 items-center gap-3"
-            aria-label={`Cart with ${itemCount} item${itemCount > 1 ? 's' : ''}`}
           >
             <div className="relative">
-              <ShoppingBag className="h-6 w-6 text-burgundy-600" />
-              <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-burgundy-600 text-[10px] font-bold text-white">
+              <ShoppingBag className="h-6 w-6 text-rose-600" />
+              <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-rose-600 text-[10px] font-bold text-white">
                 {itemCount}
               </span>
             </div>
             <div className="text-left">
-              <p className="text-sm font-bold text-warm-900">
+              <p className="text-sm font-bold text-gray-900">
                 {formattedPrice}
               </p>
-              <p className="flex items-center gap-1 text-[11px] text-warm-500">
+              <p className="flex items-center gap-1 text-[11px] text-gray-500">
                 <Clock className="h-3 w-3" />
                 {totalDuration} min
               </p>
@@ -49,8 +48,8 @@ export default function FloatingCartBar() {
 
           {/* CTA Button */}
           <Link href="/agendar/checkout">
-            <Button className="gap-2 rounded-full bg-burgundy-600 text-white shadow-lg shadow-burgundy-600/20 hover:bg-burgundy-700">
-              Choose time
+            <Button className="gap-2 bg-rose-600 text-white shadow-lg shadow-rose-200 hover:bg-rose-700">
+              Escolher horario
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
@@ -59,36 +58,32 @@ export default function FloatingCartBar() {
 
       {/* Desktop: floating bar */}
       <div className="fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2 md:block">
-        <div className="flex items-center gap-6 rounded-2xl border border-warm-200/50 bg-white/90 px-6 py-3 shadow-2xl shadow-burgundy-600/10 backdrop-blur-xl">
-          <button
-            onClick={() => setDrawerOpen(true)}
-            className="flex items-center gap-3"
-            aria-label={`Cart with ${itemCount} item${itemCount > 1 ? 's' : ''}`}
-          >
+        <div className="flex items-center gap-6 rounded-2xl border border-rose-100 bg-white/95 px-6 py-3 shadow-2xl shadow-rose-200/50 backdrop-blur-lg">
+          <div className="flex items-center gap-3">
             <div className="relative">
-              <ShoppingBag className="h-5 w-5 text-burgundy-600" />
-              <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-burgundy-600 text-[9px] font-bold text-white">
+              <ShoppingBag className="h-5 w-5 text-rose-600" />
+              <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-600 text-[9px] font-bold text-white">
                 {itemCount}
               </span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-warm-900">
-                {itemCount} {itemCount === 1 ? "service" : "services"}
+              <p className="text-sm font-semibold text-gray-900">
+                {itemCount} {itemCount === 1 ? "servico" : "servicos"}
               </p>
-              <p className="flex items-center gap-1 text-xs text-warm-500">
+              <p className="flex items-center gap-1 text-xs text-gray-500">
                 <Clock className="h-3 w-3" />
-                {totalDuration} min estimated
+                {totalDuration} min estimados
               </p>
             </div>
-          </button>
+          </div>
 
-          <div className="h-8 w-px bg-warm-200" />
+          <div className="h-8 w-px bg-gray-200" />
 
-          <p className="text-lg font-bold text-burgundy-600">{formattedPrice}</p>
+          <p className="text-lg font-bold text-rose-600">{formattedPrice}</p>
 
           <Link href="/agendar/checkout">
-            <Button className="gap-2 rounded-full bg-burgundy-600 text-white shadow-lg shadow-burgundy-600/20 hover:bg-burgundy-700 transition-all">
-              Choose time
+            <Button className="gap-2 bg-rose-600 text-white shadow-lg shadow-rose-200 hover:bg-rose-700">
+              Escolher horario
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>

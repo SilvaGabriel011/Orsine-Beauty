@@ -8,89 +8,110 @@
  * Props: nenhuma (componente global)
  */
 import Link from "next/link";
-import { Instagram, Mail, Phone, ArrowUpRight } from "lucide-react";
+import { Scissors, Instagram, Mail, Phone } from "lucide-react";
 
 // Links de navegacao no footer
 const footerLinks = [
-  { href: "/servicos", label: "Services" },
+  { href: "/servicos", label: "Servicos" },
   { href: "/portfolio", label: "Portfolio" },
-  { href: "/sobre", label: "About" },
-  { href: "/agendar", label: "Book Now" },
+  { href: "/sobre", label: "Sobre" },
+  { href: "/agendar", label: "Agendar" },
 ];
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-warm-800 dark:bg-[#110E0C] text-warm-300">
-      {/* Decorative gold line */}
-      <div className="h-px bg-gradient-to-r from-transparent via-gold-400/40 to-transparent" />
-
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        {/* Top section — Logo + tagline */}
-        <div className="mb-12 text-center">
-          <Link href="/" className="inline-block">
-            <h2 className="font-serif text-3xl tracking-wide text-warm-100 sm:text-4xl">
-              Bela Orsine
-            </h2>
-            <p className="mt-1 font-display text-lg italic tracking-widest text-gold-400">
-              Beauty
-            </p>
-          </Link>
-          <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-warm-400 dark:text-warm-500">
-            Enhancing your natural beauty with care, precision and dedication.
-          </p>
-        </div>
-
-        {/* Navigation links — horizontal */}
-        <div className="mb-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-          {footerLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="group flex items-center gap-1 text-sm font-medium tracking-wide text-warm-400 transition-colors hover:text-gold-300"
-            >
-              {link.label}
-              <ArrowUpRight className="h-3 w-3 opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+    <footer className="bg-gray-900 text-white">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Logo e descricao da empresa */}
+          <div className="sm:col-span-2 lg:col-span-1">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-rose-600/20">
+                <Scissors className="h-5 w-5 text-rose-400" />
+              </div>
+              <span className="text-lg font-bold tracking-tight">
+                Bela Orsine
+                <span className="font-light text-rose-400"> Beauty</span>
+              </span>
             </Link>
-          ))}
-        </div>
+            <p className="mt-3 text-sm leading-relaxed text-gray-400">
+              Estudio de beleza dedicado a realcar a sua beleza natural.
+              Sobrancelhas, unhas, depilacao e muito mais.
+            </p>
+          </div>
 
-        {/* Contact + Social — centered row */}
-        <div className="mb-12 flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-10">
-          <a
-            href="tel:+5500000000000"
-            className="flex items-center gap-2 text-sm text-warm-400 transition-colors hover:text-gold-300"
-          >
-            <Phone className="h-4 w-4" />
-            (00) 00000-0000
-          </a>
-          <a
-            href="mailto:contato@belaorsine.com.br"
-            className="flex items-center gap-2 text-sm text-warm-400 transition-colors hover:text-gold-300"
-          >
-            <Mail className="h-4 w-4" />
-            contato@belaorsine.com.br
-          </a>
-          <a
-            href="https://instagram.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-warm-400 transition-colors hover:text-gold-300"
-          >
-            <Instagram className="h-4 w-4" />
-            @belaorsine
-          </a>
+          {/* Secao de links de navegacao */}
+          <div>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-300">
+              Navegacao
+            </h3>
+            <ul className="space-y-2">
+              {footerLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-gray-400 transition-colors hover:text-rose-400"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Secao de contato */}
+          <div>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-300">
+              Contato
+            </h3>
+            <ul className="space-y-2">
+              <li>
+                <a
+                  href="tel:+5500000000000"
+                  className="flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-rose-400"
+                >
+                  <Phone className="h-4 w-4" />
+                  (00) 00000-0000
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:contato@belaorsine.com.br"
+                  className="flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-rose-400"
+                >
+                  <Mail className="h-4 w-4" />
+                  contato@belaorsine.com.br
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Social Media */}
+          <div>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-300">
+              Redes Sociais
+            </h3>
+            <div className="flex gap-3">
+              <a
+                href="https://instagram.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 text-gray-400 transition-colors hover:bg-rose-600 hover:text-white"
+              >
+                <Instagram className="h-5 w-5" />
+                <span className="sr-only">Instagram</span>
+              </a>
+            </div>
+          </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-warm-700/50 pt-6 text-center">
-          <p className="text-xs text-warm-500">
-            &copy; {new Date().getFullYear()} Bela Orsine Beauty. All rights reserved.
+        <div className="mt-10 border-t border-gray-800 pt-6 text-center">
+          <p className="text-xs text-gray-500">
+            &copy; 2025 Bela Orsine Beauty. Todos os direitos reservados.
           </p>
         </div>
       </div>
-
-      {/* Decorative background element */}
-      <div className="pointer-events-none absolute -bottom-20 left-1/2 h-40 w-[500px] -translate-x-1/2 rounded-full bg-burgundy-600/5 blur-3xl" />
     </footer>
   );
 }

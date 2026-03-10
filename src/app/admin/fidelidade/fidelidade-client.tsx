@@ -86,7 +86,7 @@ export default function FidelidadeClient({
 
   async function handleSave() {
     if (!formName.trim()) {
-      toast.error("Name is required");
+      toast.error("Nome e obrigatorio");
       return;
     }
 
@@ -116,7 +116,7 @@ export default function FidelidadeClient({
 
     if (!result.ok) return;
 
-    toast.success("Rule created successfully");
+    toast.success("Regra criada com sucesso");
     setDialogOpen(false);
     resetForm();
     router.refresh();
@@ -132,7 +132,7 @@ export default function FidelidadeClient({
     if (!result.ok) return;
 
     toast.success(
-      rule.is_active ? "Rule deactivated" : "Rule activated"
+      rule.is_active ? "Regra desativada" : "Regra ativada"
     );
     router.refresh();
   }
@@ -144,7 +144,7 @@ export default function FidelidadeClient({
 
     if (!result.ok) return;
 
-    toast.success("Rule removed");
+    toast.success("Regra removida");
     router.refresh();
   }
 
@@ -154,7 +154,7 @@ export default function FidelidadeClient({
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Loyalty Program</h1>
+        <h1 className="text-2xl font-bold">Programa de Fidelidade</h1>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button
@@ -162,16 +162,16 @@ export default function FidelidadeClient({
               onClick={resetForm}
             >
               <Plus className="h-4 w-4" />
-              New Rule
+              Nova Regra
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>New Loyalty Rule</DialogTitle>
+              <DialogTitle>Nova Regra de Fidelidade</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label>Type</Label>
+                <Label>Tipo</Label>
                 <Select
                   value={formType}
                   onValueChange={(v) => setFormType(v as "earn" | "redeem")}
@@ -180,28 +180,28 @@ export default function FidelidadeClient({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="earn">Earn points</SelectItem>
-                    <SelectItem value="redeem">Redeem discount</SelectItem>
+                    <SelectItem value="earn">Ganhar pontos</SelectItem>
+                    <SelectItem value="redeem">Resgatar desconto</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label>Rule name</Label>
+                <Label>Nome da regra</Label>
                 <Input
                   className="mt-1"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder={
                     formType === "earn"
-                      ? "e.g. 1 point per $10 spent"
-                      : "e.g. 100 points = $10 discount"
+                      ? "Ex: 1 ponto a cada R$10"
+                      : "Ex: 100 pontos = R$10 de desconto"
                   }
                 />
               </div>
               {formType === "earn" ? (
                 <>
                   <div>
-                    <Label>Points per unit</Label>
+                    <Label>Pontos por unidade</Label>
                     <Input
                       className="mt-1"
                       type="number"
@@ -211,7 +211,7 @@ export default function FidelidadeClient({
                     />
                   </div>
                   <div>
-                    <Label>Unit value (AUD)</Label>
+                    <Label>Valor da unidade (R$)</Label>
                     <Input
                       className="mt-1"
                       type="number"
@@ -220,15 +220,15 @@ export default function FidelidadeClient({
                       onChange={(e) => setFormMinAmount(e.target.value)}
                     />
                     <p className="mt-1 text-xs text-muted-foreground">
-                      Client earns {formPointsPerVisit || 1} point(s) per $
-                      {formMinAmount || 10} spent
+                      Cliente ganha {formPointsPerVisit || 1} ponto(s) a cada R$
+                      {formMinAmount || 10} gastos
                     </p>
                   </div>
                 </>
               ) : (
                 <>
                   <div>
-                    <Label>Points required</Label>
+                    <Label>Pontos necessarios</Label>
                     <Input
                       className="mt-1"
                       type="number"
@@ -238,7 +238,7 @@ export default function FidelidadeClient({
                     />
                   </div>
                   <div>
-                    <Label>Discount value (AUD)</Label>
+                    <Label>Valor do desconto (R$)</Label>
                     <Input
                       className="mt-1"
                       type="number"
@@ -248,8 +248,8 @@ export default function FidelidadeClient({
                       onChange={(e) => setFormDiscountValue(e.target.value)}
                     />
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {formPointsThreshold || 100} points = $
-                      {formDiscountValue || 10} discount
+                      {formPointsThreshold || 100} pontos = R$
+                      {formDiscountValue || 10} de desconto
                     </p>
                   </div>
                 </>
@@ -257,14 +257,14 @@ export default function FidelidadeClient({
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                Cancel
+                Cancelar
               </Button>
               <Button
                 onClick={handleSave}
                 disabled={saving}
                 className="bg-rose-600 hover:bg-rose-700"
               >
-                {saving ? "Saving..." : "Save"}
+                {saving ? "Salvando..." : "Salvar"}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -280,7 +280,7 @@ export default function FidelidadeClient({
             </div>
             <div>
               <p className="text-2xl font-bold">{rules.length}</p>
-              <p className="text-sm text-muted-foreground">Rules</p>
+              <p className="text-sm text-muted-foreground">Regras</p>
             </div>
           </CardContent>
         </Card>
@@ -291,7 +291,7 @@ export default function FidelidadeClient({
             </div>
             <div>
               <p className="text-2xl font-bold">{totalPointsActive}</p>
-              <p className="text-sm text-muted-foreground">Active points</p>
+              <p className="text-sm text-muted-foreground">Pontos ativos</p>
             </div>
           </CardContent>
         </Card>
@@ -302,7 +302,7 @@ export default function FidelidadeClient({
             </div>
             <div>
               <p className="text-2xl font-bold">{redeemRules.length}</p>
-              <p className="text-sm text-muted-foreground">Redemption options</p>
+              <p className="text-sm text-muted-foreground">Opcoes de resgate</p>
             </div>
           </CardContent>
         </Card>
@@ -311,16 +311,16 @@ export default function FidelidadeClient({
       {/* Earn Rules */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-base">Earning Rules</CardTitle>
+          <CardTitle className="text-base">Regras de Ganho</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Points</TableHead>
-                <TableHead>Per</TableHead>
-                <TableHead>Active</TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>Pontos</TableHead>
+                <TableHead>A cada</TableHead>
+                <TableHead>Ativa</TableHead>
                 <TableHead />
               </TableRow>
             </TableHeader>
@@ -328,7 +328,7 @@ export default function FidelidadeClient({
               {earnRules.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="py-6 text-center">
-                    No earning rules
+                    Nenhuma regra de ganho
                   </TableCell>
                 </TableRow>
               ) : (
@@ -336,7 +336,7 @@ export default function FidelidadeClient({
                   <TableRow key={rule.id}>
                     <TableCell className="font-medium">{rule.name}</TableCell>
                     <TableCell>{rule.points_per_visit} pt(s)</TableCell>
-                    <TableCell>$ {rule.min_amount || 10}</TableCell>
+                    <TableCell>R$ {rule.min_amount || 10}</TableCell>
                     <TableCell>
                       <Switch
                         checked={rule.is_active}
@@ -350,7 +350,7 @@ export default function FidelidadeClient({
                         className="text-red-600 hover:text-red-700"
                         onClick={() => handleDelete(rule.id)}
                       >
-                        Remove
+                        Remover
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -364,16 +364,16 @@ export default function FidelidadeClient({
       {/* Redeem Rules */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-base">Redemption Rules</CardTitle>
+          <CardTitle className="text-base">Regras de Resgate</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Points required</TableHead>
-                <TableHead>Discount</TableHead>
-                <TableHead>Active</TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>Pontos necessarios</TableHead>
+                <TableHead>Desconto</TableHead>
+                <TableHead>Ativa</TableHead>
                 <TableHead />
               </TableRow>
             </TableHeader>
@@ -381,7 +381,7 @@ export default function FidelidadeClient({
               {redeemRules.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="py-6 text-center">
-                    No redemption rules
+                    Nenhuma regra de resgate
                   </TableCell>
                 </TableRow>
               ) : (
@@ -389,7 +389,7 @@ export default function FidelidadeClient({
                   <TableRow key={rule.id}>
                     <TableCell className="font-medium">{rule.name}</TableCell>
                     <TableCell>{rule.points_threshold} pts</TableCell>
-                    <TableCell>$ {rule.discount_value?.toFixed(2)}</TableCell>
+                    <TableCell>R$ {rule.discount_value?.toFixed(2)}</TableCell>
                     <TableCell>
                       <Switch
                         checked={rule.is_active}
@@ -403,7 +403,7 @@ export default function FidelidadeClient({
                         className="text-red-600 hover:text-red-700"
                         onClick={() => handleDelete(rule.id)}
                       >
-                        Remove
+                        Remover
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -417,23 +417,23 @@ export default function FidelidadeClient({
       {/* Top Clients */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Top Clients</CardTitle>
+          <CardTitle className="text-base">Top Clientes</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>#</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Points</TableHead>
-                <TableHead>Appointments</TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>Pontos</TableHead>
+                <TableHead>Atendimentos</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {topClients.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="py-6 text-center">
-                    No clients yet
+                    Nenhum cliente ainda
                   </TableCell>
                 </TableRow>
               ) : (
